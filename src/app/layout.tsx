@@ -1,0 +1,29 @@
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import "./globals.css";
+import { AuthProvider } from "@/lib/auth-context";
+import MenuBar from "@/components/layout/MenuBar";
+
+const inter = Inter({ subsets: ["latin"] });
+
+export const metadata: Metadata = {
+  title: "Udruga Građana Baljci",
+  description: "Udruga za očuvanje kulturne baštine i zaštitu okoliša",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="hr">
+      <body className={inter.className}>
+        <AuthProvider>
+          <MenuBar />
+          {children}
+        </AuthProvider>
+      </body>
+    </html>
+  );
+}
