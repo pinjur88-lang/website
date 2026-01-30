@@ -1,8 +1,8 @@
-export type Language = 'bs' | 'en' | 'de';
+export type Language = 'hr' | 'en' | 'de';
 
 export const translations = {
-    bs: {
-        title: "Udruga Građana Baljci", // Keeping Udruga as it's likely the legal name
+    hr: {
+        title: "Udruga Građana Baljci",
         subtitle: "Udruga za očuvanje kulturne baštine i zaštitu okoliša.",
         description: "Osnovana s ciljem promicanja održivog razvoja i revitalizacije područja.",
         login: "Prijava za članove",
@@ -21,6 +21,16 @@ export const translations = {
         successMessage: "Vaš zahtjev za članstvom je pripremljen. Molimo pošaljite generirani e-mail u nastavku.",
         close: "Zatvori",
         disclaimer: "Slanjem zahtjeva pristajete na provjeru podataka.",
+
+        // Login
+        loginTitle: "Prijava",
+        onlyMembers: "Samo za ovlaštene članove",
+        password: "Lozinka",
+        checking: "Provjera...",
+        signIn: "Prijavi se",
+        loginError: "Neispravna e-mail adresa ili lozinka.",
+        noAccount: "Nemate račun?",
+        requestHere: "Zatražite pristup",
 
         // New Dashboard items
         dashboard: "Nadzorna ploča",
@@ -56,6 +66,16 @@ export const translations = {
         close: "Close",
         disclaimer: "By sending this request you agree to data verification.",
 
+        // Login
+        loginTitle: "Login",
+        onlyMembers: "For authorized members only",
+        password: "Password",
+        checking: "Verifying...",
+        signIn: "Sign In",
+        loginError: "Invalid email or password.",
+        noAccount: "Don't have an account?",
+        requestHere: "Request access",
+
         dashboard: "Dashboard",
         suggestions: "Suggestions & Plans",
         upload: "Upload Image",
@@ -87,6 +107,16 @@ export const translations = {
         successMessage: "Ihre Mitgliedschaftsanfrage ist bereit. Bitte senden Sie die generierte E-Mail unten.",
         close: "Schließen",
         disclaimer: "Mit dem Absenden stimmen Sie der Datenüberprüfung zu.",
+
+        // Login
+        loginTitle: "Anmeldung",
+        onlyMembers: "Nur für autorisierte Mitglieder",
+        password: "Passwort",
+        checking: "Überprüfung...",
+        signIn: "Anmelden",
+        loginError: "Ungültige E-Mail oder Passwort.",
+        noAccount: "Kein Konto?",
+        requestHere: "Zugang anfordern",
 
         dashboard: "Instrumententafel",
         suggestions: "Vorschläge & Pläne",

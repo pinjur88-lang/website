@@ -2,9 +2,11 @@
 
 import { useState } from 'react';
 import { useAuth } from '@/lib/auth-context';
+import { useLanguage } from '@/lib/language-context';
 import { Lock } from 'lucide-react';
 
 export default function LoginPage() {
+    const { t } = useLanguage();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -18,7 +20,7 @@ export default function LoginPage() {
 
         const success = await login(email, password);
         if (!success) {
-            setError('Neispravna e-mail adresa ili lozinka.');
+            setError(t.loginError);
             setIsLocalLoading(false);
         }
     };
@@ -30,13 +32,13 @@ export default function LoginPage() {
                     <div className="w-10 h-10 bg-zinc-100 rounded-full flex items-center justify-center mb-2 text-zinc-500">
                         <Lock size={18} />
                     </div>
-                    <h1 className="text-xl font-serif text-zinc-800 tracking-wide">Prijava</h1>
-                    <p className="text-xs text-zinc-400 mt-1 uppercase">Samo za ovlaštene članove</p>
+                    <h1 className="text-xl font-serif text-zinc-800 tracking-wide">{t.loginTitle}</h1>
+                    <p className="text-xs text-zinc-400 mt-1 uppercase">{t.onlyMembers}</p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
-                        <label htmlFor="email" className="block text-xs font-medium text-zinc-500 mb-1 uppercase">E-mail</label>
+                        <label htmlFor="email" className="block text-xs font-medium text-zinc-500 mb-1 uppercase">{t.emailLabel}</label>
                         <input
                             type="email"
                             id="email"
@@ -48,7 +50,7 @@ export default function LoginPage() {
                         />
                     </div>
                     <div>
-                        <label htmlFor="password" className="block text-xs font-medium text-zinc-500 mb-1 uppercase">Lozinka</label>
+                        <label htmlFor="password" className="block text-xs font-medium text-zinc-500 mb-1 uppercase">{t.password}</label>
                         <input
                             type="password"
                             id="password"
@@ -66,13 +68,13 @@ export default function LoginPage() {
                         disabled={isLoading || isLocalLoading}
                         className="w-full py-2 bg-zinc-900 hover:bg-zinc-800 text-white rounded-sm text-sm transition-colors uppercase tracking-wider relative"
                     >
-                        {(isLoading || isLocalLoading) ? 'Provjera...' : 'Prijavi se'}
+                        {(isLoading || isLocalLoading) ? t.checking : t.signIn}
                     </button>
                 </form>
 
                 <div className="mt-6 pt-6 border-t border-zinc-100 text-center">
                     <p className="text-xs text-zinc-400">
-                        Nemate račun? <a href="/" className="underline hover:text-zinc-600">Zatražite pristup</a> na naslovnici.
+                        {t.noAccount} <a href="/" className="underline hover:text-zinc-600">{t.requestHere}</a>.
                     </p>
                 </div>
             </div>

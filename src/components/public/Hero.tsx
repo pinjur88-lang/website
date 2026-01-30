@@ -17,7 +17,7 @@ export default function Hero() {
             {/* Top Bar */}
             <div className="w-full p-6 flex justify-between items-center border-b border-zinc-200 bg-white">
                 <div className="flex gap-2 text-xs font-sans tracking-widest text-zinc-400">
-                    <button onClick={() => setLanguage('bs')} className={`hover:text-zinc-800 ${language === 'bs' ? 'text-zinc-900 font-bold' : ''}`}>BS</button>
+                    <button onClick={() => setLanguage('hr')} className={`hover:text-zinc-800 ${language === 'hr' ? 'text-zinc-900 font-bold' : ''}`}>CRO</button>
                     <span>|</span>
                     <button onClick={() => setLanguage('en')} className={`hover:text-zinc-800 ${language === 'en' ? 'text-zinc-900 font-bold' : ''}`}>EN</button>
                     <span>|</span>

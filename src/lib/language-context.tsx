@@ -6,18 +6,22 @@ import { Language, translations } from './translations';
 interface LanguageContextType {
     language: Language;
     setLanguage: (lang: Language) => void;
-    t: typeof translations['bs'];
+    t: typeof translations['hr'];
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-    const [language, setLanguage] = useState<Language>('bs');
+    const [language, setLanguage] = useState<Language>('hr'); // Default to Croatian ('hr')
 
     useEffect(() => {
-        const saved = localStorage.getItem('language') as Language;
-        if (saved && (saved === 'en' || saved === 'de' || saved === 'bs')) {
-            setLanguage(saved);
+        const saved = localStorage.getItem('language') as string;
+        // Migrate 'bs' to 'hr' if present
+        if (saved === 'bs') {
+            setLanguage('hr');
+            localStorage.setItem('language', 'hr');
+        } else if (saved && (saved === 'en' || saved === 'de' || saved === 'hr')) {
+            setLanguage(saved as Language);
         }
     }, []);
 
