@@ -1,16 +1,25 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { db, MembershipRequest } from '@/lib/store';
-import { Check, X, Mail } from 'lucide-react';
+import { db, MembershipRequest } from '@/lib/db';
+import { Mail } from 'lucide-react';
 
 export default function AdminMembersPage() {
     const [requests, setRequests] = useState<MembershipRequest[]>([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Load requests from DB
-        setRequests(db.getRequests());
+        const loadRequests = async () => {
+            const data = await db.getRequests();
+            setRequests(data);
+            setLoading(false);
+        };
+        loadRequests();
     }, []);
+
+    if (loading) {
+        return <div className="p-4 text-center">Učitavanje zahtjeva...</div>;
+    }
 
     return (
         <div className="space-y-6">
@@ -52,7 +61,6 @@ export default function AdminMembersPage() {
                                                 >
                                                     <Mail size={18} />
                                                 </a>
-                                                {/* In a real app we would have Approve/Reject buttons that update status */}
                                             </div>
                                         </td>
                                     </tr>

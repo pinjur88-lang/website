@@ -1,17 +1,27 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { MessageSquare, Calendar } from 'lucide-react';
-import { db, NewsItem } from '@/lib/store';
+import { Calendar } from 'lucide-react';
+import { db, NewsItem } from '@/lib/db'; // Import from new async db
 import { useLanguage } from '@/lib/language-context';
 
 export default function DashboardHome() {
     const { t } = useLanguage();
     const [news, setNews] = useState<NewsItem[]>([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        setNews(db.getNews());
+        const loadNews = async () => {
+            const data = await db.getNews();
+            setNews(data);
+            setLoading(false);
+        };
+        loadNews();
     }, []);
+
+    if (loading) {
+        return <div className="p-4 text-center text-stone-500">Učitavanje novosti...</div>;
+    }
 
     return (
         <div className="space-y-6">
@@ -31,7 +41,7 @@ export default function DashboardHome() {
                             <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
                                 <div className="flex-1 space-y-3">
                                     <div className="flex items-center gap-2 text-xs text-stone-600 font-medium">
-                                        {item.tags[0] && (
+                                        {item.tags && item.tags[0] && (
                                             <span className="bg-stone-100 px-2 py-1 rounded-full border border-stone-200">{item.tags[0]}</span>
                                         )}
                                         <span className="flex items-center gap-1 text-stone-400">

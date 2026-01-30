@@ -3,29 +3,39 @@
 import { useState, useEffect } from 'react';
 import { useLanguage } from '@/lib/language-context';
 import { MessageCircle, Send } from 'lucide-react';
-import { db, CommunityPost } from '@/lib/store';
+import { db, CommunityPost } from '@/lib/db';
 
 export default function CommunityPage() {
     const { t } = useLanguage();
     const [posts, setPosts] = useState<CommunityPost[]>([]);
     const [content, setContent] = useState('');
+    const [loading, setLoading] = useState(false);
 
-    const refresh = () => setPosts(db.getCommunityPosts());
+    const refresh = async () => {
+        const data = await db.getCommunityPosts();
+        setPosts(data);
+    };
 
     useEffect(() => {
         refresh();
-        // Optional: poll for changes
         const interval = setInterval(refresh, 5000);
         return () => clearInterval(interval);
     }, []);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!content.trim()) return;
 
-        db.addCommunityPost(content);
-        setContent('');
-        refresh();
+        setLoading(true);
+        try {
+            await db.addCommunityPost(content);
+            setContent('');
+            await refresh();
+        } catch (error) {
+            console.error('Failed to post', error);
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -46,10 +56,12 @@ export default function CommunityPage() {
                         placeholder="Napišite nešto anonimno..."
                         value={content}
                         onChange={(e) => setContent(e.target.value)}
+                        disabled={loading}
                     />
                     <button
                         type="submit"
-                        className="bg-stone-900 text-white px-4 py-2 rounded hover:bg-stone-800 transition-colors flex items-center gap-2"
+                        disabled={loading}
+                        className="bg-stone-900 text-white px-4 py-2 rounded hover:bg-stone-800 transition-colors flex items-center gap-2 disabled:opacity-50"
                     >
                         <Send size={16} /> <span className="hidden sm:inline">Objavi</span>
                     </button>

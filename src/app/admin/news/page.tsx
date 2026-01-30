@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from 'react';
-import { Send, FileText } from 'lucide-react';
+import { Send } from 'lucide-react';
+import { db } from '@/lib/db';
 
 export default function PostNewsPage() {
     const [formData, setFormData] = useState({
@@ -12,16 +13,15 @@ export default function PostNewsPage() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [message, setMessage] = useState('');
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSubmitting(true);
 
         try {
-            const { db } = require('@/lib/store');
-            db.addNews({
+            await db.addNews({
                 title: formData.title,
                 content: formData.content,
-                author: 'Administrator', // Or user.name from auth context
+                author: 'Administrator',
                 tags: formData.tags.split(',').map(t => t.trim()).filter(t => t),
             });
 
@@ -30,6 +30,7 @@ export default function PostNewsPage() {
             setTimeout(() => setMessage(''), 3000);
         } catch (err) {
             console.error(err);
+            setMessage('Greška prilikom objave.');
         } finally {
             setIsSubmitting(false);
         }
@@ -82,7 +83,7 @@ export default function PostNewsPage() {
                 </div>
 
                 <div className="pt-4 flex items-center justify-between">
-                    <span className="text-sm text-green-600 font-medium">{message}</span>
+                    <span className={`text-sm font-medium ${message.includes('Greška') ? 'text-red-600' : 'text-green-600'}`}>{message}</span>
                     <button
                         type="submit"
                         disabled={isSubmitting}
