@@ -6,6 +6,7 @@ import { Lock } from 'lucide-react';
 
 export default function LoginPage() {
     const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const { login, isLoading } = useAuth();
     const [isLocalLoading, setIsLocalLoading] = useState(false);
@@ -15,12 +16,11 @@ export default function LoginPage() {
         setError('');
         setIsLocalLoading(true);
 
-        const success = await login(email);
+        const success = await login(email, password);
         if (!success) {
-            setError('Neispravna e-mail adresa ili nemate ovlasti pristupa.');
+            setError('Neispravna e-mail adresa ili lozinka.');
             setIsLocalLoading(false);
         }
-        // If success, router.push happens in context
     };
 
     return (
@@ -45,6 +45,17 @@ export default function LoginPage() {
                             placeholder="ime@primjer.hr"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
+                        />
+                    </div>
+                    <div>
+                        <label htmlFor="password" className="block text-xs font-medium text-zinc-500 mb-1 uppercase">Lozinka</label>
+                        <input
+                            type="password"
+                            id="password"
+                            required
+                            className="w-full px-3 py-2 border border-zinc-300 rounded-sm text-sm focus:outline-none focus:ring-1 focus:ring-zinc-800 text-zinc-900 bg-white"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
                         />
                     </div>
 

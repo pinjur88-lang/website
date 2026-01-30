@@ -12,7 +12,7 @@ interface User {
 
 interface AuthContextType {
     user: User | null;
-    login: (email: string) => Promise<boolean>;
+    login: (email: string, password?: string) => Promise<boolean>;
     logout: () => void;
     isLoading: boolean;
 }
@@ -21,11 +21,10 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
-    const [isLoading, setIsLoading] = useState(true); // Simulate checking session
+    const [isLoading, setIsLoading] = useState(true);
     const router = useRouter();
 
     useEffect(() => {
-        // Check local storage for session
         const storedUser = localStorage.getItem('mock_session');
         if (storedUser) {
             setUser(JSON.parse(storedUser));
@@ -33,18 +32,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setIsLoading(false);
     }, []);
 
-    const login = async (email: string) => {
-        // Mock login logic
+    const login = async (email: string, password?: string) => {
         setIsLoading(true);
-        await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate delay
+        await new Promise(resolve => setTimeout(resolve, 800));
 
-        if (email === 'udrugabaljci@gmail.com') {
-            const adminUser: User = { id: '1', name: 'Admin', email, role: 'admin' };
+        // SECURITY UPDATE: Check credentials
+        if (email === 'udrugabaljci@gmail.com' && password === 'Jojlolomoj2026!') {
+            const adminUser: User = { id: '1', name: 'Administrator', email, role: 'admin' };
             setUser(adminUser);
             localStorage.setItem('mock_session', JSON.stringify(adminUser));
             router.push('/admin');
             return true;
-        } else if (email === 'clan@ug-baljci.hr') {
+        } else if (email === 'clan@ug-baljci.hr' && password === 'member123') {
+            // Retaining member login for testing, though user didn't specify member pass.
             const memberUser: User = { id: '2', name: 'Ivan Horvat', email, role: 'member' };
             setUser(memberUser);
             localStorage.setItem('mock_session', JSON.stringify(memberUser));
@@ -53,7 +53,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
 
         setIsLoading(false);
-        return false; // Login failed
+        return false;
     };
 
     const logout = () => {
