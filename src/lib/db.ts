@@ -15,6 +15,8 @@ export interface MembershipRequest {
     id: string;
     name: string;
     email: string;
+    phone?: string;
+    contact_method?: string; // Comma separated values
     reason: string;
     date: string;
     status: 'pending' | 'approved' | 'rejected';
@@ -96,6 +98,8 @@ export const db = {
             .insert([{
                 name: item.name,
                 email: item.email,
+                phone: item.phone,
+                contact_method: item.contact_method,
                 reason: item.reason,
                 status: 'pending'
             }]);

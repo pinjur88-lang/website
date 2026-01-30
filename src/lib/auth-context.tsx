@@ -41,13 +41,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             const adminUser: User = { id: '1', name: 'Administrator', email, role: 'admin' };
             setUser(adminUser);
             localStorage.setItem('mock_session', JSON.stringify(adminUser));
+            setIsLoading(false); // FIXED: Stop loading before redirect
             router.push('/admin');
             return true;
         } else if (email === 'clan@ug-baljci.hr' && password === 'member123') {
-            // Retaining member login for testing, though user didn't specify member pass.
             const memberUser: User = { id: '2', name: 'Ivan Horvat', email, role: 'member' };
             setUser(memberUser);
             localStorage.setItem('mock_session', JSON.stringify(memberUser));
+            setIsLoading(false); // FIXED: Stop loading before redirect
             router.push('/dashboard');
             return true;
         }
