@@ -104,6 +104,12 @@ export const translations = {
         community: "Community Wall",
         suggestions: "Suggestions",
         upload: "Upload Image",
+
+        // Social Groups
+        socialTitle: "Community Channels",
+        socialDesc: "Join our groups for faster updates.",
+        joinWhatsapp: "Join WhatsApp Group",
+        joinViber: "Join Viber Group",
     },
     de: {
         navHome: "Startseite",
@@ -156,5 +162,11 @@ export const translations = {
         community: "Gemeinschaftswand",
         suggestions: "Vorschläge",
         upload: "Bild Hochladen",
+
+        // Social Groups
+        socialTitle: "Gemeinschaftskanäle",
+        socialDesc: "Treten Sie unseren Gruppen bei, um schnellere Updates zu erhalten.",
+        joinWhatsapp: "WhatsApp-Gruppe beitreten",
+        joinViber: "Viber-Gruppe beitreten",
     }
 };

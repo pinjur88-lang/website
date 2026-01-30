@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { Calendar } from 'lucide-react';
-import { db, NewsItem } from '@/lib/db'; // Import from new async db
+import { Calendar, MessageCircle, Phone } from 'lucide-react';
+import { db, NewsItem } from '@/lib/db';
 import { useLanguage } from '@/lib/language-context';
 
 export default function DashboardHome() {
@@ -32,37 +32,77 @@ export default function DashboardHome() {
                 </div>
             </div>
 
-            <div className="grid gap-6">
-                {news.length === 0 ? (
-                    <p className="text-stone-500 italic">Nema novih obavijesti.</p>
-                ) : (
-                    news.map((item) => (
-                        <article key={item.id} className="bg-white p-6 rounded-lg shadow-sm border border-stone-200 hover:shadow-md transition-shadow">
-                            <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
-                                <div className="flex-1 space-y-3">
-                                    <div className="flex items-center gap-2 text-xs text-stone-600 font-medium">
-                                        {item.tags && item.tags[0] && (
-                                            <span className="bg-stone-100 px-2 py-1 rounded-full border border-stone-200">{item.tags[0]}</span>
-                                        )}
-                                        <span className="flex items-center gap-1 text-stone-400">
-                                            <Calendar size={12} /> {item.date}
-                                        </span>
-                                    </div>
-
-                                    <h3 className="text-xl font-bold text-stone-800">{item.title}</h3>
-                                    <p className="text-stone-600 leading-relaxed whitespace-pre-line">{item.content}</p>
-
-                                    <div className="flex items-center gap-2 pt-2 text-xs text-stone-500">
-                                        <div className="w-5 h-5 bg-stone-200 rounded-full flex items-center justify-center font-serif text-stone-600">
-                                            {item.author.charAt(0)}
+            <div className="grid px-0 lg:grid-cols-3 gap-8">
+                {/* Main Content - News Feed */}
+                <div className="lg:col-span-2 space-y-6">
+                    {news.length === 0 ? (
+                        <p className="text-stone-500 italic">Nema novih obavijesti.</p>
+                    ) : (
+                        news.map((item) => (
+                            <article key={item.id} className="bg-white p-6 rounded-lg shadow-sm border border-stone-200 hover:shadow-md transition-shadow">
+                                <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
+                                    <div className="flex-1 space-y-3">
+                                        <div className="flex items-center gap-2 text-xs text-stone-600 font-medium">
+                                            {item.tags && item.tags[0] && (
+                                                <span className="bg-stone-100 px-2 py-1 rounded-full border border-stone-200">{item.tags[0]}</span>
+                                            )}
+                                            <span className="flex items-center gap-1 text-stone-400">
+                                                <Calendar size={12} /> {item.date}
+                                            </span>
                                         </div>
-                                        <span>Objavio: {item.author}</span>
+
+                                        <h3 className="text-xl font-bold text-stone-800">{item.title}</h3>
+                                        <p className="text-stone-600 leading-relaxed whitespace-pre-line">{item.content}</p>
+
+                                        <div className="flex items-center gap-2 pt-2 text-xs text-stone-500">
+                                            <div className="w-5 h-5 bg-stone-200 rounded-full flex items-center justify-center font-serif text-stone-600">
+                                                {item.author.charAt(0)}
+                                            </div>
+                                            <span>Objavio: {item.author}</span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </article>
-                    ))
-                )}
+                            </article>
+                        ))
+                    )}
+                </div>
+
+                {/* Sidebar - Quick Actions */}
+                <div className="space-y-6">
+                    {/* Social Groups Card */}
+                    <div className="bg-white p-6 rounded-lg shadow-sm border border-stone-200 sticky top-4">
+                        <h3 className="text-lg font-bold text-stone-800 mb-2">{t.socialTitle}</h3>
+                        <p className="text-sm text-stone-600 mb-4 leading-relaxed">
+                            {t.socialDesc}
+                        </p>
+
+                        <div className="space-y-3">
+                            <a
+                                href="https://chat.whatsapp.com/placeholder"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-3 w-full p-3 rounded-md bg-[#25D366]/10 text-[#075e54] hover:bg-[#25D366]/20 transition-colors border border-[#25D366]/20 group"
+                            >
+                                <div className="bg-[#25D366] text-white p-2 rounded-full group-hover:scale-110 transition-transform">
+                                    <MessageCircle size={18} />
+                                </div>
+                                <span className="font-semibold text-sm">{t.joinWhatsapp}</span>
+                            </a>
+
+                            <a
+                                href="https://invite.viber.com/placeholder"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-3 w-full p-3 rounded-md bg-[#7360f2]/10 text-[#7360f2] hover:bg-[#7360f2]/20 transition-colors border border-[#7360f2]/20 group"
+                            >
+                                <div className="bg-[#7360f2] text-white p-2 rounded-full group-hover:scale-110 transition-transform">
+                                    <Phone size={18} />
+                                </div>
+                                <span className="font-semibold text-sm">{t.joinViber}</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     );
