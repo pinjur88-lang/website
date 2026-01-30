@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import { X, Send } from 'lucide-react';
+import { X, Send, AlertCircle } from 'lucide-react';
 import Image from 'next/image';
 import { useLanguage } from '@/lib/language-context';
 import { db } from '@/lib/db';
@@ -20,12 +20,14 @@ export default function AccessRequestModal({ isOpen, onClose }: AccessRequestMod
     });
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [errorMsg, setErrorMsg] = useState('');
 
     if (!isOpen) return null;
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
+        setErrorMsg('');
 
         try {
             await db.addRequest({
@@ -34,8 +36,9 @@ export default function AccessRequestModal({ isOpen, onClose }: AccessRequestMod
                 reason: formData.reason,
             });
             setIsSubmitted(true);
-        } catch (error) {
+        } catch (error: any) {
             console.error('Failed to submit request', error);
+            setErrorMsg(error.message || 'Greška u povezivanju s bazom podataka.');
         } finally {
             setLoading(false);
         }
@@ -102,6 +105,13 @@ export default function AccessRequestModal({ isOpen, onClose }: AccessRequestMod
                                         onChange={(e) => setFormData({ ...formData, reason: e.target.value })}
                                     />
                                 </div>
+
+                                {errorMsg && (
+                                    <div className="p-3 bg-red-50 border border-red-100 rounded-sm flex items-start gap-2">
+                                        <AlertCircle className="text-red-600 flex-shrink-0 mt-0.5" size={16} />
+                                        <p className="text-xs text-red-600">{errorMsg}</p>
+                                    </div>
+                                )}
 
                                 <p className="text-[10px] text-zinc-400 text-center leading-tight pt-2">
                                     {t.disclaimer}
