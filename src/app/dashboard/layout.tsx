@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '@/lib/auth-context';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { Home, FolderKanban, FileText, Image as ImageIcon, LogOut, Menu, X, MessageSquare, Upload } from 'lucide-react';
+import { Home, FolderKanban, FileText, Image as ImageIcon, LogOut, Menu, X, MessageSquare, Upload, MessageCircle } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -30,10 +30,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
     const navItems = [
         { name: t.dashboard, href: '/dashboard', icon: Home },
-        { name: t.suggestions, href: '/dashboard/suggestions', icon: MessageSquare }, // New
-        { name: t.upload, href: '/dashboard/upload', icon: Upload }, // New
-        //{ name: 'Projekti', href: '/dashboard/projects', icon: FolderKanban },
-        //{ name: 'Dokumenti', href: '/dashboard/documents', icon: FileText },
+        { name: "Zid Zajednice", href: '/dashboard/community', icon: MessageSquare }, // Changed from Suggestions
+        // { name: t.suggestions, href: '/dashboard/suggestions', icon: MessageSquare }, // Keeping old suggestion box? user asked for anonymous POSTING inside member page, which sounds like community wall.
+        { name: t.upload, href: '/dashboard/upload', icon: Upload },
         { name: t.gallery, href: '/dashboard/gallery', icon: ImageIcon },
     ];
 

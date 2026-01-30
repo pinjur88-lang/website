@@ -15,13 +15,24 @@ export default function PostNewsPage() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         setIsSubmitting(true);
-        // Simulate API call
-        setTimeout(() => {
-            setIsSubmitting(false);
+
+        try {
+            const { db } = require('@/lib/store');
+            db.addNews({
+                title: formData.title,
+                content: formData.content,
+                author: 'Administrator', // Or user.name from auth context
+                tags: formData.tags.split(',').map(t => t.trim()).filter(t => t),
+            });
+
             setMessage('Obavijest je uspješno objavljena na oglasnoj ploči.');
             setFormData({ title: '', content: '', tags: '' });
             setTimeout(() => setMessage(''), 3000);
-        }, 1000);
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (

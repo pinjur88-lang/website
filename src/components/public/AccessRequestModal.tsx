@@ -22,9 +22,16 @@ export default function AccessRequestModal({ isOpen, onClose }: AccessRequestMod
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+
+        // Save to "Database" for Admin Panel
+        const { db } = require('@/lib/store'); // Dynamic import to avoid SSR issues if any, or just standard import
+        db.addRequest({
+            name: formData.name,
+            email: formData.email,
+            reason: formData.reason,
+        });
+
         setIsSubmitted(true);
-        // We cannot send emails directly from client without a service.
-        // We will construct a mailto link or just show success message instructions.
     };
 
     const handleSendEmail = () => {
