@@ -13,6 +13,7 @@ export const translations = {
 
         // Modal
         modalTitle: "Zatraži Pristup",
+        charterMember: "Pridružite se kao Poveljni Član (2026). Članarina je besplatna prvu godinu dok uspostavljamo infrastrukturu.",
         nameLabel: "Ime i Prezime",
         emailLabel: "E-mail Adresa",
         phoneLabel: "Broj Mobitela",
@@ -24,9 +25,15 @@ export const translations = {
         sending: "Slanje...",
         close: "Zatvori",
 
+        // Compliance
+        oibLabel: "OIB (Neobavezno)",
+        dobLabel: "Datum Rođenja",
+        addressLabel: "Adresa (Grad, Država)",
+        statuteLabel: "Prihvaćam Statut Udruge Građana Baljci (Čl. 10 & GDPR)",
+
         // Success
         successTitle: "Zahtjev Poslan!",
-        successMessage: "Vaš zahtjev je uspješno zaprimljen. Kontaktirat ćemo vas uskoro.", // Removed "click email" part
+        successMessage: "Vaš zahtjev je uspješno zaprimljen. Kontaktirat ćemo vas uskoro.",
 
         // Contact Methods
         methodWhatsapp: "WhatsApp",
@@ -45,8 +52,6 @@ export const translations = {
         community: "Zid Zajednice",
         suggestions: "Prijedlozi",
         upload: "Učitaj Sliku",
-
-        // New items can be added here
     },
     en: {
         navHome: "Home",
@@ -60,6 +65,7 @@ export const translations = {
 
         // Modal
         modalTitle: "Request Access",
+        charterMember: "Join now as a Charter Member (2026). Membership fees are waived for the first year.",
         nameLabel: "Full Name",
         emailLabel: "Email Address",
         phoneLabel: "Mobile Phone",
@@ -70,6 +76,12 @@ export const translations = {
         submitButton: "Send Request",
         sending: "Sending...",
         close: "Close",
+
+        // Compliance
+        oibLabel: "OIB (Optional)",
+        dobLabel: "Date of Birth",
+        addressLabel: "Address (City, Country)",
+        statuteLabel: "I accept the Statute of Udruga Građana Baljci (Art 10 & GDPR)",
 
         // Success
         successTitle: "Request Sent!",
@@ -105,6 +117,7 @@ export const translations = {
 
         // Modal
         modalTitle: "Zugang Anfordern",
+        charterMember: "Werden Sie jetzt Gründungsmitglied (2026). Der Mitgliedsbeitrag entfällt im ersten Jahr.",
         nameLabel: "Vor- und Nachname",
         emailLabel: "E-Mail-Adresse",
         phoneLabel: "Handynummer",
@@ -115,6 +128,12 @@ export const translations = {
         submitButton: "Anfrage Senden",
         sending: "Senden...",
         close: "Schließen",
+
+        // Compliance
+        oibLabel: "OIB (Optional)",
+        dobLabel: "Geburtsdatum",
+        addressLabel: "Adresse (Stadt, Land)",
+        statuteLabel: "Ich akzeptiere die Satzung der Bürgervereinigung Baljci",
 
         // Success
         successTitle: "Anfrage Gesendet!",

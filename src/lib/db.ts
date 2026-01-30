@@ -13,10 +13,17 @@ export interface NewsItem {
 
 export interface MembershipRequest {
     id: string;
-    name: string;
+    name: string; // Ime i Prezime
     email: string;
     phone?: string;
     contact_method?: string; // Comma separated values
+
+    // Compliance Fields
+    oib?: string; // Optional for now
+    dob?: string;
+    address?: string; // City/Country
+    accepted_statute?: boolean;
+
     reason: string;
     date: string;
     status: 'pending' | 'approved' | 'rejected';
@@ -100,6 +107,12 @@ export const db = {
                 email: item.email,
                 phone: item.phone,
                 contact_method: item.contact_method,
+
+                oib: item.oib,
+                dob: item.dob,
+                address: item.address,
+                accepted_statute: item.accepted_statute,
+
                 reason: item.reason,
                 status: 'pending'
             }]);

@@ -17,6 +17,9 @@ export default function AccessRequestModal({ isOpen, onClose }: AccessRequestMod
         name: '',
         email: '',
         phone: '',
+        oib: '',
+        dob: '',
+        address: '',
         reason: '',
     });
 
@@ -27,6 +30,8 @@ export default function AccessRequestModal({ isOpen, onClose }: AccessRequestMod
         sms: false,
         email: true // default
     });
+
+    const [acceptedStatute, setAcceptedStatute] = useState(false);
 
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -46,6 +51,12 @@ export default function AccessRequestModal({ isOpen, onClose }: AccessRequestMod
         setLoading(true);
         setErrorMsg('');
 
+        if (!acceptedStatute) {
+            setErrorMsg(t.de ? 'Sie müssen die Satzung akzeptieren.' : (t.en ? 'You must accept the Statute.' : 'Morate prihvatiti Statut.'));
+            setLoading(false);
+            return;
+        }
+
         // Create comma separated string of selected methods
         const selectedMethods = Object.entries(contactMethods)
             .filter(([_, isSelected]) => isSelected)
@@ -58,6 +69,12 @@ export default function AccessRequestModal({ isOpen, onClose }: AccessRequestMod
                 email: formData.email,
                 phone: formData.phone,
                 contact_method: selectedMethods,
+
+                oib: formData.oib,
+                dob: formData.dob,
+                address: formData.address,
+                accepted_statute: acceptedStatute,
+
                 reason: formData.reason,
             });
             setIsSubmitted(true);
@@ -71,10 +88,10 @@ export default function AccessRequestModal({ isOpen, onClose }: AccessRequestMod
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-900/40 backdrop-blur-sm animate-in fade-in duration-200 overflow-y-auto">
-            <div className="bg-white rounded-sm shadow-xl w-full max-w-md relative overflow-hidden my-8">
+            <div className="bg-white rounded-sm shadow-xl w-full max-w-lg relative overflow-hidden my-8">
                 <button
                     onClick={onClose}
-                    className="absolute top-4 right-4 text-zinc-400 hover:text-zinc-800 transition-colors"
+                    className="absolute top-4 right-4 text-zinc-400 hover:text-zinc-800 transition-colors z-10"
                 >
                     <X size={20} />
                 </button>
@@ -88,11 +105,15 @@ export default function AccessRequestModal({ isOpen, onClose }: AccessRequestMod
                                 </div>
                                 <h2 className="text-xl font-bold text-zinc-900">{t.modalTitle}</h2>
                                 <p className="text-xs text-zinc-500 mt-1 uppercase tracking-wider">Udruga Građana Baljci</p>
+
+                                <div className="mt-4 p-3 bg-blue-50 border border-blue-100 rounded-sm text-sm text-blue-800 leading-snug">
+                                    {t.charterMember}
+                                </div>
                             </div>
 
                             <form onSubmit={handleSubmit} className="space-y-4">
                                 <div>
-                                    <label htmlFor="name" className="block text-xs font-bold text-zinc-500 mb-1 uppercase">{t.nameLabel}</label>
+                                    <label htmlFor="name" className="block text-xs font-bold text-zinc-500 mb-1 uppercase">{t.nameLabel} *</label>
                                     <input
                                         id="name"
                                         required
@@ -104,7 +125,42 @@ export default function AccessRequestModal({ isOpen, onClose }: AccessRequestMod
 
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <label htmlFor="email" className="block text-xs font-bold text-zinc-500 mb-1 uppercase">{t.emailLabel}</label>
+                                        <label htmlFor="dob" className="block text-xs font-bold text-zinc-500 mb-1 uppercase">{t.dobLabel} *</label>
+                                        <input
+                                            id="dob"
+                                            required
+                                            type="date"
+                                            className="w-full bg-zinc-50 border border-zinc-200 p-2 text-sm focus:outline-none focus:border-zinc-500 rounded-sm text-zinc-900"
+                                            value={formData.dob}
+                                            onChange={(e) => setFormData({ ...formData, dob: e.target.value })}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label htmlFor="oib" className="block text-xs font-bold text-zinc-500 mb-1 uppercase">{t.oibLabel}</label>
+                                        <input
+                                            id="oib"
+                                            className="w-full bg-zinc-50 border border-zinc-200 p-2 text-sm focus:outline-none focus:border-zinc-500 rounded-sm text-zinc-900"
+                                            value={formData.oib}
+                                            onChange={(e) => setFormData({ ...formData, oib: e.target.value })}
+                                        />
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label htmlFor="address" className="block text-xs font-bold text-zinc-500 mb-1 uppercase">{t.addressLabel} *</label>
+                                    <input
+                                        id="address"
+                                        required
+                                        className="w-full bg-zinc-50 border border-zinc-200 p-2 text-sm focus:outline-none focus:border-zinc-500 rounded-sm text-zinc-900"
+                                        placeholder="npr. Šibenik, Hrvatska"
+                                        value={formData.address}
+                                        onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                                    />
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label htmlFor="email" className="block text-xs font-bold text-zinc-500 mb-1 uppercase">{t.emailLabel} *</label>
                                         <input
                                             id="email"
                                             type="email"
@@ -115,7 +171,7 @@ export default function AccessRequestModal({ isOpen, onClose }: AccessRequestMod
                                         />
                                     </div>
                                     <div>
-                                        <label htmlFor="phone" className="block text-xs font-bold text-zinc-500 mb-1 uppercase">{t.phoneLabel}</label>
+                                        <label htmlFor="phone" className="block text-xs font-bold text-zinc-500 mb-1 uppercase">{t.phoneLabel} *</label>
                                         <input
                                             id="phone"
                                             type="tel"
@@ -146,17 +202,19 @@ export default function AccessRequestModal({ isOpen, onClose }: AccessRequestMod
                                     </div>
                                 </div>
 
-                                <div>
-                                    <label htmlFor="reason" className="block text-xs font-bold text-zinc-500 mb-1 uppercase">{t.reasonLabel}</label>
-                                    <textarea
-                                        id="reason"
-                                        required
-                                        rows={3}
-                                        className="w-full bg-zinc-50 border border-zinc-200 p-2 text-sm focus:outline-none focus:border-zinc-500 rounded-sm resize-none text-zinc-900"
-                                        placeholder={t.reasonPlaceholder}
-                                        value={formData.reason}
-                                        onChange={(e) => setFormData({ ...formData, reason: e.target.value })}
-                                    />
+                                <div className="pt-2">
+                                    <button
+                                        type="button"
+                                        onClick={() => setAcceptedStatute(!acceptedStatute)}
+                                        className="flex items-start gap-3 w-full text-left group"
+                                    >
+                                        <div className={`mt-0.5 transition-colors ${acceptedStatute ? 'text-zinc-900' : 'text-zinc-400 group-hover:text-zinc-600'}`}>
+                                            {acceptedStatute ? <CheckSquare size={20} /> : <Square size={20} />}
+                                        </div>
+                                        <span className="text-sm font-medium text-zinc-900 leading-tight">
+                                            {t.statuteLabel} <span className="text-red-500">*</span>
+                                        </span>
+                                    </button>
                                 </div>
 
                                 {errorMsg && (
