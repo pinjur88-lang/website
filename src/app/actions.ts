@@ -15,11 +15,14 @@ export async function checkApprovedRequest(email: string) {
     try {
         console.log(`Checking approval for: ${cleanEmail}`);
         // Use ilike for case-insensitive matching
+        // We order by created_at desc to get the latest request if there are duplicates
         const { data, error } = await supabaseAdmin
             .from('requests')
             .select('status, name')
             .ilike('email', cleanEmail)
-            .single();
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .maybeSingle();
 
         if (error) {
             console.error("Supabase Admin Query Error:", error);
