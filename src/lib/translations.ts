@@ -64,13 +64,8 @@ export const translations = {
         community: "Zid Zajednice",
         suggestions: "Prijedlozi",
         upload: "Učitaj Sliku",
-        upload: "Učitaj Sliku",
         gallery: "Galerija",
 
-        // Social Groups
-        socialTitle: "Kanali Zajednice",
-        socialDesc: "Pridružite se grupama za brže obavijesti.",
-        joinWhatsapp: "Pridruži se WhatsApp Grupi",
         // Social Groups
         socialTitle: "Kanali Zajednice",
         socialDesc: "Pridružite se grupama za brže obavijesti.",
@@ -151,10 +146,6 @@ export const translations = {
         socialTitle: "Community Channels",
         socialDesc: "Join our groups for faster updates.",
         joinWhatsapp: "Join WhatsApp Group",
-        // Social Groups
-        socialTitle: "Community Channels",
-        socialDesc: "Join our groups for faster updates.",
-        joinWhatsapp: "Join WhatsApp Group",
         joinViber: "Join Viber Group",
 
         // Suggestions
@@ -227,10 +218,6 @@ export const translations = {
         upload: "Bild Hochladen",
         gallery: "Galerie",
 
-        // Social Groups
-        socialTitle: "Gemeinschaftskanäle",
-        socialDesc: "Treten Sie unseren Gruppen bei, um schnellere Updates zu erhalten.",
-        joinWhatsapp: "WhatsApp-Gruppe beitreten",
         // Social Groups
         socialTitle: "Gemeinschaftskanäle",
         socialDesc: "Treten Sie unseren Gruppen bei, um schnellere Updates zu erhalten.",
