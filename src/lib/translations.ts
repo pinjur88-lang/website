@@ -10,6 +10,9 @@ export const translations = {
         heroDescription: "Zajedno gradimo bolju budućnost za naše selo i zajednicu. Pridružite nam se u očuvanju tradicije i unapređenju života u Baljcima.",
         ctaButton: "Zatraži Pristup",
         loginButton: "Prijava",
+        accessRestricted: "Pristup je ograničen samo za članove.",
+        requestAccess: "Zatraži Pristup",
+        footerRight: "Sva prava pridržana.",
 
         // Modal
         modalTitle: "Zatraži Pristup",
@@ -92,6 +95,9 @@ export const translations = {
         heroDescription: "Building a better future for our village and community together. Join us in preserving tradition and improving life in Baljci.",
         ctaButton: "Request Access",
         loginButton: "Login",
+        accessRestricted: "Access restricted to members only.",
+        requestAccess: "Request Access",
+        footerRight: "All rights reserved.",
 
         // Modal
         modalTitle: "Request Access",
@@ -174,6 +180,9 @@ export const translations = {
         heroDescription: "Gemeinsam bauen wir eine bessere Zukunft für unser Dorf und unsere Gemeinschaft. Begleiten Sie uns bei der Bewahrung der Tradition.",
         ctaButton: "Zugang Anfordern",
         loginButton: "Anmelden",
+        accessRestricted: "Zugang nur für Mitglieder.",
+        requestAccess: "Zugang Anfordern",
+        footerRight: "Alle Rechte vorbehalten.",
 
         // Modal
         modalTitle: "Zugang Anfordern",

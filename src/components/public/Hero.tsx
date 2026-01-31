@@ -46,8 +46,8 @@ export default function Hero() {
                 </h1>
 
                 <div className="max-w-xl text-lg text-zinc-600 leading-relaxed font-light space-y-2">
-                    <p>{t.subtitle}</p>
-                    <p>{t.description}</p>
+                    <p>{t.heroSubtitle}</p>
+                    <p>{t.heroDescription}</p>
                 </div>
 
                 <div className="mt-8 p-6 border border-zinc-200 bg-white rounded-sm shadow-sm max-w-md w-full">
@@ -66,7 +66,7 @@ export default function Hero() {
                 <p>&copy; {new Date().getFullYear()} {t.title}. {t.footerRight}</p>
                 {/* Hidden/Discreet Contact */}
                 <a href="mailto:udrugabaljci@gmail.com" className="hover:text-zinc-600 transition-colors">
-                    {t.contact}
+                    {t.navContact}
                 </a>
             </footer>
         </section>
