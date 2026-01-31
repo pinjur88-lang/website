@@ -39,12 +39,12 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Forbidden: Admin access only' }, { status: 403 });
         }
 
-        // 4. Update Request Status in Database
+        // 4. Update Request Status to 'revoked'
         const { requestId } = await request.json();
 
         const { error: dbError } = await supabaseAdmin
             .from('requests')
-            .update({ status: 'approved' })
+            .update({ status: 'revoked' })
             .eq('id', requestId);
 
         if (dbError) {
@@ -54,7 +54,7 @@ export async function POST(request: Request) {
         return NextResponse.json({ success: true });
 
     } catch (error: any) {
-        console.error('Approval Error:', error);
+        console.error('Revoke Error:', error);
         return NextResponse.json(
             { error: error.message || 'Internal Server Error' },
             { status: 500 }
