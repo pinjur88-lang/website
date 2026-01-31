@@ -46,7 +46,13 @@ export const translations = {
         passwordLabel: "Lozinka",
         loginSubmit: "Prijavi se",
         loginError: "Neispravna e-mail adresa ili lozinka.",
+        loginError: "Neispravna e-mail adresa ili lozinka.",
         logout: "Odjava",
+        onlyMembers: "Samo za članove",
+        signIn: "Prijavi Se",
+        noAccount: "Nemate račun?",
+        requestHere: "Zatražite pristup ovdje",
+        password: "Lozinka",
 
         // Register
         registerTitle: "Registracija",
@@ -122,7 +128,13 @@ export const translations = {
         passwordLabel: "Password",
         loginSubmit: "Login",
         loginError: "Invalid email or password.",
+        loginError: "Invalid email or password.",
         logout: "Logout",
+        onlyMembers: "Members Only",
+        signIn: "Sign In",
+        noAccount: "No account?",
+        requestHere: "Request access here",
+        password: "Password",
 
         // Register
         registerTitle: "Registration",
@@ -198,7 +210,13 @@ export const translations = {
         passwordLabel: "Passwort",
         loginSubmit: "Anmelden",
         loginError: "Ungültige E-Mail oder Passwort.",
+        loginError: "Ungültige E-Mail oder Passwort.",
         logout: "Abmelden",
+        onlyMembers: "Nur für Mitglieder",
+        signIn: "Anmelden",
+        noAccount: "Kein Konto?",
+        requestHere: "Hier Zugang anfordern",
+        password: "Passwort",
 
         // Register
         registerTitle: "Registrierung",
