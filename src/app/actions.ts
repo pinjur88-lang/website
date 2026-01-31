@@ -28,13 +28,17 @@ export async function checkApprovedRequest(email: string) {
             console.error("Supabase Admin Query Error:", error);
             // Distinguish between not found and other errors
             if (error.code === 'PGRST116') { // PostgREST code for "The result contains 0 rows"
-                return { error: 'Not found' };
+                // PROBE: Check if table is empty
+                const { count } = await supabaseAdmin.from('requests').select('*', { count: 'exact', head: true });
+                return { error: `Not found (DB has ${count} total requests). Searched for: ${cleanEmail}` };
             }
             return { error: `Database Error: ${error.message}` };
         }
 
         if (!data) {
-            return { error: 'Not found' };
+            // PROBE: Check if table is empty
+            const { count } = await supabaseAdmin.from('requests').select('*', { count: 'exact', head: true });
+            return { error: `Not found (DB has ${count} total requests). Searched for: ${cleanEmail}` };
         }
 
         console.log("Found request:", data);
