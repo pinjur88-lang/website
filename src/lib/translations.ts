@@ -13,7 +13,7 @@ export const translations = {
 
         // Modal
         modalTitle: "Zatraži Pristup",
-        charterMember: "Pridružite se kao Poveljni Član (2026). Članarina je besplatna prvu godinu dok uspostavljamo infrastrukturu.",
+        charterMember: "Pridružite se kao Poveljni Član (2026). Članarina je besplatna prvu godinu dok uspostavljamo infrastrukturu. Prijavite se na listu za novosti i pravo glasa.",
         nameLabel: "Ime i Prezime",
         emailLabel: "E-mail Adresa",
         phoneLabel: "Broj Mobitela",
@@ -47,11 +47,22 @@ export const translations = {
         loginSubmit: "Prijavi se",
         loginError: "Neispravna e-mail adresa ili lozinka.",
 
+        // Register
+        registerTitle: "Registracija",
+        registerSubtitle: "Samo za odobrene članove",
+        registerRequestNotFound: "Zahtjev nije pronađen. Molimo prvo ispunite zahtjev za članstvom na naslovnici.",
+        registerSuccessTitle: "Registracija Uspješna!",
+        registerSuccessDesc: "Vaš račun je kreiran. Molimo potvrdite svoju email adresu (ako je potrebno) ili se prijavite.",
+        alreadyMember: "Već imate račun?",
+        checking: "Provjera...",
+        login: "Prijava",
+
         // Dashboard
         dashboard: "Nadzorna Ploča",
         community: "Zid Zajednice",
         suggestions: "Prijedlozi",
         upload: "Učitaj Sliku",
+        gallery: "Galerija",
     },
     en: {
         navHome: "Home",
@@ -99,11 +110,22 @@ export const translations = {
         loginSubmit: "Login",
         loginError: "Invalid email or password.",
 
+        // Register
+        registerTitle: "Registration",
+        registerSubtitle: "Only for approved members",
+        registerRequestNotFound: "Request not found. Please fill out the membership request form on the homepage first.",
+        registerSuccessTitle: "Registration Successful!",
+        registerSuccessDesc: "Your account has been created. Please confirm your email address (if required) or login.",
+        alreadyMember: "Already have an account?",
+        checking: "Checking...",
+        login: "Login",
+
         // Dashboard
         dashboard: "Dashboard",
         community: "Community Wall",
         suggestions: "Suggestions",
         upload: "Upload Image",
+        gallery: "Gallery",
 
         // Social Groups
         socialTitle: "Community Channels",
@@ -157,11 +179,22 @@ export const translations = {
         loginSubmit: "Anmelden",
         loginError: "Ungültige E-Mail oder Passwort.",
 
+        // Register
+        registerTitle: "Registrierung",
+        registerSubtitle: "Nur für zugelassene Mitglieder",
+        registerRequestNotFound: "Anfrage nicht gefunden. Bitte füllen Sie zuerst das Beitrittsformular auf der Startseite aus.",
+        registerSuccessTitle: "Registrierung Erfolgreich!",
+        registerSuccessDesc: "Ihr Konto wurde erstellt. Bitte bestätigen Sie Ihre E-Mail-Adresse (falls erforderlich) oder melden Sie sich an.",
+        alreadyMember: "Sie haben bereits ein Konto?",
+        checking: "Überprüfung...",
+        login: "Anmelden",
+
         // Dashboard
         dashboard: "Instrumententafel",
         community: "Gemeinschaftswand",
         suggestions: "Vorschläge",
         upload: "Bild Hochladen",
+        gallery: "Galerie",
 
         // Social Groups
         socialTitle: "Gemeinschaftskanäle",

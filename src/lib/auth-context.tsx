@@ -33,8 +33,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
 
         // 2. Check Supabase Session (For Members)
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
             if (session?.user) {
+                // SECURITY: Double check approval status in requests table
+                const { data: reqData } = await supabase
+                    .from('requests')
+                    .select('status')
+                    .eq('email', session.user.email!)
+                    .single();
+
+                if (reqData && reqData.status !== 'approved') {
+                    console.warn('User logged in but not approved (or revoked). Logging out.');
+                    await supabase.auth.signOut();
+                    setUser(null);
+                    localStorage.removeItem('mock_session');
+                    setIsLoading(false);
+                    return;
+                }
+
                 const memberUser: User = {
                     id: session.user.id,
                     name: session.user.user_metadata?.display_name || 'Član',
@@ -75,6 +91,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             });
 
             if (!error && data.user) {
+                // SECURITY Check
+                const { data: reqData } = await supabase
+                    .from('requests')
+                    .select('status')
+                    .eq('email', email)
+                    .single();
+
+                if (reqData && reqData.status !== 'approved') {
+                    await supabase.auth.signOut(); // Ensure signed out
+                    setIsLoading(false);
+                    // Return false (or could throw error to show specific message)
+                    return false;
+                }
+
                 const memberUser: User = {
                     id: data.user.id,
                     name: data.user.user_metadata?.display_name || 'Član',
@@ -82,10 +112,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                     role: 'member'
                 };
                 setUser(memberUser);
-                // We don't strictly need localStorage here as Supabase handles session, 
-                // but we keep it for now to match existing 'mock_session' checks or 
-                // we should fully migrate to supabase.auth.onAuthStateChange.
-                // For safety in this hybrid mode, let's just use the state.
+
                 localStorage.setItem('mock_session', JSON.stringify(memberUser));
 
                 setIsLoading(false);

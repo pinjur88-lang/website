@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
     try {
-        const { email, requestId, name } = await request.json();
+        const { requestId } = await request.json();
 
         // 1. Initialize Supabase Admin with Service Role Key
         const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -23,18 +23,7 @@ export async function POST(request: Request) {
             }
         });
 
-        // 2. Invite User via Email
-        // This sends an email with a link to set their password
-        const { data: userData, error: inviteError } = await supabaseAdmin.auth.admin.inviteUserByEmail(email, {
-            data: { display_name: name, role: 'member' }
-        });
-
-        if (inviteError) {
-            // If user already exists, that's okay, just proceed to update status
-            console.warn('Invite warning (user might exist):', inviteError.message);
-        }
-
-        // 3. Update Request Status in Database
+        // 2. Update Request Status in Database
         const { error: dbError } = await supabaseAdmin
             .from('requests')
             .update({ status: 'approved' })

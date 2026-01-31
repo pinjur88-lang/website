@@ -74,7 +74,10 @@ export default function LoginPage() {
 
                 <div className="mt-6 pt-6 border-t border-zinc-100 text-center">
                     <p className="text-xs text-zinc-400">
-                        {t.noAccount} <a href="/" className="underline hover:text-zinc-600">{t.requestHere}</a>.
+                        {t.noAccount} <a href="/" className="underline hover:text-zinc-600">{t.requestHere || "Zatraži pristup"}</a>.
+                    </p>
+                    <p className="text-xs text-zinc-400 mt-2">
+                        Imate odobrenje? <a href="/register" className="underline hover:text-zinc-600 font-bold">Registrirajte se ovdje</a>.
                     </p>
                 </div>
             </div>

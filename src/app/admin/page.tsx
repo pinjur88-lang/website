@@ -20,7 +20,7 @@ export default function AdminMembersPage() {
     }, []);
 
     const handleApprove = async (req: MembershipRequest) => {
-        if (!confirm(`Odobriti pristup za ${req.name}? Ovim će se poslati pozivnica na email.`)) return;
+        if (!confirm(`Odobriti pristup za ${req.name}?`)) return;
 
         // Optimistic update
         setRequests(prev => prev.map(r => r.id === req.id ? { ...r, status: 'approved' } : r));
@@ -40,7 +40,7 @@ export default function AdminMembersPage() {
                 const err = await response.json();
                 throw new Error(err.error);
             }
-            alert('Korisnik odobren i pozivnica poslana!');
+            alert('Korisnik odobren! Sada možete poslati obavijest klikom na gumb "Obavijesti".');
         } catch (error: any) {
             alert('Greška: ' + error.message);
             // Revert optimistic update
@@ -131,9 +131,13 @@ export default function AdminMembersPage() {
                                                     </button>
                                                 )}
                                                 {req.status === 'approved' && (
-                                                    <span className="text-green-600 flex items-center gap-1 text-xs font-bold">
-                                                        <Check size={16} /> Poslano
-                                                    </span>
+                                                    <a
+                                                        href={`mailto:${req.email}?subject=Vaš zahtjev za članstvo je odobren!&body=Poštovani ${req.name},%0D%0A%0D%0AVaš zahtjev za članstvom u Udruzi Građana Baljci je odobren!%0D%0A%0D%0AMolimo vas da završite registraciju svog računa klikom na sljedeći link:%0D%0A${window.location.origin}/register%0D%0A%0D%0ALijep pozdrav,%0D%0AAdministrator`}
+                                                        className="md:px-3 px-2 py-1.5 bg-green-100 text-green-700 hover:bg-green-200 transition-colors rounded-sm text-xs font-bold uppercase tracking-wider flex items-center gap-2 border border-green-200"
+                                                        title="Pošalji Email Obavijest"
+                                                    >
+                                                        <Mail size={14} /> <span className="hidden md:inline">Obavijesti</span>
+                                                    </a>
                                                 )}
                                             </div>
                                         </td>
