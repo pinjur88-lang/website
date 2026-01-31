@@ -45,7 +45,9 @@ export const translations = {
         loginTitle: "Prijava za Članove",
         passwordLabel: "Lozinka",
         loginSubmit: "Prijavi se",
+        loginSubmit: "Prijavi se",
         loginError: "Neispravna e-mail adresa ili lozinka.",
+        logout: "Odjava",
 
         // Register
         registerTitle: "Registracija",
@@ -109,7 +111,9 @@ export const translations = {
         loginTitle: "Member Login",
         passwordLabel: "Password",
         loginSubmit: "Login",
+        loginSubmit: "Login",
         loginError: "Invalid email or password.",
+        logout: "Logout",
 
         // Register
         registerTitle: "Registration",
@@ -179,7 +183,9 @@ export const translations = {
         loginTitle: "Mitglieder Login",
         passwordLabel: "Passwort",
         loginSubmit: "Anmelden",
+        loginSubmit: "Anmelden",
         loginError: "Ungültige E-Mail oder Passwort.",
+        logout: "Abmelden",
 
         // Register
         registerTitle: "Registrierung",
