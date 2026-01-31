@@ -259,5 +259,6 @@ export default function AccessRequestModal({ isOpen, onClose }: AccessRequestMod
                     </div>
                 </div>
             </div>
-            );
+        </div>
+    );
 }
