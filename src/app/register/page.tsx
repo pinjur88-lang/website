@@ -30,7 +30,13 @@ export default function RegisterPage() {
 
             if (requestError || !requestData) {
                 setStatus('error');
-                setErrorMsg(t.registerRequestNotFound || "Zahtjev nije pronađen. Molimo prvo ispunite zahtjev za članstvom na naslovnici.");
+                // If it's a specific server error (like config missing), show it.
+                // Otherwise show the user-friendly "not found" message.
+                if (requestError && requestError !== 'Not found') {
+                    setErrorMsg(requestError);
+                } else {
+                    setErrorMsg(t.registerRequestNotFound || "Zahtjev nije pronađen. Molimo prvo ispunite zahtjev za članstvom na naslovnici.");
+                }
                 return;
             }
 
