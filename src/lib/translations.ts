@@ -58,6 +58,7 @@ export const translations = {
         login: "Prijava",
 
         // Dashboard
+        title: "Udruga Baljci",
         dashboard: "Nadzorna Ploča",
         community: "Zid Zajednice",
         suggestions: "Prijedlozi",
@@ -121,6 +122,7 @@ export const translations = {
         login: "Login",
 
         // Dashboard
+        title: "Association Baljci",
         dashboard: "Dashboard",
         community: "Community Wall",
         suggestions: "Suggestions",
@@ -190,6 +192,7 @@ export const translations = {
         login: "Anmelden",
 
         // Dashboard
+        title: "Verein Baljci",
         dashboard: "Instrumententafel",
         community: "Gemeinschaftswand",
         suggestions: "Vorschläge",
