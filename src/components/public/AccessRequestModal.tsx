@@ -52,7 +52,7 @@ export default function AccessRequestModal({ isOpen, onClose }: AccessRequestMod
         setErrorMsg('');
 
         if (!acceptedStatute) {
-            setErrorMsg(t.de ? 'Sie müssen die Satzung akzeptieren.' : (t.en ? 'You must accept the Statute.' : 'Morate prihvatiti Statut.'));
+            setErrorMsg(t.statuteError);
             setLoading(false);
             return;
         }

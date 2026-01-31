@@ -30,6 +30,7 @@ export const translations = {
         dobLabel: "Datum Rođenja",
         addressLabel: "Adresa (Grad, Država)",
         statuteLabel: "Prihvaćam Statut Udruge Građana Baljci (Čl. 10 & GDPR)",
+        statuteError: "Morate prihvatiti Statut.",
 
         // Success
         successTitle: "Zahtjev Poslan!",
@@ -112,6 +113,7 @@ export const translations = {
         dobLabel: "Date of Birth",
         addressLabel: "Address (City, Country)",
         statuteLabel: "I accept the Statute of Udruga Građana Baljci (Art 10 & GDPR)",
+        statuteError: "You must accept the Statute.",
 
         // Success
         successTitle: "Request Sent!",
@@ -194,6 +196,7 @@ export const translations = {
         dobLabel: "Geburtsdatum",
         addressLabel: "Adresse (Stadt, Land)",
         statuteLabel: "Ich akzeptiere die Satzung der Bürgervereinigung Baljci",
+        statuteError: "Sie müssen die Satzung akzeptieren.",
 
         // Success
         successTitle: "Anfrage Gesendet!",
