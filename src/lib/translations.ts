@@ -71,7 +71,16 @@ export const translations = {
         socialTitle: "Kanali Zajednice",
         socialDesc: "Pridružite se grupama za brže obavijesti.",
         joinWhatsapp: "Pridruži se WhatsApp Grupi",
+        // Social Groups
+        socialTitle: "Kanali Zajednice",
+        socialDesc: "Pridružite se grupama za brže obavijesti.",
+        joinWhatsapp: "Pridruži se WhatsApp Grupi",
         joinViber: "Pridruži se Viber Grupi",
+
+        // Suggestions
+        suggestionDesc: "Imate ideju ili prijedlog? Pošaljite nam anonimno.",
+        suggestionPlaceholder: "Vaš prijedlog...",
+        submitSuggestion: "Pošalji Prijedlog",
     },
     en: {
         navHome: "Home",
@@ -142,7 +151,16 @@ export const translations = {
         socialTitle: "Community Channels",
         socialDesc: "Join our groups for faster updates.",
         joinWhatsapp: "Join WhatsApp Group",
+        // Social Groups
+        socialTitle: "Community Channels",
+        socialDesc: "Join our groups for faster updates.",
+        joinWhatsapp: "Join WhatsApp Group",
         joinViber: "Join Viber Group",
+
+        // Suggestions
+        suggestionDesc: "Have an idea or suggestion? Send it anonymously.",
+        suggestionPlaceholder: "Your suggestion...",
+        submitSuggestion: "Submit Suggestion",
     },
     de: {
         navHome: "Startseite",
@@ -213,6 +231,15 @@ export const translations = {
         socialTitle: "Gemeinschaftskanäle",
         socialDesc: "Treten Sie unseren Gruppen bei, um schnellere Updates zu erhalten.",
         joinWhatsapp: "WhatsApp-Gruppe beitreten",
+        // Social Groups
+        socialTitle: "Gemeinschaftskanäle",
+        socialDesc: "Treten Sie unseren Gruppen bei, um schnellere Updates zu erhalten.",
+        joinWhatsapp: "WhatsApp-Gruppe beitreten",
         joinViber: "Viber-Gruppe beitreten",
+
+        // Suggestions
+        suggestionDesc: "Haben Sie eine Idee oder einen Vorschlag? Senden Sie es anonym.",
+        suggestionPlaceholder: "Ihr Vorschlag...",
+        submitSuggestion: "Vorschlag Senden",
     }
 };
