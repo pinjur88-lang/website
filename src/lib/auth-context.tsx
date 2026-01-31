@@ -13,7 +13,7 @@ interface User {
 
 interface AuthContextType {
     user: User | null;
-    login: (email: string, password?: string) => Promise<boolean>;
+    login: (email: string, password?: string) => Promise<{ error: string | null }>;
     logout: () => void;
     isLoading: boolean;
 }
@@ -72,57 +72,68 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const login = async (email: string, password?: string) => {
         setIsLoading(true);
 
-        // 1. BACKDOOR: Admin Shared Password (Keep this!)
-        if (email === 'udrugabaljci@gmail.com' && password === 'Jojlolomoj2026!') {
-            const adminUser: User = { id: 'admin-master', name: 'Administrator', email, role: 'admin' };
-            setUser(adminUser);
-            localStorage.setItem('mock_session', JSON.stringify(adminUser));
-            setIsLoading(false);
-            router.push('/admin');
-            return true;
-        }
+        try {
+            // 1. BACKDOOR: Admin Shared Password (Keep this!)
+            if (email === 'udrugabaljci@gmail.com' && password === 'Jojlolomoj2026!') {
+                const adminUser: User = { id: 'admin-master', name: 'Administrator', email, role: 'admin' };
+                setUser(adminUser);
+                localStorage.setItem('mock_session', JSON.stringify(adminUser));
+                setIsLoading(false);
+                router.push('/admin');
+                return { error: null };
+            }
 
-        // 2. REAL AUTH: For Members (Supabase)
-        if (password) {
-            // Attempt Supabase Login
-            const { data, error } = await supabase.auth.signInWithPassword({
-                email,
-                password
-            });
+            // 2. REAL AUTH: For Members (Supabase)
+            if (password) {
+                // Attempt Supabase Login
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email,
+                    password
+                });
 
-            if (!error && data.user) {
-                // SECURITY Check
-                const { data: reqData } = await supabase
-                    .from('requests')
-                    .select('status')
-                    .eq('email', email)
-                    .single();
-
-                if (reqData && reqData.status !== 'approved') {
-                    await supabase.auth.signOut(); // Ensure signed out
-                    setIsLoading(false);
-                    // Return false (or could throw error to show specific message)
-                    return false;
+                if (error) {
+                    console.error("Login failed:", error.message);
+                    return { error: error.message };
                 }
 
-                const memberUser: User = {
-                    id: data.user.id,
-                    name: data.user.user_metadata?.display_name || 'Član',
-                    email: data.user.email!,
-                    role: 'member'
-                };
-                setUser(memberUser);
+                if (data.user) {
+                    // SECURITY Check
+                    const { data: reqData } = await supabase
+                        .from('requests')
+                        .select('status')
+                        .eq('email', email)
+                        .single();
 
-                localStorage.setItem('mock_session', JSON.stringify(memberUser));
+                    if (reqData && reqData.status !== 'approved') {
+                        await supabase.auth.signOut(); // Ensure signed out
+                        setIsLoading(false);
+                        return { error: "Vaš zahtjev još nije odobren." };
+                    }
 
-                setIsLoading(false);
-                router.push('/dashboard');
-                return true;
+                    const memberUser: User = {
+                        id: data.user.id,
+                        name: data.user.user_metadata?.display_name || 'Član',
+                        email: data.user.email!,
+                        role: 'member'
+                    };
+                    setUser(memberUser);
+
+                    localStorage.setItem('mock_session', JSON.stringify(memberUser));
+
+                    setIsLoading(false);
+                    router.push('/dashboard');
+                    return { error: null };
+                }
             }
-        }
 
-        setIsLoading(false);
-        return false;
+            return { error: "Lozinka je obavezna" };
+
+        } catch (error: any) {
+            console.error(error);
+            return { error: error.message || "Nepoznata greška" };
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const logout = () => {

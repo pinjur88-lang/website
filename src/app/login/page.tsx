@@ -18,9 +18,13 @@ export default function LoginPage() {
         setError('');
         setIsLocalLoading(true);
 
-        const success = await login(email, password);
-        if (!success) {
-            setError(t.loginError);
+        const { error: loginError } = await login(email, password);
+        if (loginError) {
+            // If it's a specific Supabase error, show it (translated roughly by fallback)
+            setError(loginError === 'Email not confirmed'
+                ? "Molimo potvrdite svoju email adresu prije prijave (provjerite inbox)."
+                : (loginError === 'Invalid login credentials' ? t.loginError : loginError)
+            );
             setIsLocalLoading(false);
         }
     };
