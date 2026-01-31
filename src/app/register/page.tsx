@@ -6,6 +6,7 @@ import { useLanguage } from '@/lib/language-context';
 import { Lock, UserPlus, AlertCircle, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
+import { checkApprovedRequest } from '../actions';
 
 export default function RegisterPage() {
     const { t } = useLanguage();
@@ -24,11 +25,8 @@ export default function RegisterPage() {
 
         try {
             // 1. Check if email exists in requests table and is approved
-            const { data: requestData, error: requestError } = await supabase
-                .from('requests')
-                .select('*')
-                .eq('email', email)
-                .single();
+            // We use a Server Action to bypass RLS policies that prevent Anon reading the requests table
+            const { data: requestData, error: requestError } = await checkApprovedRequest(email);
 
             if (requestError || !requestData) {
                 setStatus('error');
