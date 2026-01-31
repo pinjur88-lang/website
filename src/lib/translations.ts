@@ -64,7 +64,14 @@ export const translations = {
         community: "Zid Zajednice",
         suggestions: "Prijedlozi",
         upload: "Učitaj Sliku",
+        upload: "Učitaj Sliku",
         gallery: "Galerija",
+
+        // Social Groups
+        socialTitle: "Kanali Zajednice",
+        socialDesc: "Pridružite se grupama za brže obavijesti.",
+        joinWhatsapp: "Pridruži se WhatsApp Grupi",
+        joinViber: "Pridruži se Viber Grupi",
     },
     en: {
         navHome: "Home",
