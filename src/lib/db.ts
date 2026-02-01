@@ -11,6 +11,15 @@ export interface NewsItem {
     created_at?: string;
 }
 
+export interface Donation {
+    id: string;
+    request_id: string;
+    amount: number;
+    description: string;
+    date: string;
+    created_at?: string;
+}
+
 export interface MembershipRequest {
     id: string;
     name: string; // Ime i Prezime
@@ -28,6 +37,10 @@ export interface MembershipRequest {
     date: string;
     status: 'pending' | 'approved' | 'rejected';
     created_at?: string;
+
+    // CRM Fields
+    admin_notes?: string;
+    donations?: Donation[];
 }
 
 export interface CommunityPost {

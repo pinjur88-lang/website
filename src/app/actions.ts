@@ -18,7 +18,7 @@ export async function checkApprovedRequest(email: string) {
         // We order by created_at desc to get the latest request if there are duplicates
         const { data, error } = await supabaseAdmin
             .from('requests')
-            .select('status, name')
+            .select('status')
             .ilike('email', cleanEmail)
             .order('created_at', { ascending: false })
             .limit(1)
@@ -48,3 +48,5 @@ export async function checkApprovedRequest(email: string) {
         return { error: `Internal Server Error: ${e.message}` };
     }
 }
+
+

@@ -57,7 +57,7 @@ export default function RegisterPage() {
                 password,
                 options: {
                     data: {
-                        display_name: name || requestData.name, // Use input name or name from request
+                        display_name: name, // Use input name
                         role: 'member'
                     }
                 }

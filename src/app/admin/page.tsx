@@ -5,7 +5,9 @@ import { db, MembershipRequest } from '@/lib/db';
 import { Mail, Phone, MapPin, Calendar, FileText, Check, X, Users, MessageSquare, Image as ImageIcon } from 'lucide-react';
 import { useAuth } from '@/lib/auth-context';
 import AnnouncementManager from '@/components/admin/AnnouncementManager';
+
 import GalleryManager from '@/components/admin/GalleryManager';
+import MemberDetailModal from '@/components/admin/MemberDetailModal';
 
 export default function AdminMembersPage() {
     const [requests, setRequests] = useState<MembershipRequest[]>([]);
@@ -14,6 +16,9 @@ export default function AdminMembersPage() {
 
     // Tabs state
     const [activeTab, setActiveTab] = useState<'members' | 'announcements' | 'gallery'>('members');
+
+    // Modal state
+    const [selectedRequest, setSelectedRequest] = useState<MembershipRequest | null>(null);
 
     useEffect(() => {
         const loadRequests = async () => {
@@ -171,13 +176,22 @@ export default function AdminMembersPage() {
                                                         </button>
                                                     )}
                                                     {req.status === 'approved' && (
-                                                        <a
-                                                            href={`mailto:${req.email}?subject=Vaš zahtjev za članstvo je odobren!&body=Poštovani ${req.name},%0D%0A%0D%0AVaš zahtjev za članstvom u Udruzi Građana Baljci je odobren!%0D%0A%0D%0AMolimo vas da završite registraciju svog računa klikom na sljedeći link:%0D%0A${window.location.origin}/register%0D%0A%0D%0ALijep pozdrav,%0D%0AAdministrator`}
-                                                            className="md:px-3 px-2 py-1.5 bg-green-100 text-green-700 hover:bg-green-200 transition-colors rounded-sm text-xs font-bold uppercase tracking-wider flex items-center gap-2 border border-green-200"
-                                                            title="Pošalji Email Obavijest"
-                                                        >
-                                                            <Mail size={14} /> <span className="hidden md:inline">Obavijesti</span>
-                                                        </a>
+                                                        <>
+                                                            <button
+                                                                onClick={() => setSelectedRequest(req)}
+                                                                className="md:px-3 px-2 py-1.5 bg-zinc-100 text-zinc-700 hover:bg-zinc-200 transition-colors rounded-sm text-xs font-bold uppercase tracking-wider flex items-center gap-2 border border-zinc-200"
+                                                                title="Prikaži Detalje"
+                                                            >
+                                                                <FileText size={14} /> <span className="hidden md:inline">Detalji</span>
+                                                            </button>
+                                                            <a
+                                                                href={`mailto:${req.email}?subject=Vaš zahtjev za članstvo je odobren!&body=Poštovani ${req.name},%0D%0A%0D%0AVaš zahtjev za članstvom u Udruzi Građana Baljci je odobren!%0D%0A%0D%0AMolimo vas da završite registraciju svog računa klikom na sljedeći link:%0D%0A${window.location.origin}/register%0D%0A%0D%0ALijep pozdrav,%0D%0AAdministrator`}
+                                                                className="md:px-3 px-2 py-1.5 bg-green-100 text-green-700 hover:bg-green-200 transition-colors rounded-sm text-xs font-bold uppercase tracking-wider flex items-center gap-2 border border-green-200"
+                                                                title="Pošalji Email Obavijest"
+                                                            >
+                                                                <Mail size={14} /> <span className="hidden md:inline">Obavijesti</span>
+                                                            </a>
+                                                        </>
                                                     )}
                                                 </div>
                                             </td>
@@ -203,6 +217,21 @@ export default function AdminMembersPage() {
                     <GalleryManager />
                 </div>
             )}
+
+
+            {/* Member Details Modal */}
+            {
+                selectedRequest && (
+                    <MemberDetailModal
+                        request={selectedRequest}
+                        onClose={() => setSelectedRequest(null)}
+                        onUpdate={(updatedReq) => {
+                            setRequests(prev => prev.map(r => r.id === updatedReq.id ? updatedReq : r));
+                            setSelectedRequest(updatedReq);
+                        }}
+                    />
+                )
+            }
         </div>
     );
 }

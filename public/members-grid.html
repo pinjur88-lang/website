@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Members-Only Heritage Grid</title>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Metropolis:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --color-slate: #2f3e46;
+            --color-olive: #556B2F;
+            --color-cream: #f8f9fa;
+            --color-white: #ffffff;
+            --shadow-soft: 0 10px 30px -10px rgba(0, 0, 0, 0.15);
+            --shadow-hover: 0 20px 40px -10px rgba(0, 0, 0, 0.25);
+        }
+
+        body {
+            font-family: 'Metropolis', sans-serif;
+            background-color: var(--color-cream);
+            margin: 0;
+            padding: 40px 20px;
+            color: var(--color-slate);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h2.section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--color-slate);
+            margin-bottom: 3rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        h2.section-title::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 3px;
+            background-color: var(--color-olive);
+            margin: 15px auto 0;
+        }
+
+        /* GRID LAYOUT */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 0 1rem;
+        }
+
+        /* CARD STYLES */
+        .feature-card {
+            background-color: var(--color-white);
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: var(--shadow-soft);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+            group-hover: none;
+            /* Just for reference */
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        /* Background Image Area */
+        .card-image {
+            height: 60%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: blur(2px) grayscale(20%);
+            transition: filter 0.3s ease, transform 0.5s ease;
+        }
+
+        .feature-card:hover .card-image img {
+            transform: scale(1.05);
+            filter: blur(1px) grayscale(0%);
+        }
+
+        /* Velvet Rope Overlay */
+        .lock-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+
+        .feature-card:hover .lock-overlay {
+            opacity: 1;
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .lock-icon-wrapper {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        /* Card Content */
+        .card-content {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: white;
+            z-index: 10;
+        }
+
+        .card-icon {
+            font-size: 1.5rem;
+            color: var(--color-olive);
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            margin: 0 0 0.5rem 0;
+            color: var(--color-slate);
+        }
+
+        .card-description {
+            font-size: 0.95rem;
+            color: #666;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        /* MODAL STYLES */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(47, 62, 70, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-backdrop.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 500px;
+            padding: 3rem 2rem;
+            border-radius: 16px;
+            text-align: center;
+            transform: translateY(20px);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            position: relative;
+        }
+
+        .modal-backdrop.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-icon {
+            font-size: 3rem;
+            color: var(--color-olive);
+            margin-bottom: 1.5rem;
+            opacity: 0.8;
+        }
+
+        .modal-header {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--color-slate);
+            margin-bottom: 1rem;
+        }
+
+        .modal-body {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .modal-btn {
+            background-color: var(--color-olive);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1rem;
+            font-weight: 500;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .modal-btn:hover {
+            background-color: #3f5222;
+            transform: translateY(-2px);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: #999;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .close-btn:hover {
+            color: var(--color-slate);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h2 class="section-title">Explore Our Digital Heritage <span
+                style="display:block; font-size: 1rem; font-family: 'Metropolis', sans-serif; opacity: 0.6; margin-top: 10px; text-transform: uppercase; letter-spacing: 2px;">(Members
+                Only)</span></h2>
+
+        <div class="features-grid">
+
+            <!-- CARD 1 -->
+            <div class="feature-card" onclick="openModal()">
+                <div class="card-image">
+                    <!-- Placeholder Map Image -->
+                    <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                        alt="Village Map">
+                    <div class="lock-overlay">
+                        <div class="lock-icon-wrapper">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <div class="card-icon"><i class="fas fa-map-marked-alt"></i></div>
+                    <h3 class="card-title">Interactive Village Map</h3>
+                    <p class="card-description">Find your family's original stone house. Click any roof to see
+                        historical records and photos from 1920-1990.</p>
+                </div>
+            </div>
+
+            <!-- CARD 2 -->
+            <div class="feature-card" onclick="openModal()">
+                <div class="card-image">
+                    <!-- Placeholder Stone/Cemetery Image -->
+                    <img src="https://images.unsplash.com/photo-1533158388470-9a56699990c6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                        alt="Stone Texture">
+                    <div class="lock-overlay">
+                        <div class="lock-icon-wrapper">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <div class="card-icon"><i class="fas fa-church"></i></div> <!-- Candle alternative -->
+                    <h3 class="card-title">Memorial Archive</h3>
+                    <p class="card-description">Pay respects from anywhere. Search our database of ancestors and light a
+                        virtual candle on their grave.</p>
+                </div>
+            </div>
+
+            <!-- CARD 3 -->
+            <div class="feature-card" onclick="openModal()">
+                <div class="card-image">
+                    <!-- Placeholder Olive Tree Image -->
+                    <img src="https://images.unsplash.com/photo-1541963463532-d68292c34b19?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                        alt="Olive Tree">
+                    <div class="lock-overlay">
+                        <div class="lock-icon-wrapper">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <div class="card-icon"><i class="fas fa-leaf"></i></div>
+                    <h3 class="card-title">Stewardship Program</h3>
+                    <p class="card-description">Become a guardian of a village olive tree. Receive a GPS tag, yearly
+                        harvest photos, and your name on the tree.</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- MODAL -->
+    <div class="modal-backdrop" id="modalBackdrop" onclick="closeModal(event)">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModalDirect()">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="modal-icon">
+                <i class="fas fa-user-lock"></i>
+            </div>
+            <h3 class="modal-header">Restricted Access</h3>
+            <p class="modal-body">
+                To view the Village Map and Ancestral Data, you must be a registered member. Founding Membership is free
+                for 2026.
+            </p>
+            <button class="modal-btn" onclick="window.location.href='/register'">Join the Waitlist</button>
+        </div>
+    </div>
+
+    <script>
+        function openModal() {
+            document.getElementById('modalBackdrop').classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling
+        }
+
+        function closeModal(event) {
+            if (event.target.id === 'modalBackdrop') {
+                document.getElementById('modalBackdrop').classList.remove('active');
+                document.body.style.overflow = 'auto'; // Restore scrolling
+            }
+        }
+
+        function closeModalDirect() {
+            document.getElementById('modalBackdrop').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+    </script>
+</body>
+
+</html>
