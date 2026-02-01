@@ -1,5 +1,5 @@
-import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
+import { verifyAdminToken } from '@/lib/auth-admin';
 
 export async function POST(request: Request) {
     try {
@@ -9,25 +9,11 @@ export async function POST(request: Request) {
         }
         const token = authHeader.split(' ')[1];
 
-        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-        const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-        const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey);
-
-        const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(token);
-        if (authError || !user) {
-            return NextResponse.json({ error: 'Unauthorized: Invalid token' }, { status: 401 });
+        const { supabaseAdmin, error: authError, status } = await verifyAdminToken(token);
+        if (authError || !supabaseAdmin) {
+            return NextResponse.json({ error: authError }, { status });
         }
 
-        // Check Admin Role
-        const { data: profile } = await supabaseAdmin
-            .from('profiles')
-            .select('role')
-            .eq('id', user.id)
-            .single();
-
-        if (profile?.role !== 'admin') {
-            return NextResponse.json({ error: 'Forbidden: Admin access only' }, { status: 403 });
-        }
 
         const { requestId } = await request.json();
 
