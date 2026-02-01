@@ -40,6 +40,26 @@ export async function createAnnouncement(title: string, content: string, authorI
     }
 }
 
+export async function updateAnnouncement(id: string, title: string, content: string) {
+    if (!await verifyAdmin()) return { error: "Unauthorized" };
+    if (!title || !content) {
+        return { error: "Title and content are required" };
+    }
+
+    try {
+        const { error } = await supabaseAdmin
+            .from('announcements')
+            .update({ title, content })
+            .eq('id', id);
+
+        if (error) throw error;
+        return { success: true };
+    } catch (error: any) {
+        console.error("Update announcement error:", error);
+        return { error: error.message };
+    }
+}
+
 export async function deleteAnnouncement(id: string) {
     if (!await verifyAdmin()) return { error: "Unauthorized" };
     try {
