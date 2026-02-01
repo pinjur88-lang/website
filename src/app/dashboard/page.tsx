@@ -5,6 +5,7 @@ import { Calendar, MessageCircle, Phone, Image as ImageIcon } from 'lucide-react
 import { getAnnouncements, getGalleryImages } from '@/actions/cms';
 import { useLanguage } from '@/lib/language-context';
 import Image from 'next/image';
+import WeatherWidget from '@/components/dashboard/WeatherWidget';
 
 type Announcement = {
     id: string;
@@ -47,10 +48,10 @@ export default function DashboardHome() {
 
     return (
         <div className="space-y-8">
-            <div className="flex justify-between items-end border-b border-stone-200 pb-4">
+            <div className="flex justify-between items-end border-b border-sky-200/60 pb-4">
                 <div>
-                    <h1 className="text-2xl font-bold text-stone-900">{t.dashboard}</h1>
-                    <p className="text-stone-600">{t.title} - Member Area</p>
+                    <h1 className="text-2xl font-bold text-slate-900">{t.dashboard}</h1>
+                    <p className="text-slate-600">{t.title} - Member Area</p>
                 </div>
             </div>
 
@@ -58,28 +59,28 @@ export default function DashboardHome() {
                 {/* Main Content - News Feed */}
                 <div className="lg:col-span-2 space-y-8">
                     <section>
-                        <h2 className="text-xl font-bold text-stone-800 mb-4 flex items-center gap-2">
+                        <h2 className="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2">
                             📢 {t.community || "Novosti"}
                         </h2>
                         {news.length === 0 ? (
-                            <div className="bg-white p-6 rounded-lg shadow-sm border border-stone-200 text-center text-stone-500 italic">
+                            <div className="bg-white p-6 rounded-lg shadow-sm border border-sky-100 text-center text-slate-500 italic">
                                 Nema novih obavijesti.
                             </div>
                         ) : (
                             <div className="space-y-6">
                                 {news.map((item) => (
-                                    <article key={item.id} className="bg-white p-6 rounded-lg shadow-sm border border-stone-200 hover:shadow-md transition-shadow">
+                                    <article key={item.id} className="bg-white p-6 rounded-xl shadow-sm border border-sky-100 hover:shadow-md transition-shadow hover:border-sky-200">
                                         <div className="flex flex-col space-y-3">
-                                            <div className="flex items-center gap-2 text-xs text-stone-600 font-medium">
+                                            <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
                                                 <span className="flex items-center gap-1 text-stone-400">
                                                     <Calendar size={12} /> {new Date(item.created_at).toLocaleDateString()}
                                                 </span>
                                             </div>
 
-                                            <h3 className="text-xl font-bold text-stone-800">{item.title}</h3>
-                                            <p className="text-stone-600 leading-relaxed whitespace-pre-wrap">{item.content}</p>
+                                            <h3 className="text-xl font-bold text-slate-800">{item.title}</h3>
+                                            <p className="text-slate-600 leading-relaxed whitespace-pre-wrap">{item.content}</p>
 
-                                            <div className="flex items-center gap-2 pt-2 text-xs text-stone-500 border-t border-stone-100 mt-2">
+                                            <div className="flex items-center gap-2 pt-2 text-xs text-slate-400 border-t border-slate-50 mt-2">
                                                 <span>Objavio: {item.author?.display_name || 'Admin'}</span>
                                             </div>
                                         </div>
@@ -90,11 +91,11 @@ export default function DashboardHome() {
                     </section>
 
                     <section>
-                        <h2 className="text-xl font-bold text-stone-800 mb-4 flex items-center gap-2">
+                        <h2 className="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2">
                             <ImageIcon size={20} /> {t.gallery || "Galerija"}
                         </h2>
                         {images.length === 0 ? (
-                            <p className="text-stone-500 italic">Nema slika u galeriji.</p>
+                            <p className="text-slate-500 italic">Nema slika u galeriji.</p>
                         ) : (
                             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                                 {images.slice(0, 6).map(img => (
@@ -121,10 +122,14 @@ export default function DashboardHome() {
 
                 {/* Sidebar - Quick Actions */}
                 <div className="space-y-6">
+                    {/* Weather Widget */}
+                    <WeatherWidget />
+
                     {/* Social Groups Card */}
-                    <div className="bg-white p-6 rounded-lg shadow-sm border border-stone-200 sticky top-4">
-                        <h3 className="text-lg font-bold text-stone-800 mb-2">{t.socialTitle}</h3>
-                        <p className="text-sm text-stone-600 mb-4 leading-relaxed">
+                    {/* Social Groups Card */}
+                    <div className="bg-white p-6 rounded-lg shadow-sm border border-sky-100 sticky top-4">
+                        <h3 className="text-lg font-bold text-slate-800 mb-2">{t.socialTitle}</h3>
+                        <p className="text-sm text-slate-600 mb-4 leading-relaxed">
                             {t.socialDesc}
                         </p>
 

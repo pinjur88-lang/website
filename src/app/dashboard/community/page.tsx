@@ -82,7 +82,7 @@ export default function CommunityPage() {
                             />
                             <span className="flex items-center gap-1">
                                 {isAnonymous ? <Shield size={14} className="text-stone-500" /> : <User size={14} className="text-stone-400" />}
-                                {isAnonymous ? 'Objavi Anonimno' : 'Objavi kao ' + user?.name}
+                                {isAnonymous ? 'Objavljujem Anonimno' : `Objavi kao ${user?.name}`}
                             </span>
                         </label>
 

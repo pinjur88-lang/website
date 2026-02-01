@@ -30,18 +30,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
     const navItems = [
         { name: t.dashboard, href: '/dashboard', icon: Home },
-        { name: "Zid Zajednice", href: '/dashboard/community', icon: MessageSquare }, // Changed from Suggestions
+        { name: t.community, href: '/dashboard/community', icon: MessageSquare }, // Changed from Suggestions
         // { name: t.suggestions, href: '/dashboard/suggestions', icon: MessageSquare }, // Keeping old suggestion box? user asked for anonymous POSTING inside member page, which sounds like community wall.
-        { name: t.upload, href: '/dashboard/upload', icon: Upload },
+        { name: t.donations, href: '/dashboard/donations', icon: FileText },
         { name: t.gallery, href: '/dashboard/gallery', icon: ImageIcon },
     ];
 
     return (
-        <div className="min-h-screen bg-stone-50 text-stone-800 font-sans">
+        <div className="min-h-screen bg-sky-50 text-slate-800 font-sans">
             {/* Mobile Header */}
-            <div className="lg:hidden flex justify-between items-center p-4 bg-white shadow-sm border-b border-stone-200">
-                <span className="font-semibold text-stone-900">{t.title}</span>
-                <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="text-stone-600">
+            <div className="lg:hidden flex justify-between items-center p-4 bg-white/80 backdrop-blur-sm shadow-sm border-b border-sky-100">
+                <span className="font-semibold text-slate-900">{t.title}</span>
+                <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="text-slate-600">
                     {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
                 </button>
             </div>
@@ -49,13 +49,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <div className="flex">
                 {/* Sidebar */}
                 <aside className={`
-          fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-stone-200 transform transition-transform duration-200 ease-in-out lg:translate-x-0 lg:static lg:h-screen lg:flex-shrink-0
+          fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-sky-100 transform transition-transform duration-200 ease-in-out lg:translate-x-0 lg:static lg:h-screen lg:flex-shrink-0
           ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
         `}>
                     <div className="h-full flex flex-col">
-                        <div className="p-6 border-b border-stone-100">
-                            <h2 className="text-lg font-bold text-stone-900">{t.title}</h2>
-                            <p className="text-xs text-stone-500 mt-1">Član: {user.name}</p>
+                        <div className="p-6 border-b border-sky-100 bg-gradient-to-br from-sky-50 to-white">
+                            <h2 className="text-lg font-bold text-slate-900">{t.title}</h2>
+                            <p className="text-xs text-slate-500 mt-1">Član: {user.name}</p>
                         </div>
 
                         <nav className="flex-1 p-4 space-y-1">
@@ -66,8 +66,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                                         key={item.href}
                                         href={item.href}
                                         className={`flex items-center gap-3 px-4 py-3 rounded-md text-sm font-medium transition-colors ${isActive
-                                            ? 'bg-stone-100 text-stone-900'
-                                            : 'text-stone-600 hover:bg-stone-50 hover:text-stone-900'
+                                            ? 'bg-sky-100 text-sky-900'
+                                            : 'text-slate-600 hover:bg-sky-50 hover:text-sky-900'
                                             }`}
                                     >
                                         <item.icon size={18} />
@@ -77,7 +77,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                             })}
                         </nav>
 
-                        <div className="p-4 border-t border-stone-100">
+                        <div className="p-4 border-t border-sky-100">
                             <button
                                 onClick={logout}
                                 className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
