@@ -6,6 +6,7 @@ import { getAnnouncements, getGalleryImages } from '@/actions/cms';
 import { useLanguage } from '@/lib/language-context';
 import Image from 'next/image';
 import WeatherWidget from '@/components/dashboard/WeatherWidget';
+import TravelWidget from '@/components/dashboard/TravelWidget';
 
 type Announcement = {
     id: string;
@@ -124,6 +125,9 @@ export default function DashboardHome() {
                 <div className="space-y-6">
                     {/* Weather Widget */}
                     <WeatherWidget />
+
+                    {/* Visitor Calendar */}
+                    <TravelWidget />
 
                     {/* Social Groups Card */}
                     {/* Social Groups Card */}
