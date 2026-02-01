@@ -73,7 +73,7 @@ export default function CommunityPage() {
                 <div>
                     <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
                         <MessageSquare className="text-sky-600" />
-                        Forum Zajednice
+                        Forum (Teme)
                     </h1>
                     <p className="text-slate-500 text-sm mt-1">
                         Diskusije, pitanja i razgovori o selu.
