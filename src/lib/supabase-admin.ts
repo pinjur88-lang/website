@@ -1,10 +1,14 @@
 import { createClient } from '@supabase/supabase-js';
 
-// Note: This file should ONLY be imported in Server Components or Server Actions.
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+// Access environment variables
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
-export const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey, {
+if (!supabaseUrl || !supabaseServiceRoleKey) {
+    console.error('Missing Supabase Environment Variables for Admin Client');
+}
+
+export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey, {
     auth: {
         autoRefreshToken: false,
         persistSession: false

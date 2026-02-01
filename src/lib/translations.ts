@@ -75,6 +75,7 @@ export const translations = {
         suggestions: "Prijedlozi",
         upload: "Učitaj Sliku",
         gallery: "Galerija",
+        statute: 'Statut',
 
         // Social Groups
         socialTitle: "Kanali Zajednice",
@@ -161,6 +162,7 @@ export const translations = {
         suggestions: "Suggestions",
         upload: "Upload Image",
         gallery: "Gallery",
+        statute: "Statute",
 
         // Social Groups
         socialTitle: "Community Channels",
@@ -247,6 +249,7 @@ export const translations = {
         suggestions: "Vorschläge",
         upload: "Bild Hochladen",
         gallery: "Galerie",
+        statute: "Satzung",
 
         // Social Groups
         socialTitle: "Gemeinschaftskanäle",

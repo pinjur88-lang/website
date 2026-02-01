@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Calendar, MapPin, Plus, Trash2, ArrowRight } from 'lucide-react';
-import { addVisit, getVisits, deleteVisit } from '@/actions/visits';
+import { MapPin, Plus, Trash2 } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth-context';
 
 type Visit = {
@@ -25,8 +25,30 @@ export default function TravelWidget() {
     const [submitting, setSubmitting] = useState(false);
 
     const loadVisits = async () => {
-        const { data } = await getVisits();
-        if (data) setVisits(data);
+        const { data, error } = await supabase
+            .from('visits')
+            .select(`
+                id,
+                start_date,
+                end_date,
+                user_id,
+                user:profiles(display_name)
+            `)
+            .gte('end_date', new Date().toISOString().split('T')[0])
+            .order('start_date', { ascending: true });
+
+        if (error) {
+            console.error('Error loading visits:', error);
+        } else if (data) {
+            const mappedVisits = data.map((visit: any) => ({
+                id: visit.id,
+                userId: visit.user_id,
+                userName: visit.user?.display_name || 'Nepoznato',
+                startDate: visit.start_date,
+                endDate: visit.end_date
+            }));
+            setVisits(mappedVisits);
+        }
         setLoading(false);
     };
 
@@ -36,12 +58,20 @@ export default function TravelWidget() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!startDate || !endDate) return;
+        if (!startDate || !endDate || !user) return;
 
         setSubmitting(true);
-        const res = await addVisit(startDate, endDate);
-        if (res.error) {
-            alert(res.error);
+
+        const { error } = await supabase
+            .from('visits')
+            .insert({
+                user_id: user.id,
+                start_date: startDate,
+                end_date: endDate
+            });
+
+        if (error) {
+            alert('Greška: ' + error.message);
         } else {
             setStartDate('');
             setEndDate('');
@@ -52,9 +82,19 @@ export default function TravelWidget() {
     };
 
     const handleDelete = async (id: string) => {
-        if (!confirm('Obriši najavu dolaska?')) return;
-        await deleteVisit(id);
-        loadVisits();
+        if (!confirm('Obriši najavu dolaska?') || !user) return;
+
+        const { error } = await supabase
+            .from('visits')
+            .delete()
+            .eq('id', id)
+            .eq('user_id', user.id);
+
+        if (error) {
+            alert('Greška: ' + error.message);
+        } else {
+            loadVisits();
+        }
     };
 
     // Date formatting helper

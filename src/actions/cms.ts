@@ -1,17 +1,19 @@
 'use server';
 
-import { createClient } from '@supabase/supabase-js';
+import { supabaseAdmin } from '@/lib/supabase-admin';
 
 // SERVER ACTIONS
 // These run on the server. We use the Admin client to bypass RLS for CMS operations.
 // This ensures the "Backdoor Admin" and regular admins can manage content without RLS issues.
 
-const supabaseAdmin = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+import { verifyAdmin, verifyUser } from '@/lib/auth-admin';
+
+// SERVER ACTIONS
+// These run on the server. We use the Admin client to bypass RLS for CMS operations.
+// This ensures the "Backdoor Admin" and regular admins can manage content without RLS issues.
 
 export async function createAnnouncement(title: string, content: string, authorId: string) {
+    if (!await verifyAdmin()) return { error: "Unauthorized" };
     if (!title || !content) {
         return { error: "Title and content are required" };
     }
@@ -39,6 +41,7 @@ export async function createAnnouncement(title: string, content: string, authorI
 }
 
 export async function deleteAnnouncement(id: string) {
+    if (!await verifyAdmin()) return { error: "Unauthorized" };
     try {
         const { error } = await supabaseAdmin
             .from('announcements')
@@ -53,8 +56,9 @@ export async function deleteAnnouncement(id: string) {
 }
 
 export async function getAnnouncements() {
-    // using supabaseAdmin allows admins to see ALL posts regardless of RLS
-    // (e.g. if we had draft status, which we might later)
+    // Public read is fine, or restricted to members?
+    // Announcements are usually public or member-only. 
+    // Since we use this on dashboard it implies member-only but the fetching itself isn't dangerous.
     const { data, error } = await supabaseAdmin
         .from('announcements')
         .select(`
@@ -68,7 +72,25 @@ export async function getAnnouncements() {
 }
 
 export async function deleteGalleryImage(id: string) {
+    const isAdmin = await verifyAdmin();
+    const user = await verifyUser();
+
+    if (!user) return { error: "Unauthorized" };
+
     try {
+        // If not admin, check ownership
+        if (!isAdmin) {
+            const { data: img } = await supabaseAdmin.from('gallery_images').select('uploaded_by, album_id').eq('id', id).single();
+            // Check if user uploaded image OR created the album
+            if (!img) return { error: "Image not found" };
+
+            const { data: album } = await supabaseAdmin.from('albums').select('created_by').eq('id', img.album_id).single();
+
+            if (img.uploaded_by !== user.id && album?.created_by !== user.id) {
+                return { error: "Unauthorized" };
+            }
+        }
+
         const { error } = await supabaseAdmin
             .from('gallery_images')
             .delete()
@@ -81,12 +103,44 @@ export async function deleteGalleryImage(id: string) {
     }
 }
 
+export async function updateGalleryImageCaption(id: string, caption: string) {
+    const isAdmin = await verifyAdmin();
+    const user = await verifyUser();
+    if (!user) return { error: "Unauthorized" };
+
+    try {
+        if (!isAdmin) {
+            const { data: img } = await supabaseAdmin.from('gallery_images').select('uploaded_by, album_id').eq('id', id).single();
+            if (!img) return { error: "Image not found" };
+            const { data: album } = await supabaseAdmin.from('albums').select('created_by').eq('id', img.album_id).single();
+
+            if (img.uploaded_by !== user.id && album?.created_by !== user.id) {
+                return { error: "Unauthorized" };
+            }
+        }
+
+        const { error } = await supabaseAdmin
+            .from('gallery_images')
+            .update({ caption })
+            .eq('id', id);
+
+        if (error) throw error;
+        return { success: true };
+    } catch (error: any) {
+        return { error: error.message };
+    }
+}
+
+
 // For Upload, it's easier to do it client-side to Storage, then save URL to DB.
 export async function saveGalleryImageRef(url: string, caption?: string) {
+    const user = await verifyUser();
+    if (!user) return { error: "Unauthorized" };
+
     try {
         const { data, error } = await supabaseAdmin
             .from('gallery_images')
-            .insert([{ url, caption }])
+            .insert([{ url, caption }]) // This function seems deprecated or unused in new flow? New flow uses saveAlbumImageRef
             .select()
             .single();
 
@@ -117,6 +171,8 @@ export async function getGalleryImages(albumId?: string) {
 
 export async function createAlbum(title: string, userId: string) {
     if (!title) return { error: "Title is required" };
+    const user = await verifyUser();
+    if (!user) return { error: "Unauthorized" };
 
     try {
         const payload: any = { title };
@@ -154,7 +210,18 @@ export async function getAlbums() {
 }
 
 export async function deleteAlbum(id: string) {
+    const isAdmin = await verifyAdmin();
+    // Allow album owner to delete?
+    const user = await verifyUser();
+
+    if (!user) return { error: "Unauthorized" };
+
     try {
+        if (!isAdmin) {
+            const { data: album } = await supabaseAdmin.from('albums').select('created_by').eq('id', id).single();
+            if (!album || album.created_by !== user.id) return { error: "Unauthorized" };
+        }
+
         const { error } = await supabaseAdmin
             .from('albums')
             .delete()
@@ -168,6 +235,9 @@ export async function deleteAlbum(id: string) {
 }
 
 export async function saveAlbumImageRef(url: string, albumId: string, userId: string, caption?: string) {
+    const user = await verifyUser();
+    if (!user) return { error: "Unauthorized" };
+
     try {
         const payload: any = { url, caption, album_id: albumId };
         if (userId && userId !== 'admin-master') {

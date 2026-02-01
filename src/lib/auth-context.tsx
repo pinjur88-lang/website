@@ -51,11 +51,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                     return;
                 }
 
+                // Check if user is the admin email
+                const isAdmin = session.user.email === 'udrugabaljci@gmail.com';
+
                 const memberUser: User = {
                     id: session.user.id,
                     name: session.user.user_metadata?.display_name || 'Član',
                     email: session.user.email!,
-                    role: 'member'
+                    role: isAdmin ? 'admin' : 'member'
                 };
                 setUser(memberUser);
                 localStorage.setItem('mock_session', JSON.stringify(memberUser));
@@ -110,11 +113,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                         return { error: "Vaš zahtjev još nije odobren." };
                     }
 
+                    const isAdmin = data.user.email === 'udrugabaljci@gmail.com';
+
                     const memberUser: User = {
                         id: data.user.id,
                         name: data.user.user_metadata?.display_name || 'Član',
                         email: data.user.email!,
-                        role: 'member'
+                        role: isAdmin ? 'admin' : 'member'
                     };
                     setUser(memberUser);
 

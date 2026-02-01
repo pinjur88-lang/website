@@ -2,126 +2,175 @@
 
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/lib/auth-context';
-import { createCommunityPost, getCommunityPosts } from '@/actions/community';
-import { MessageSquare, User, Send, Shield } from 'lucide-react';
+import { createCommunityPost } from '@/actions/community'; // Keeping this for creating new topics
+import { getTopics, Topic } from '@/actions/forum';
+import { MessageSquare, User, Send, Shield, Search, PlusCircle } from 'lucide-react';
+import Link from 'next/link';
+import { supabase } from '@/lib/supabase';
 
-type Post = {
-    id: string;
-    content: string;
-    created_at: string;
-    author_name: string;
+// Helper to count comments (Client side fetch for now to avoid complex SQL joins in simplified setup)
+const CommentCounter = ({ postId }: { postId: string }) => {
+    const [count, setCount] = useState<number | null>(null);
+    useEffect(() => {
+        const fetchCount = async () => {
+            const { count } = await supabase
+                .from('community_comments')
+                .select('*', { count: 'exact', head: true })
+                .eq('post_id', postId);
+            setCount(count || 0);
+        };
+        fetchCount();
+    }, [postId]);
+
+    if (count === null) return <span className="text-xs text-stone-300">...</span>;
+    return <span className="text-xs text-stone-500 font-medium">{count} odgovora</span>;
 };
 
 export default function CommunityPage() {
     const { user } = useAuth();
-    const [posts, setPosts] = useState<Post[]>([]);
+    const [topics, setTopics] = useState<Topic[]>([]);
     const [loading, setLoading] = useState(true);
 
-    // Form
+    // New Topic Form
+    const [isCreating, setIsCreating] = useState(false);
     const [content, setContent] = useState('');
     const [isAnonymous, setIsAnonymous] = useState(false);
     const [submitting, setSubmitting] = useState(false);
 
-    const loadPosts = async () => {
-        const { data } = await getCommunityPosts();
-        if (data) setPosts(data);
+    const loadTopics = async () => {
+        setLoading(true);
+        const { data } = await getTopics();
+        if (data) setTopics(data);
         setLoading(false);
     };
 
     useEffect(() => {
-        loadPosts();
+        loadTopics();
     }, []);
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleCreateTopic = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!content.trim() || !user) return;
 
         setSubmitting(true);
+        // We reuse the existing "createCommunityPost" as creating a "Topic"
         const { error } = await createCommunityPost(content, user.id, isAnonymous);
 
         if (error) {
-            alert('Greška pri objavi: ' + error);
+            alert('Greška: ' + error);
         } else {
             setContent('');
             setIsAnonymous(false);
-            loadPosts();
+            setIsCreating(false);
+            loadTopics();
         }
         setSubmitting(false);
     };
 
     return (
-        <div className="space-y-6 max-w-2xl mx-auto">
-            <div className="border-b border-stone-200 pb-4">
-                <h1 className="text-2xl font-bold text-stone-900 flex items-center gap-2">
-                    <MessageSquare className="text-stone-700" />
-                    Zid Zajednice
-                </h1>
-                <p className="text-stone-600 text-sm mt-1">
-                    Podijelite svoja razmišljanja, ideje ili pitanja s ostalim članovima.
-                </p>
+        <div className="space-y-6 max-w-3xl mx-auto">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-sky-100 pb-6">
+                <div>
+                    <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
+                        <MessageSquare className="text-sky-600" />
+                        Forum Zajednice
+                    </h1>
+                    <p className="text-slate-500 text-sm mt-1">
+                        Diskusije, pitanja i razgovori o selu.
+                    </p>
+                </div>
+                <button
+                    onClick={() => setIsCreating(!isCreating)}
+                    className="bg-sky-600 text-white px-4 py-2 rounded-md font-medium hover:bg-sky-700 transition-colors flex items-center gap-2 shadow-sm"
+                >
+                    <PlusCircle size={18} />
+                    {isCreating ? 'Zatvori' : 'Nova Tema'}
+                </button>
             </div>
 
-            {/* Input Box */}
-            <div className="bg-white p-4 rounded-lg shadow-sm border border-stone-200">
-                <form onSubmit={handleSubmit} className="space-y-3">
-                    <textarea
-                        value={content}
-                        onChange={(e) => setContent(e.target.value)}
-                        placeholder="Napišite nešto..."
-                        className="w-full p-3 border border-stone-200 rounded-md focus:ring-1 focus:ring-stone-400 focus:border-stone-400 min-h-[100px] text-sm resize-none"
-                        required
-                    />
+            {/* Create Topic Form */}
+            {isCreating && (
+                <div className="bg-white p-6 rounded-xl shadow-lg border border-sky-100 animate-in fade-in slide-in-from-top-4">
+                    <h3 className="font-bold text-slate-800 mb-4">Pokreni novu raspravu</h3>
+                    <form onSubmit={handleCreateTopic} className="space-y-4">
+                        <textarea
+                            value={content}
+                            onChange={(e) => setContent(e.target.value)}
+                            placeholder="O čemu želite razgovarati? (Naslov i tekst teme)"
+                            className="w-full p-4 border border-slate-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent min-h-[120px] resize-none"
+                            required
+                        />
 
-                    <div className="flex justify-between items-center">
-                        <label className="flex items-center gap-2 text-sm text-stone-600 cursor-pointer select-none">
-                            <input
-                                type="checkbox"
-                                checked={isAnonymous}
-                                onChange={(e) => setIsAnonymous(e.target.checked)}
-                                className="rounded border-stone-300 text-stone-900 focus:ring-stone-500"
-                            />
-                            <span className="flex items-center gap-1">
-                                {isAnonymous ? <Shield size={14} className="text-stone-500" /> : <User size={14} className="text-stone-400" />}
-                                {isAnonymous ? 'Objavljujem Anonimno' : `Objavi kao ${user?.name}`}
-                            </span>
-                        </label>
+                        <div className="flex justify-between items-center">
+                            <label className="flex items-center gap-2 text-sm text-slate-600 cursor-pointer select-none">
+                                <input
+                                    type="checkbox"
+                                    checked={isAnonymous}
+                                    onChange={(e) => setIsAnonymous(e.target.checked)}
+                                    className="rounded border-slate-300 text-sky-600 focus:ring-sky-500"
+                                />
+                                <span className="flex items-center gap-1">
+                                    {isAnonymous ? <Shield size={14} className="text-slate-400" /> : <User size={14} className="text-slate-400" />}
+                                    {isAnonymous ? 'Anonimno' : user?.name}
+                                </span>
+                            </label>
 
-                        <button
-                            type="submit"
-                            disabled={submitting || !content.trim()}
-                            className="px-4 py-2 bg-zinc-900 text-white text-sm font-medium rounded-md hover:bg-zinc-800 disabled:opacity-50 flex items-center gap-2 transition-colors"
-                        >
-                            <Send size={14} />
-                            {submitting ? 'Slanje...' : 'Objavi'}
-                        </button>
-                    </div>
-                </form>
-            </div>
+                            <button
+                                type="submit"
+                                disabled={submitting || !content.trim()}
+                                className="px-6 py-2 bg-slate-900 text-white text-sm font-bold rounded-md hover:bg-slate-800 disabled:opacity-50 transition-colors"
+                            >
+                                {submitting ? 'Objavljivanje...' : 'Objavi Temu'}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            )}
 
-            {/* Feed */}
-            <div className="space-y-4">
+            {/* Topics List */}
+            <div className="space-y-3">
                 {loading ? (
-                    <div className="text-center py-8 text-stone-400 text-sm">Učitavanje objava...</div>
-                ) : posts.length === 0 ? (
-                    <div className="text-center py-12 bg-stone-50 rounded-lg border border-dashed border-stone-200">
-                        <p className="text-stone-500 font-medium">Još nema objava.</p>
-                        <p className="text-stone-400 text-xs mt-1">Budite prvi koji će nešto napisati!</p>
+                    <div className="text-center py-12">
+                        <div className="animate-spin w-8 h-8 border-4 border-sky-200 border-t-sky-600 rounded-full mx-auto mb-4"></div>
+                        <p className="text-slate-400">Učitavanje tema...</p>
+                    </div>
+                ) : topics.length === 0 ? (
+                    <div className="text-center py-16 bg-white rounded-xl border border-dashed border-slate-200">
+                        <MessageSquare className="mx-auto text-slate-200 mb-3" size={48} />
+                        <p className="text-slate-500 font-medium">Nema aktivnih tema.</p>
+                        <p className="text-slate-400 text-sm mt-1">Budite prvi koji će pokrenuti razgovor!</p>
                     </div>
                 ) : (
-                    posts.map((post) => (
-                        <div key={post.id} className="bg-white p-5 rounded-lg shadow-sm border border-stone-200">
-                            <p className="text-stone-800 text-sm whitespace-pre-wrap leading-relaxed mb-3">
-                                {post.content}
-                            </p>
-                            <div className="flex items-center gap-2 text-xs text-stone-400 border-t border-stone-100 pt-3">
-                                <div className={`w-5 h-5 rounded-full flex items-center justify-center font-bold ${post.author_name === 'Anonimni Član' ? 'bg-stone-200 text-stone-500' : 'bg-green-100 text-green-700'}`}>
-                                    {post.author_name.charAt(0)}
+                    topics.map((topic) => (
+                        <Link
+                            href={`/dashboard/community/${topic.id}`}
+                            key={topic.id}
+                            className="block bg-white p-6 rounded-xl border border-sky-100 shadow-sm hover:shadow-md hover:border-sky-300 transition-all group"
+                        >
+                            <div className="flex justify-between items-start gap-4">
+                                <div className="flex-1">
+                                    <h3 className="text-lg font-bold text-slate-800 group-hover:text-sky-700 transition-colors mb-2 line-clamp-2">
+                                        {topic.title}
+                                    </h3>
+                                    <p className="text-slate-500 text-sm line-clamp-2 mb-4">
+                                        {topic.content}
+                                    </p>
+
+                                    <div className="flex items-center gap-3 text-xs text-slate-400">
+                                        <div className="flex items-center gap-1 bg-slate-50 px-2 py-1 rounded-full">
+                                            <User size={12} />
+                                            <span className="font-medium text-slate-600">{topic.author_name}</span>
+                                        </div>
+                                        <span>•</span>
+                                        <span>{new Date(topic.created_at).toLocaleDateString('hr-HR')}</span>
+                                    </div>
                                 </div>
-                                <span className="font-medium text-stone-500">{post.author_name}</span>
-                                <span>•</span>
-                                <span>{new Date(post.created_at).toLocaleString('hr-HR')}</span>
+
+                                <div className="flex flex-col items-end gap-2 text-right min-w-[80px]">
+                                    <CommentCounter postId={topic.id} />
+                                </div>
                             </div>
-                        </div>
+                        </Link>
                     ))
                 )}
             </div>

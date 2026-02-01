@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '@/lib/auth-context';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { Home, FolderKanban, FileText, Image as ImageIcon, LogOut, Menu, X, MessageSquare, Upload, MessageCircle } from 'lucide-react';
+import { Home, FolderKanban, FileText, Image as ImageIcon, LogOut, Menu, X, MessageSquare, Upload, MessageCircle, Scale } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -34,6 +34,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         // { name: t.suggestions, href: '/dashboard/suggestions', icon: MessageSquare }, // Keeping old suggestion box? user asked for anonymous POSTING inside member page, which sounds like community wall.
         { name: t.donations, href: '/dashboard/donations', icon: FileText },
         { name: t.gallery, href: '/dashboard/gallery', icon: ImageIcon },
+        { name: t.statute, href: '/dashboard/statute', icon: Scale },
     ];
 
     return (

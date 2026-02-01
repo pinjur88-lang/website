@@ -5,6 +5,7 @@ import { db, MembershipRequest } from '@/lib/db';
 import { Mail, Phone, MapPin, Calendar, FileText, Check, X, Users, MessageSquare, Image as ImageIcon } from 'lucide-react';
 import { useAuth } from '@/lib/auth-context';
 import AnnouncementManager from '@/components/admin/AnnouncementManager';
+import { getAdminRequests, approveRequest } from '@/actions/admin';
 
 import GalleryManager from '@/components/admin/GalleryManager';
 import MemberDetailModal from '@/components/admin/MemberDetailModal';
@@ -22,8 +23,9 @@ export default function AdminMembersPage() {
 
     useEffect(() => {
         const loadRequests = async () => {
-            const data = await db.getRequests();
-            setRequests(data);
+            const { data, error } = await getAdminRequests();
+            if (data) setRequests(data);
+            if (error) alert("Greška pri učitavanju: " + error);
             setLoading(false);
         };
         loadRequests();
@@ -35,42 +37,19 @@ export default function AdminMembersPage() {
         // Optimistic update
         setRequests(prev => prev.map(r => r.id === req.id ? { ...r, status: 'approved' } : r));
 
-        try {
-            // Get current session token
-            const { data: { session } } = await import('@/lib/supabase').then(m => m.supabase.auth.getSession());
+        const res = await approveRequest(req.id, req.email, req.name);
 
-            if (!session?.access_token) {
-                alert('Greška: Niste prijavljeni.');
-                return;
-            }
-
-            const response = await fetch('/api/admin/approve', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${session.access_token}`
-                },
-                body: JSON.stringify({
-                    email: req.email,
-                    requestId: req.id,
-                    name: req.name
-                })
-            });
-
-            if (!response.ok) {
-                const err = await response.json();
-                throw new Error(err.error);
-            }
-            alert('Korisnik odobren! Sada možete poslati obavijest klikom na gumb "Obavijesti".');
-        } catch (error: any) {
-            alert('Greška: ' + error.message);
+        if (res.error) {
+            alert('Greška: ' + res.error);
             // Revert optimistic update
             setRequests(prev => prev.map(r => r.id === req.id ? { ...r, status: 'pending' } : r));
+        } else {
+            alert('Korisnik odobren! Sada možete poslati obavijest klikom na gumb "Obavijesti".');
         }
     };
 
     if (loading) {
-        return <div className="p-4 text-center">Učitavanje...</div>;
+        return <div className="p-4 text-center">Učitavanje podataka...</div>;
     }
 
     return (

@@ -18,6 +18,7 @@ type GalleryImage = {
     url: string;
     caption?: string;
     uploaded_by?: string;
+    isEditing?: boolean;
 };
 
 interface AlbumViewProps {
@@ -151,7 +152,7 @@ export default function AlbumView({ album, onBack }: AlbumViewProps) {
                                 fill
                                 className="object-cover transition-transform group-hover:scale-105"
                             />
-                            {(user?.id === img.uploaded_by || user?.role === 'admin' || user?.id === album.created_by) && (
+                            {(user?.id === img.uploaded_by || user?.role === 'admin' || user?.email === 'udrugabaljci@gmail.com' || user?.id === album.created_by) && (
                                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                     <button
                                         onClick={(e) => { e.stopPropagation(); handleDelete(img.id); }}
@@ -206,9 +207,60 @@ export default function AlbumView({ album, onBack }: AlbumViewProps) {
                             </button>
                         )}
 
-                        {/* Caption */}
-                        <div className="absolute bottom-4 left-0 right-0 text-center text-white/80 pointer-events-none">
-                            <p>{images[selectedIndex].caption || `Image ${selectedIndex + 1} of ${images.length}`}</p>
+                        {/* Caption & Controls */}
+                        <div className="absolute bottom-4 left-0 right-0 text-center pointer-events-none" onClick={(e) => e.stopPropagation()}>
+                            <div className="pointer-events-auto bg-black/60 inline-block px-6 py-3 rounded-full backdrop-blur-sm max-w-2xl">
+                                {images[selectedIndex].isEditing ? (
+                                    <div className="flex gap-2">
+                                        <input
+                                            type="text"
+                                            defaultValue={images[selectedIndex].caption}
+                                            className="bg-white/20 text-white border-none rounded px-2 py-1 outline-none focus:ring-1 focus:ring-white"
+                                            id={`caption-edit-${images[selectedIndex].id}`}
+                                            onKeyDown={async (e) => {
+                                                if (e.key === 'Enter') {
+                                                    const val = e.currentTarget.value;
+                                                    const { updateGalleryImageCaption } = await import('@/actions/cms');
+                                                    await updateGalleryImageCaption(images[selectedIndex].id, val);
+                                                    setImages(prev => prev.map(img => img.id === images[selectedIndex].id ? { ...img, caption: val, isEditing: false } : img));
+                                                }
+                                            }}
+                                        />
+                                        <button
+                                            className="text-white hover:text-green-400 text-xs uppercase font-bold"
+                                            onClick={async () => {
+                                                const input = document.getElementById(`caption-edit-${images[selectedIndex].id}`) as HTMLInputElement;
+                                                if (!input) return;
+                                                const val = input.value;
+                                                const { updateGalleryImageCaption } = await import('@/actions/cms');
+                                                await updateGalleryImageCaption(images[selectedIndex].id, val);
+                                                setImages(prev => prev.map(img => img.id === images[selectedIndex].id ? { ...img, caption: val, isEditing: false } : img));
+                                            }}
+                                        >Save</button>
+                                        <button
+                                            className="text-white hover:text-red-400 text-xs uppercase font-bold"
+                                            onClick={() => {
+                                                setImages(prev => prev.map(img => img.id === images[selectedIndex].id ? { ...img, isEditing: false } : img));
+                                            }}
+                                        >Cancel</button>
+                                    </div>
+                                ) : (
+                                    <div className="flex flex-col gap-1">
+                                        <p className="text-white/90 text-sm font-medium">{images[selectedIndex].caption || `Image ${selectedIndex + 1} of ${images.length}`}</p>
+
+                                        {(user?.role === 'admin' || user?.email === 'udrugabaljci@gmail.com' || user?.id === images[selectedIndex].uploaded_by) && (
+                                            <button
+                                                className="text-xs text-white/50 hover:text-white uppercase font-bold tracking-wider"
+                                                onClick={() => {
+                                                    setImages(prev => prev.map(img => img.id === images[selectedIndex].id ? { ...img, isEditing: true } : img));
+                                                }}
+                                            >
+                                                Edit Caption
+                                            </button>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>
