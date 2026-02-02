@@ -76,9 +76,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setIsLoading(true);
 
         try {
-            // 1. BACKDOOR: Admin Shared Password (Keep this!)
+            // 1. BACKDOOR: Admin Shared Password
             if (email === 'udrugabaljci@gmail.com' && password === 'Jojlolomoj2026!') {
-                const adminUser: User = { id: 'admin-master', name: 'Administrator', email, role: 'admin' };
+                // We MUST sign in to Supabase to appease the Middleware
+                const { data: sbData, error: sbError } = await supabase.auth.signInWithPassword({
+                    email,
+                    password
+                });
+
+                if (sbError) {
+                    console.error("Admin Supabase Login Failed:", sbError.message);
+                    // Decide: do we let them in anyway? 
+                    // NO. If we do, Middleware will bounce them back. 
+                    // We must treat this as a failure or the Middleware needs to be relaxed.
+                    // For now, let's show the error so the user knows WHY it is failing.
+                    return { error: `Admin Sync Error: ${sbError.message}` };
+                }
+
+                const adminUser: User = {
+                    id: sbData.user?.id || 'admin-master',
+                    name: 'Administrator',
+                    email,
+                    role: 'admin'
+                };
                 setUser(adminUser);
                 localStorage.setItem('mock_session', JSON.stringify(adminUser));
                 setIsLoading(false);

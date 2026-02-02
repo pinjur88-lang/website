@@ -2,42 +2,36 @@
 
 import { useState } from 'react';
 import { Lock, MapPin, Church, Leaf } from 'lucide-react'; // Using Church as alternative for Cemetery candle logic if needed, or specific icons
+import { useLanguage } from '@/lib/language-context';
 import RestrictionsModal from './RestrictionsModal';
-
-interface FeatureCard {
-    id: number;
-    title: string;
-    description: string;
-    icon: React.ReactNode;
-    image: string;
-}
-
-const features: FeatureCard[] = [
-    {
-        id: 1,
-        title: "Interactive Village Map",
-        description: "Find your family's original stone house. Click any roof to see historical records and photos from 1920-1990.",
-        icon: <MapPin className="w-6 h-6" />,
-        image: "https://images.unsplash.com/photo-1524661135-423995f22d0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-    },
-    {
-        id: 2,
-        title: "Memorial Archive",
-        description: "Pay respects from anywhere. Search our database of ancestors and light a virtual candle on their grave.",
-        icon: <Church className="w-6 h-6" />,
-        image: "https://images.unsplash.com/photo-1533158388470-9a56699990c6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-    },
-    {
-        id: 3,
-        title: "Stewardship Program",
-        description: "Become a guardian of a village olive tree. Receive a GPS tag, yearly harvest photos, and your name on the tree.",
-        icon: <Leaf className="w-6 h-6" />,
-        image: "https://images.unsplash.com/photo-1541963463532-d68292c34b19?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-    }
-];
 
 export default function MembersGrid() {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const { t } = useLanguage();
+
+    const features = [
+        {
+            id: 1,
+            title: t.feat1Title,
+            description: t.feat1Desc,
+            icon: <MapPin className="w-6 h-6" />,
+            image: "https://images.unsplash.com/photo-1524661135-423995f22d0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+            id: 2,
+            title: t.feat2Title,
+            description: t.feat2Desc,
+            icon: <Church className="w-6 h-6" />,
+            image: "https://images.unsplash.com/photo-1533158388470-9a56699990c6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+            id: 3,
+            title: t.feat3Title,
+            description: t.feat3Desc,
+            icon: <Leaf className="w-6 h-6" />,
+            image: "https://images.unsplash.com/photo-1541963463532-d68292c34b19?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        }
+    ];
 
     return (
         <section className="py-24 bg-[#f8f9fa] px-4">
@@ -45,9 +39,9 @@ export default function MembersGrid() {
                 {/* Section Header */}
                 <div className="text-center mb-16">
                     <h2 className="font-serif text-4xl md:text-5xl text-[#2f3e46] mb-4 relative inline-block">
-                        Explore Our Digital Heritage
+                        {t.exploreHeritage}
                         <span className="block text-sm font-sans font-medium text-[#2f3e46]/60 uppercase tracking-[0.2em] mt-3">
-                            (Members Only)
+                            {t.membersOnly}
                         </span>
                     </h2>
                     <div className="w-16 h-1 bg-[#556B2F] mx-auto mt-6"></div>

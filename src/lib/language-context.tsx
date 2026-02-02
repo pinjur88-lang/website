@@ -16,11 +16,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
     useEffect(() => {
         const saved = localStorage.getItem('language') as string;
-        // Migrate 'bs' to 'hr' if present
-        if (saved === 'bs') {
-            setLanguage('hr');
-            localStorage.setItem('language', 'hr');
-        } else if (saved && (saved === 'en' || saved === 'de' || saved === 'hr')) {
+        if (saved && (saved === 'en' || saved === 'de' || saved === 'hr' || saved === 'bs')) {
             setLanguage(saved as Language);
         }
     }, []);

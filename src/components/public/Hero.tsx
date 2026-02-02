@@ -19,6 +19,8 @@ export default function Hero() {
                 <div className="flex gap-2 text-xs font-sans tracking-widest text-zinc-400">
                     <button onClick={() => setLanguage('hr')} className={`hover:text-zinc-800 ${language === 'hr' ? 'text-zinc-900 font-bold' : ''}`}>CRO</button>
                     <span>|</span>
+                    <button onClick={() => setLanguage('bs')} className={`hover:text-zinc-800 ${language === 'bs' ? 'text-zinc-900 font-bold' : ''}`}>BOS</button>
+                    <span>|</span>
                     <button onClick={() => setLanguage('en')} className={`hover:text-zinc-800 ${language === 'en' ? 'text-zinc-900 font-bold' : ''}`}>EN</button>
                     <span>|</span>
                     <button onClick={() => setLanguage('de')} className={`hover:text-zinc-800 ${language === 'de' ? 'text-zinc-900 font-bold' : ''}`}>DE</button>

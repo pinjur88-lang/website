@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { Calendar, MessageCircle, Phone, Image as ImageIcon } from 'lucide-react';
+import { Calendar, MessageCircle, Phone, Image as ImageIcon, Map as MapIcon, Scroll } from 'lucide-react';
 import { getAnnouncements, getGalleryImages } from '@/actions/cms';
 import { useLanguage } from '@/lib/language-context';
 import Image from 'next/image';
@@ -123,6 +123,44 @@ export default function DashboardHome() {
 
                 {/* Sidebar - Quick Actions */}
                 <div className="space-y-6">
+                    {/* Map Widget */}
+                    <div className="bg-gradient-to-br from-indigo-900 to-slate-900 p-6 rounded-lg shadow-lg border border-indigo-500/30 text-white relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                            <MapIcon size={100} />
+                        </div>
+                        <h3 className="text-lg font-bold mb-2 flex items-center gap-2 relative z-10">
+                            <MapIcon className="text-indigo-400" />
+                            {t.title === "Association Baljci" ? "Interactive Map" : "Interaktivna Karta"}
+                        </h3>
+                        <p className="text-indigo-200 text-sm mb-4 relative z-10 leading-relaxed">
+                            {t.title === "Association Baljci"
+                                ? "Explore the village, find ancestral homes, and see historical photos."
+                                : "Istražite selo, pronađite djedovinu i pogledajte povijesne fotografije."}
+                        </p>
+                        <a href="/map" className="block w-full py-2 bg-indigo-500 hover:bg-indigo-400 text-center rounded-md font-bold text-sm transition-colors relative z-10 shadow-md">
+                            {t.title === "Association Baljci" ? "Open Map" : "Otvori Kartu"}
+                        </a>
+                    </div>
+
+                    {/* Memorial Archive Widget */}
+                    <div className="bg-gradient-to-br from-amber-900 to-stone-900 p-6 rounded-lg shadow-lg border border-amber-500/30 text-white relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                            <Scroll size={100} />
+                        </div>
+                        <h3 className="text-lg font-bold mb-2 flex items-center gap-2 relative z-10">
+                            <Scroll className="text-amber-400" />
+                            {t.title === "Association Baljci" ? "Memorial Archive" : "Memorijalni Arhiv"}
+                        </h3>
+                        <p className="text-amber-200 text-sm mb-4 relative z-10 leading-relaxed">
+                            {t.title === "Association Baljci"
+                                ? "Discover family origins, clan distributions, and historical records."
+                                : "Istražite porijeklo obitelji, rasprostranjenost klanova i povijesne zapise."}
+                        </p>
+                        <a href="/dashboard/memorial" className="block w-full py-2 bg-amber-600 hover:bg-amber-500 text-center rounded-md font-bold text-sm transition-colors relative z-10 shadow-md">
+                            {t.title === "Association Baljci" ? "Open Archive" : "Otvori Arhiv"}
+                        </a>
+                    </div>
+
                     {/* Weather Widget */}
                     <WeatherWidget />
 

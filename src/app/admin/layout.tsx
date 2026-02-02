@@ -13,19 +13,24 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     useEffect(() => {
         if (!isLoading) {
             if (!user) {
-                router.push('/login');
+                router.replace('/login');
             } else if (user.role !== 'admin') {
-                router.push('/dashboard');
+                router.replace('/dashboard');
             }
         }
     }, [user, isLoading, router]);
 
-    if (isLoading || !user || user.role !== 'admin') {
+    // BLOCK CONTENT IMMEDIATELY IF UNAUTHORIZED
+    if (isLoading) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-zinc-100">
                 <div className="text-zinc-500">Provjera ovlasti...</div>
             </div>
         );
+    }
+
+    if (!user || user.role !== 'admin') {
+        return null; // Show nothing while redirecting
     }
 
     return (

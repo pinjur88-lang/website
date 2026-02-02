@@ -24,6 +24,11 @@ export default function AdminMembersPage() {
     useEffect(() => {
         const loadRequests = async () => {
             const { data, error } = await getAdminRequests();
+            if (error === "Unauthorized") {
+                // If the server says unauthorized, force a hard redirect or logout
+                window.location.href = '/login';
+                return;
+            }
             if (data) setRequests(data);
             if (error) alert("Greška pri učitavanju: " + error);
             setLoading(false);

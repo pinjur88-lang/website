@@ -37,8 +37,8 @@ export async function getTopics() {
                 id,
                 content,
                 created_at,
-                created_by,
-                profiles(display_name)
+                user_id,
+                profiles!user_id(display_name)
             `)
             .order('created_at', { ascending: false });
 
@@ -53,7 +53,7 @@ export async function getTopics() {
             content: post.content,
             author_name: post.profiles?.display_name || 'Nepoznato',
             created_at: post.created_at,
-            created_by: post.created_by
+            created_by: post.user_id
         }));
 
         return { data: topics };
@@ -70,8 +70,8 @@ export async function getTopicDetail(topicId: string) {
                 id,
                 content,
                 created_at,
-                created_by,
-                profiles(display_name)
+                user_id,
+                profiles!user_id(display_name)
             `)
             .eq('id', topicId)
             .single();
@@ -85,7 +85,7 @@ export async function getTopicDetail(topicId: string) {
                 content,
                 created_at,
                 user_id,
-                profiles(display_name)
+                profiles!user_id(display_name)
             `)
             .eq('post_id', topicId)
             .order('created_at', { ascending: true });
@@ -98,7 +98,7 @@ export async function getTopicDetail(topicId: string) {
             content: topic.content,
             author_name: Array.isArray(topic.profiles) ? (topic.profiles[0] as any)?.display_name : (topic.profiles as any)?.display_name || 'Nepoznato',
             created_at: topic.created_at,
-            created_by: topic.created_by
+            created_by: topic.user_id
         };
 
         const formattedComments: Comment[] = comments.map((c: any) => ({

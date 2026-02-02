@@ -13,7 +13,8 @@ export async function createCommunityPost(content: string, authorId: string, isA
             .from('community_posts')
             .insert([{
                 content,
-                author_id: authorId,
+                // created_by: authorId, // ERROR: Schema likely uses user_id
+                user_id: authorId,
                 is_anonymous: isAnonymous
             }])
             .select()
@@ -36,7 +37,8 @@ export async function getCommunityPosts() {
                 content,
                 is_anonymous,
                 created_at,
-                author:profiles(display_name)
+                user_id,
+                author:profiles!user_id(display_name)
             `)
             .order('created_at', { ascending: false });
 
