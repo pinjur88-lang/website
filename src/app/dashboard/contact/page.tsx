@@ -1,21 +1,39 @@
 'use client';
 
 import { useState } from 'react';
-import { Mail, Send, MessageCircle, AlertCircle } from 'lucide-react';
+import { Mail, Send, MessageCircle, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
+import { sendMessage } from '@/actions/contact';
+import { useAuth } from '@/lib/auth-context';
 
 export default function ContactPage() {
     const { t } = useLanguage();
+    const { user } = useAuth();
+
     const [subject, setSubject] = useState('');
     const [message, setMessage] = useState('');
     const [category, setCategory] = useState('General');
+    const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
 
-    const adminEmail = 'udrugabaljci@gmail.com';
+    const handleSend = async () => {
+        setStatus('loading');
 
-    const handleSendEmail = () => {
-        const mailtoBody = `Category: ${category}\n\n${message}`;
-        const mailtoUrl = `mailto:${adminEmail}?subject=${encodeURIComponent(subject || 'Inquiry from Member')}&body=${encodeURIComponent(mailtoBody)}`;
-        window.location.href = mailtoUrl;
+        const formData = new FormData();
+        formData.append('email', user?.email || 'anon@baljci.org');
+        formData.append('subject', subject);
+        formData.append('category', category);
+        formData.append('message', message);
+
+        const res = await sendMessage(formData);
+
+        if (res.error) {
+            alert(res.error);
+            setStatus('error');
+        } else {
+            setStatus('success');
+            setMessage('');
+            setSubject('');
+        }
     };
 
     const categories = {
@@ -24,6 +42,8 @@ export default function ContactPage() {
         en: ['General', 'Infrastructure', 'Memorial Archive', 'Membership', 'Suggestion'],
         de: ['Allgemein', 'Infrastruktur', 'Gedenkarchiv', 'Mitgliedschaft', 'Vorschlag']
     };
+
+    // ... (labels remain same) ...
 
     // Fallback for categories based on current language
     const currentCategories = (categories as any)[t.navHome === 'Početna' ? 'hr' : t.navHome === 'Home' ? 'en' : 'hr'] || categories.en;
@@ -35,9 +55,9 @@ export default function ContactPage() {
             categoryLabel: "Kategorija",
             subjectLabel: "Predmet",
             messageLabel: "Vaša Poruka",
-            buttonText: "Pripremi E-mail",
-            infoText: "Klikom na gumb otvorit će se vaša zadanu e-mail aplikacija s ispunjenim podacima.",
-            directEmail: "Također nas možete kontaktirati izravno na:"
+            buttonText: "Pošalji Poruku",
+            infoText: "Vaša poruka će biti spremljena u sustav i administrator će je pregledati.",
+            success: "Poruka uspješno poslana!"
         },
         en: {
             title: "Contact Administrator",
@@ -45,9 +65,9 @@ export default function ContactPage() {
             categoryLabel: "Category",
             subjectLabel: "Subject",
             messageLabel: "Your Message",
-            buttonText: "Prepare Email",
-            infoText: "Clicking the button will open your default email app with the details filled in.",
-            directEmail: "You can also contact us directly at:"
+            buttonText: "Send Message",
+            infoText: "Your message will be saved to the system and reviewed by an administrator.",
+            success: "Message sent successfully!"
         },
         sr: {
             title: "Kontakt Administratora",
@@ -55,9 +75,9 @@ export default function ContactPage() {
             categoryLabel: "Kategorija",
             subjectLabel: "Predmet",
             messageLabel: "Vaša Poruka",
-            buttonText: "Pripremi E-mail",
-            infoText: "Klikom na dugme otvoriće se vaša podrazumevana e-mail aplikacija sa ispunjenim podacima.",
-            directEmail: "Takođe nas možete kontaktirati direktno na:"
+            buttonText: "Pošalji Poruku",
+            infoText: "Vaša poruka će biti sačuvana u sistemu i administrator će je pregledati.",
+            success: "Poruka uspešno poslata!"
         },
         de: {
             title: "Administrator Kontaktieren",
@@ -65,13 +85,30 @@ export default function ContactPage() {
             categoryLabel: "Kategorie",
             subjectLabel: "Betreff",
             messageLabel: "Ihre Nachricht",
-            buttonText: "E-Mail vorbereiten",
-            infoText: "Durch Klicken auf die Schaltfläche wird Ihre Standard-E-Mail-App mit den ausgefüllten Details geöffnet.",
-            directEmail: "Sie können uns auch direkt kontaktieren unter:"
+            buttonText: "Nachricht Senden",
+            infoText: "Ihre Nachricht wird im System gespeichert und von einem Administrator überprüft.",
+            success: "Nachricht erfolgreich gesendet!"
         }
     };
 
     const l = (labels as any)[t.navHome === 'Početna' ? 'hr' : t.navHome === 'Home' ? 'en' : 'hr'] || labels.en;
+
+    if (status === 'success') {
+        return (
+            <div className="flex flex-col items-center justify-center py-20 animate-in fade-in zoom-in">
+                <div className="bg-green-100 p-6 rounded-full mb-6">
+                    <CheckCircle2 size={48} className="text-green-600" />
+                </div>
+                <h2 className="text-2xl font-bold text-slate-800 mb-2">{l.success}</h2>
+                <button
+                    onClick={() => setStatus('idle')}
+                    className="text-blue-600 hover:underline font-medium mt-4"
+                >
+                    Nova poruka / New Message
+                </button>
+            </div>
+        );
+    }
 
     return (
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -86,8 +123,9 @@ export default function ContactPage() {
             </div>
 
             <div className="max-w-3xl mx-auto">
-                {/* Form Section */}
                 <div className="bg-white p-6 md:p-8 rounded-2xl border border-sky-100 shadow-xl shadow-sky-900/5 space-y-6">
+
+                    {/* Form Fields */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-2">
                             <label className="text-sm font-semibold text-slate-700">{l.categoryLabel}</label>
@@ -134,12 +172,11 @@ export default function ContactPage() {
                     </div>
 
                     <button
-                        onClick={handleSendEmail}
-                        disabled={!message}
+                        onClick={handleSend}
+                        disabled={!message || status === 'loading'}
                         className="w-full py-4 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:hover:bg-blue-600 text-white rounded-xl font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-blue-900/20 active:scale-95 text-lg"
                     >
-                        <Send size={20} />
-                        {l.buttonText}
+                        {status === 'loading' ? '...' : <><Send size={20} /> {l.buttonText}</>}
                     </button>
                 </div>
             </div>
