@@ -1,9 +1,10 @@
-'use server';
-
 import { supabase } from '@/lib/supabase';
 import { revalidatePath } from 'next/cache';
+import { verifyAdmin } from '@/lib/auth-admin';
 
 export async function uploadDonationReport(formData: FormData) {
+    if (!await verifyAdmin()) return { error: "Unauthorized" };
+
     const title = formData.get('title') as string;
     const description = formData.get('description') as string;
     const file = formData.get('file') as File;
@@ -63,6 +64,8 @@ export async function getDonationReports() {
 }
 
 export async function deleteDonationReport(id: string, fileUrl: string) {
+    if (!await verifyAdmin()) return { error: "Unauthorized" };
+
     try {
         // 1. Delete from DB
         const { error: dbError } = await supabase
@@ -73,7 +76,6 @@ export async function deleteDonationReport(id: string, fileUrl: string) {
         if (dbError) throw dbError;
 
         // 2. Delete from Storage (Optional but good for cleanup)
-        // Extract filename from URL
         const fileName = fileUrl.split('/').pop();
         if (fileName) {
             await supabase.storage
@@ -87,3 +89,4 @@ export async function deleteDonationReport(id: string, fileUrl: string) {
         return { error: error.message };
     }
 }
+

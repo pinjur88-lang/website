@@ -1,9 +1,11 @@
+'use server';
 
 import { supabase } from '@/lib/supabase';
-
-// CLIENT-SIDE HELPERS (Protected by RLS)
+import { verifyAdmin } from '@/lib/auth-admin';
 
 export async function updateAdminNotes(requestId: string, notes: string) {
+    if (!await verifyAdmin()) return { error: "Unauthorized" };
+
     const { error } = await supabase
         .from('requests')
         .update({ admin_notes: notes })
@@ -14,9 +16,10 @@ export async function updateAdminNotes(requestId: string, notes: string) {
 }
 
 export async function addDonation(email: string, amount: number, description: string) {
+    if (!await verifyAdmin()) return { error: "Unauthorized" };
+
     // Get current user (admin) ID for 'recorded_by'
     const { data: { user } } = await supabase.auth.getUser();
-
     if (!user) return { error: "Not logged in" };
 
     const { data, error } = await supabase
@@ -35,6 +38,8 @@ export async function addDonation(email: string, amount: number, description: st
 }
 
 export async function getMemberDonations(email: string) {
+    if (!await verifyAdmin()) return { error: "Unauthorized" };
+
     const { data, error } = await supabase
         .from('donations')
         .select('*')
@@ -46,6 +51,8 @@ export async function getMemberDonations(email: string) {
 }
 
 export async function getMemberStats(email: string) {
+    if (!await verifyAdmin()) return { error: "Unauthorized" };
+
     // Calculate total donations
     const { data, error } = await supabase
         .from('donations')
@@ -59,3 +66,4 @@ export async function getMemberStats(email: string) {
 
     return { total, count };
 }
+
