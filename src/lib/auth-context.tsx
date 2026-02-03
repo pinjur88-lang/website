@@ -130,40 +130,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 }
 
                 if (data.user) {
-                    // SECURITY Check
-                    const { data: reqData } = await supabase
-                        .from('requests')
-                        .select('status')
-                        .eq('email', email)
-                        .single();
+                    // SUCCESS - Redirect immediately
+                    // The onAuthStateChange listener (above) will handle:
+                    // 1. Fetching profile/tier
+                    // 2. Checking 'requests' approval status (and logging out if needed)
+                    // 3. Setting the local 'user' state
 
-                    if (reqData && reqData.status !== 'approved') {
-                        await supabase.auth.signOut(); // Ensure signed out
-                        setIsLoading(false);
-                        return { error: "Vaš zahtjev još nije odobren." };
-                    }
-
-                    const isAdmin = data.user.email === 'udrugabaljci@gmail.com';
-
-                    // Get profile details (tier)
-                    const { data: profileData } = await supabase
-                        .from('profiles')
-                        .select('membership_tier')
-                        .eq('id', data.user.id)
-                        .single();
-
-                    const memberUser: User = {
-                        id: data.user.id,
-                        name: data.user.user_metadata?.display_name || 'Član',
-                        email: data.user.email!,
-                        role: isAdmin ? 'admin' : 'member',
-                        membership_tier: profileData?.membership_tier || 'free'
-                    };
-                    setUser(memberUser);
-
-                    localStorage.setItem('mock_session', JSON.stringify(memberUser));
-
-                    setIsLoading(false);
                     router.push('/dashboard');
                     return { error: null };
                 }
