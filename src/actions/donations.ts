@@ -1,94 +1,173 @@
 'use server';
 
-import { supabase } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabase-admin';
 import { revalidatePath } from 'next/cache';
-import { verifyAdmin } from '@/lib/auth-admin';
 
-export async function uploadDonationReport(formData: FormData) {
-    if (!await verifyAdmin()) return { error: "Unauthorized" };
-
-    const title = formData.get('title') as string;
-    const description = formData.get('description') as string;
-    const file = formData.get('file') as File;
-    const userId = formData.get('userId') as string;
-
-    if (!file || !title) return { error: "Missing required fields" };
-
+// 1. GET PROJECTS
+export async function getProjects() {
     try {
-        // 1. Upload File
-        const fileExt = file.name.split('.').pop();
-        const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
-        const filePath = `${fileName}`;
+        const { data, error } = await supabaseAdmin
+            .from('projects')
+            .select('*')
+            .eq('status', 'active')
+            .order('created_at', { ascending: false });
 
-        const { error: uploadError } = await supabase.storage
-            .from('documents')
-            .upload(filePath, file);
+        if (error) {
+            console.error("Fetch projects error:", error);
+            return { error: error.message };
+        }
 
-        if (uploadError) throw uploadError;
-
-        // 2. Get Public URL
-        const { data: { publicUrl } } = supabase.storage
-            .from('documents')
-            .getPublicUrl(filePath);
-
-        // 3. Insert into Database
-        const { error: dbError } = await supabase
-            .from('donation_reports')
-            .insert({
-                title,
-                description,
-                file_url: publicUrl,
-                created_by: userId
-            });
-
-        if (dbError) throw dbError;
-
-        revalidatePath('/dashboard/donations');
-        return { success: true };
-    } catch (error: any) {
-        console.error("Upload error:", error);
-        return { error: error.message };
+        return { data };
+    } catch (err: any) {
+        return { error: err.message };
     }
 }
 
+// 2. GET RECENT DONATIONS (For Ticker)
+export async function getDonations(projectId: string) {
+    try {
+        const { data, error } = await supabaseAdmin
+            .from('donations')
+            .select('donor_name, amount, currency, message, created_at')
+            .eq('project_id', projectId)
+            .eq('is_anonymous', false) // Only public ones
+            .order('created_at', { ascending: false })
+            .limit(20);
+
+        if (error) {
+            console.error("Fetch donations error:", error);
+            // Don't break the UI if ticker fails
+            return { data: [] };
+        }
+
+        return { data };
+    } catch (err: any) {
+        return { data: [] };
+    }
+}
+
+// 3. CREATE DONATION
+export async function createDonation(donationData: {
+    projectId: string;
+    amount: number;
+    donorName: string;
+    donorEmail: string;
+    message: string;
+    isAnonymous: boolean;
+    userId?: string | null;
+}) {
+    try {
+        // Validation
+        if (!donationData.amount || donationData.amount <= 0) {
+            return { error: "Invalid amount" };
+        }
+        if (!donationData.donorName) {
+            return { error: "Name is required" };
+        }
+
+        const { error } = await supabaseAdmin
+            .from('donations')
+            .insert([{
+                project_id: donationData.projectId,
+                amount: donationData.amount,
+                donor_name: donationData.donorName,
+                donor_email: donationData.donorEmail, // Saved privately
+                message: donationData.message,
+                user_id: donationData.userId || null, // NULL for guests
+                is_anonymous: donationData.isAnonymous
+            }]);
+
+        if (error) {
+            console.error("Donation error:", error);
+            return { error: error.message };
+        }
+
+        revalidatePath('/donate');
+
+        // Return success + isGuest flag to trigger Upsell
+    } catch (err: any) {
+        console.error("Server Action Error:", err);
+        return { error: err.message };
+    }
+}
+
+// 4. GET DONATION REPORTS (Legacy/Admin)
 export async function getDonationReports() {
     try {
-        const { data, error } = await supabase
+        const { data, error } = await supabaseAdmin
             .from('donation_reports')
             .select('*')
             .order('created_at', { ascending: false });
 
         if (error) throw error;
         return { data };
-    } catch (error: any) {
-        return { error: error.message };
+    } catch (err: any) {
+        return { error: err.message };
     }
 }
 
-export async function deleteDonationReport(id: string, fileUrl: string) {
-    if (!await verifyAdmin()) return { error: "Unauthorized" };
-
+// 5. UPLOAD DONATION REPORT
+export async function uploadDonationReport(formData: FormData) {
     try {
-        // 1. Delete from DB
-        const { error: dbError } = await supabase
+        const title = formData.get('title') as string;
+        const description = formData.get('description') as string;
+        const file = formData.get('file') as File;
+        const userId = formData.get('userId') as string;
+
+        if (!file || !title) return { error: "Missing file or title" };
+
+        const fileName = `${Date.now()}_${file.name}`;
+        const { data: uploadData, error: uploadError } = await supabaseAdmin
+            .storage
+            .from('documents')
+            .upload(fileName, file, {
+                contentType: file.type,
+                upsert: false
+            });
+
+        if (uploadError) throw uploadError;
+
+        const { data: publicUrlData } = supabaseAdmin.storage.from('documents').getPublicUrl(fileName);
+        const fileUrl = publicUrlData.publicUrl;
+
+        const { error: dbError } = await supabaseAdmin
+            .from('donation_reports')
+            .insert([{
+                title,
+                description,
+                file_url: fileUrl,
+                created_by: userId
+            }]);
+
+        if (dbError) throw dbError;
+
+        revalidatePath('/dashboard/donations');
+        return { success: true };
+    } catch (err: any) {
+        console.error("Upload error:", err);
+        return { error: err.message };
+    }
+}
+
+// 6. DELETE DONATION REPORT
+export async function deleteDonationReport(id: string, fileUrl: string) {
+    try {
+        // Extract filename from URL
+        const fileName = fileUrl.split('/').pop();
+        if (fileName) {
+            await supabaseAdmin.storage.from('documents').remove([fileName]);
+        }
+
+        const { error } = await supabaseAdmin
             .from('donation_reports')
             .delete()
             .eq('id', id);
 
-        if (dbError) throw dbError;
-
-        // 2. Delete from Storage (Optional but good for cleanup)
-        const fileName = fileUrl.split('/').pop();
-        if (fileName) {
-            await supabase.storage
-                .from('documents')
-                .remove([fileName]);
-        }
+        if (error) throw error;
 
         revalidatePath('/dashboard/donations');
         return { success: true };
-    } catch (error: any) {
-        return { error: error.message };
+    } catch (err: any) {
+        return { error: err.message };
     }
 }
-
