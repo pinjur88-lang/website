@@ -182,3 +182,29 @@ export async function addAdminDonation(requestId: string, amount: number, descri
         return { error: error.message };
     }
 }
+
+// REGISTRY EXPORT
+export async function getAllMembersForRegistry() {
+    if (!await verifyAdmin()) return { error: "Unauthorized" };
+    try {
+        const [profilesRes, familyRes, companiesRes] = await Promise.all([
+            supabaseAdmin.from('profiles').select('*'),
+            supabaseAdmin.from('family_members').select('*'),
+            supabaseAdmin.from('companies').select('*')
+        ]);
+
+        if (profilesRes.error) throw profilesRes.error;
+        if (familyRes.error) throw familyRes.error;
+        if (companiesRes.error) throw companiesRes.error;
+
+        return {
+            data: {
+                profiles: profilesRes.data,
+                family: familyRes.data,
+                companies: companiesRes.data
+            }
+        };
+    } catch (error: any) {
+        return { error: error.message };
+    }
+}
