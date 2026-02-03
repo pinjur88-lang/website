@@ -1,3 +1,5 @@
+'use server';
+
 import { supabase } from '@/lib/supabase';
 import { revalidatePath } from 'next/cache';
 import { verifyAdmin } from '@/lib/auth-admin';

@@ -9,7 +9,7 @@ import { useLanguage } from '@/lib/language-context';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
     const { user, isLoading, logout } = useAuth();
-    const { t } = useLanguage();
+    const { t, setLanguage, language } = useLanguage();
     const router = useRouter();
     const pathname = usePathname();
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -28,20 +28,39 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         );
     }
 
-    const navItems = [
-        { name: t.overview, href: '/dashboard', icon: LayoutDashboard },
-        { name: t.handbook, href: '/dashboard/handbook', icon: BookOpen }, // New Handbook
-        { name: t.map, href: '/dashboard/map', icon: Map },
-        { name: t.memorial, href: '/dashboard/memorial', icon: BookOpen }, // Re-check icon duplication logic maybe? Or use Scroll/Monument if available? But BookOpen is fine or maybe 'Book'. 
-        { name: t.renovation, href: '/dashboard/renovation', icon: Hammer }, // New Utilities
-        { name: t.infrastructure, href: '/dashboard/infrastructure', icon: Lightbulb }, // New Infrastructure
-        { name: t.dumping, href: '/dashboard/dumping', icon: AlertTriangle }, // New Dumping
-        { name: t.oib, href: '/dashboard/oib', icon: FileText }, // New OIB
-        { name: t.community, href: '/dashboard/community', icon: MessageSquare }, // Changed from Suggestions
-        // { name: t.suggestions, href: '/dashboard/suggestions', icon: MessageSquare }, // Keeping old suggestion box? user asked for anonymous POSTING inside member page, which sounds like community wall.
-        { name: t.donations, href: '/dashboard/donations', icon: FileText },
-        { name: t.gallery, href: '/dashboard/gallery', icon: ImageIcon },
-        { name: t.statute, href: '/dashboard/statute', icon: Scale },
+    const navGroups = [
+        {
+            title: null,
+            items: [
+                { name: t.overview, href: '/dashboard', icon: LayoutDashboard },
+                { name: t.map, href: '/dashboard/map', icon: Map },
+            ]
+        },
+        {
+            title: "Zajednica",
+            items: [
+                { name: t.community, href: '/dashboard/community', icon: MessageSquare },
+                { name: t.gallery, href: '/dashboard/gallery', icon: ImageIcon },
+                { name: t.donations, href: '/dashboard/donations', icon: FileText },
+            ]
+        },
+        {
+            title: "Usluge & Info",
+            items: [
+                { name: t.renovation, href: '/dashboard/renovation', icon: Hammer },
+                { name: t.infrastructure, href: '/dashboard/infrastructure', icon: Lightbulb },
+                { name: t.dumping, href: '/dashboard/dumping', icon: AlertTriangle },
+                { name: t.oib, href: '/dashboard/oib', icon: FileText },
+            ]
+        },
+        {
+            title: "Baština",
+            items: [
+                { name: t.memorial, href: '/dashboard/memorial', icon: BookOpen },
+                { name: t.handbook, href: '/dashboard/handbook', icon: BookOpen },
+                { name: t.statute, href: '/dashboard/statute', icon: Scale },
+            ]
+        }
     ];
 
     return (
@@ -57,43 +76,62 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <div className="flex">
                 {/* Sidebar */}
                 <aside className={`
-          fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-sky-100 transform transition-transform duration-200 ease-in-out lg:translate-x-0 lg:static lg:h-screen lg:flex-shrink-0
+          fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-sky-100 transform transition-transform duration-200 ease-in-out lg:translate-x-0 lg:static lg:h-screen lg:flex-shrink-0 flex flex-col
           ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
         `}>
-                    <div className="h-full flex flex-col">
-                        <div className="p-6 border-b border-sky-100 bg-gradient-to-br from-sky-50 to-white">
-                            <h2 className="text-lg font-bold text-slate-900">{t.title}</h2>
-                            <p className="text-xs text-slate-500 mt-1">Član: {user.name}</p>
-                        </div>
+                    <div className="p-6 border-b border-sky-100 bg-gradient-to-br from-sky-50 to-white flex-shrink-0">
+                        <h2 className="text-lg font-bold text-slate-900">{t.title}</h2>
+                        <p className="text-xs text-slate-500 mt-1">Član: {user.name}</p>
+                    </div>
 
-                        <nav className="flex-1 p-4 space-y-1">
-                            {navItems.map((item) => {
-                                const isActive = pathname === item.href;
-                                return (
-                                    <Link
-                                        key={item.href}
-                                        href={item.href}
-                                        className={`flex items-center gap-3 px-4 py-3 rounded-md text-sm font-medium transition-colors ${isActive
-                                            ? 'bg-sky-100 text-sky-900'
-                                            : 'text-slate-600 hover:bg-sky-50 hover:text-sky-900'
-                                            }`}
-                                    >
-                                        <item.icon size={18} />
-                                        {item.name}
-                                    </Link>
-                                );
-                            })}
-                        </nav>
+                    <nav className="flex-1 overflow-y-auto p-4 space-y-6">
+                        {navGroups.map((group, groupIdx) => (
+                            <div key={groupIdx}>
+                                {group.title && (
+                                    <h3 className="px-4 mb-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                                        {group.title}
+                                    </h3>
+                                )}
+                                <div className="space-y-1">
+                                    {group.items.map((item) => {
+                                        const isActive = pathname === item.href;
+                                        return (
+                                            <Link
+                                                key={item.href}
+                                                href={item.href}
+                                                className={`flex items-center gap-3 px-4 py-2.5 rounded-md text-sm font-medium transition-colors ${isActive
+                                                    ? 'bg-sky-100 text-sky-900'
+                                                    : 'text-slate-600 hover:bg-sky-50 hover:text-sky-900'
+                                                    }`}
+                                            >
+                                                <item.icon size={18} />
+                                                {item.name}
+                                            </Link>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        ))}
+                    </nav>
 
-                        <div className="p-4 border-t border-sky-100">
-                            <button
-                                onClick={logout}
-                                className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
-                            >
-                                <LogOut size={16} />
-                                {t.logout}
-                            </button>
+                    <div className="p-4 border-t border-sky-100 space-y-4">
+                        {/* Language Selector */}
+                        <div className="flex justify-center gap-2 text-xs font-sans tracking-widest text-slate-400">
+                            <button onClick={() => setLanguage('hr')} className={`hover:text-sky-900 ${language === 'hr' ? 'text-sky-900 font-bold' : ''}`}>CRO</button>
+                            <span>|</span>
+                            <button onClick={() => setLanguage('sr')} className={`hover:text-sky-900 ${language === 'sr' ? 'text-sky-900 font-bold' : ''}`}>SRB</button>
+                            <span>|</span>
+                            <button onClick={() => setLanguage('en')} className={`hover:text-sky-900 ${language === 'en' ? 'text-sky-900 font-bold' : ''}`}>EN</button>
+                            <span>|</span>
+                            <button onClick={() => setLanguage('de')} className={`hover:text-sky-900 ${language === 'de' ? 'text-sky-900 font-bold' : ''}`}>DE</button>
                         </div>
+                        <button
+                            onClick={logout}
+                            className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                        >
+                            <LogOut size={16} />
+                            {t.logout}
+                        </button>
                     </div>
                 </aside>
 

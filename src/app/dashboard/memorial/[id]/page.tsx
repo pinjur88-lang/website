@@ -54,13 +54,14 @@ export default function ClanDetailPage() {
         let generalHistory = '';
 
         // Poreklo marker often starts the text or comes after a newline
-        const localMatch = text.match(/\[IZVOR: POREKLO\.RS - BALJCI\]\s*([\s\S]*?)(?=\[\w+\]|$)/);
+        // Poreklo marker - stop at next [...] tag
+        const localMatch = text.match(/\[IZVOR: POREKLO\.RS - BALJCI\]\s*([\s\S]*?)(?=\[[^\]]+\]|$)/);
         if (localMatch) {
             localHistory = localMatch[1].trim();
         }
 
-        // General marker
-        const generalMatch = text.match(/\[OPĆENITO\]\s*([\s\S]*?)(?=\[\w+\]|$)/);
+        // General marker - match [OPĆENITO] or [OPĆENITO O PREZIMENU]
+        const generalMatch = text.match(/\[OPĆENITO.*?\]\s*([\s\S]*?)(?=\[[^\]]+\]|$)/);
         if (generalMatch) {
             generalHistory = generalMatch[1].trim();
         }

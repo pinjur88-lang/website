@@ -130,26 +130,7 @@ export default function HandbookPage() {
                 </div>
             )
         },
-        {
-            id: 'cash',
-            icon: Banknote,
-            color: 'text-green-600',
-            bg: 'bg-green-50',
-            border: 'border-green-200',
-            title: t.cashTitle,
-            hero: t.cashHero,
-            content: (
-                <div className="space-y-4">
-                    <div className="bg-red-50 border border-red-100 p-3 rounded-lg flex items-start gap-3">
-                        <AlertTriangle size={18} className="text-red-500 shrink-0 mt-0.5" />
-                        <p className="text-red-800 text-sm font-bold">{t.cashWarning}</p>
-                    </div>
-                    <div className="bg-green-100 p-3 rounded-lg text-green-900 text-sm">
-                        <span className="font-bold">Rule:</span> {t.cashTip}
-                    </div>
-                </div>
-            )
-        },
+
         {
             id: 'lamb',
             icon: Truck, // Use a filler for now, maybe Utensils if available

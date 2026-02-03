@@ -1,4 +1,4 @@
-export type Language = 'hr' | 'bs' | 'en' | 'de';
+export type Language = 'hr' | 'sr' | 'en' | 'de';
 
 export const translations = {
     hr: {
@@ -23,7 +23,7 @@ export const translations = {
         requestAccess: "Zatraži Pristup",
         footerRight: "Sva prava pridržana.",
         modalTitle: "Zatraži Pristup",
-        charterMember: "Pridružite se kao Poveljni Član (2026). Članarina je besplatna prvu godinu dok uspostavljamo infrastrukturu. Prijavite se na listu za novosti i pravo glasa.",
+        charterMember: "Pridružite se listi čekanja. Trenutno uspostavljamo bankovni račun udruge. Kada proces bude završen, primit ćete e-mail s uputama za registraciju i uplatu članarine.",
         nameLabel: "Ime i Prezime",
         emailLabel: "E-mail Adresa",
         phoneLabel: "Broj Mobitela",
@@ -286,7 +286,7 @@ export const translations = {
         processTitle: "Proces",
         processSteps: "Općina prikuplja popis kvarova. Koncesionaru šalju nalog jednom ili dvaput mjesečno. Koncesionar popravlja sve odjednom. Vrijeme čekanja: 2-4 tjedna.",
     },
-    bs: {
+    sr: {
         exploreHeritage: "Istražite Našu Digitalnu Baštinu",
         membersOnly: "(Samo za članove)",
         feat1Title: "Interaktivna Karta Sela",
@@ -308,7 +308,7 @@ export const translations = {
         requestAccess: "Zatraži Pristup",
         footerRight: "Sva prava pridržana.",
         modalTitle: "Zatraži Pristup",
-        charterMember: "Pridružite se kao Poveljni Član (2026). Članarina je besplatna prvu godinu dok uspostavljamo infrastrukturu.",
+        charterMember: "Pridružite se listi čekanja. Trenutno uspostavljamo bankovni račun udruženja. Kada proces bude završen, primit ćete e-mail s uputama za registraciju i uplatu članarine.",
         nameLabel: "Ime i Prezime",
         emailLabel: "E-mail Adresa",
         phoneLabel: "Broj Mobitela",
@@ -588,7 +588,7 @@ export const translations = {
         requestAccess: "Request Access",
         footerRight: "All rights reserved.",
         modalTitle: "Request Access",
-        charterMember: "Join now as a Charter Member (2026). Membership fees are waived for the first year.",
+        charterMember: "Join the waitlist. We are currently setting up the association's bank account. Once completed, you will receive an email with instructions for registration and membership payment.",
         nameLabel: "Full Name",
         emailLabel: "Email Address",
         phoneLabel: "Mobile Phone",
@@ -861,7 +861,7 @@ export const translations = {
         requestAccess: "Zugang Anfordern",
         footerRight: "Alle Rechte vorbehalten.",
         modalTitle: "Zugang Anfordern",
-        charterMember: "Werden Sie jetzt Gründungsmitglied (2026). Der Mitgliedsbeitrag entfällt im ersten Jahr.",
+        charterMember: "Treten Sie der Warteliste bei. Wir richten derzeit das Bankkonto des Vereins ein. Sobald dies abgeschlossen ist, erhalten Sie eine E-Mail mit Anweisungen zur Registrierung und Zahlung des Mitgliedsbeitrags.",
         nameLabel: "Vor- und Nachname",
         emailLabel: "E-Mail-Adresse",
         phoneLabel: "Handynummer",

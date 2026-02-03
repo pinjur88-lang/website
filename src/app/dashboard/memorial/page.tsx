@@ -39,19 +39,28 @@ export default function MemorialPage() {
             title: "Memorijalni Arhiv",
             subtitle: "Indeks prezimena obitelji Baljaka",
             search: "Traži prezime...",
-            empty: "Nema prezimena za ovo slovo."
+            empty: "Nema prezimena za ovo slovo.",
+            historyTitle: "Povijesni Kontekst: Drniška Krajina",
+            historyText: "U 17. stoljeću, Kandijski (1645-1669) i Morejski (1684-1699) ratovi između Mlečana i Osmanlija pokrenuli su velike migracije. Stanovništvo je prelazilo s turskog teritorija na mletački (Šibenik, primorje). Nakon 1690., novi val doseljenika stiže iz zapadne Bosne (Glamoč, Janj), a Mlečani u 18. stoljeću naseljavaju i obitelji iz Crne Gore. Pravoslavci i katolici često su živjeli zajedno, u starim spisima zabilježeni kao Morlaci.",
+            credit: "Istraživanje i obrada: Slobodan Zrnić (2023)"
         },
         en: {
             title: "Memorial Archive",
             subtitle: "Index of Baljci family surnames",
             search: "Search surname...",
-            empty: "No surnames for this letter."
+            empty: "No surnames for this letter.",
+            historyTitle: "Historical Context: Drniš Region",
+            historyText: "In the 17th century, the Candian (1645-1669) and Morean (1684-1699) wars between Venice and the Ottomans triggered massive migrations. Populations moved from Ottoman territories to the Venetian coast (Šibenik). After 1690, a new wave arrived from Western Bosnia, and in the 18th century, families from Montenegro were also resettled here. Orthodox and Catholic families often lived side by side, historically recorded as 'Morlachs'.",
+            credit: "Research and compilation: Slobodan Zrnić (2023)"
         },
         de: {
             title: "Gedenkarchiv",
             subtitle: "Index der Baljci-Familiennamen",
             search: "Nachname suchen...",
-            empty: "Keine Nachnamen für diesen Buchstaben."
+            empty: "Keine Nachnamen für diesen Buchstaben.",
+            historyTitle: "Historischer Kontext: Region Drniš",
+            historyText: "Im 17. Jahrhundert lösten die Kriege um Kreta und Morea zwischen Venedig und den Osmanen massive Wanderungsbewegungen aus. Die Bevölkerung zog von osmanischen Gebieten an die venezianische Küste (Šibenik). Nach 1690 kam eine neue Welle aus Westbosnien, und im 18. Jahrhundert wurden auch Familien aus Montenegro hier angesiedelt. Orthodoxe und katholische Familien lebten oft Seite an Seite und wurden historisch als 'Morlaken' aufgezeichnet.",
+            credit: "Forschung und Zusammenstellung: Slobodan Zrnić (2023)"
         }
     };
     const txt = labels[language as keyof typeof labels] || labels.en;
