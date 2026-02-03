@@ -85,16 +85,16 @@ export default function ContactPage() {
                 </p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="max-w-3xl mx-auto">
                 {/* Form Section */}
-                <div className="lg:col-span-2 bg-white p-6 rounded-xl border border-sky-100 shadow-sm space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="bg-white p-6 md:p-8 rounded-2xl border border-sky-100 shadow-xl shadow-sky-900/5 space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-2">
                             <label className="text-sm font-semibold text-slate-700">{l.categoryLabel}</label>
                             <select
                                 value={category}
                                 onChange={(e) => setCategory(e.target.value)}
-                                className="w-full p-2.5 bg-slate-50 border border-sky-100 rounded-lg text-sm focus:ring-2 focus:ring-sky-500 outline-none transition-all"
+                                className="w-full p-3 bg-slate-50 border border-sky-100 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all"
                             >
                                 {categories.en.map((cat, i) => (
                                     <option key={cat} value={cat}>
@@ -110,7 +110,7 @@ export default function ContactPage() {
                                 value={subject}
                                 onChange={(e) => setSubject(e.target.value)}
                                 placeholder="..."
-                                className="w-full p-2.5 bg-slate-50 border border-sky-100 rounded-lg text-sm focus:ring-2 focus:ring-sky-500 outline-none transition-all"
+                                className="w-full p-3 bg-slate-50 border border-sky-100 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all"
                             />
                         </div>
                     </div>
@@ -118,17 +118,17 @@ export default function ContactPage() {
                     <div className="space-y-2">
                         <label className="text-sm font-semibold text-slate-700">{l.messageLabel}</label>
                         <textarea
-                            rows={6}
+                            rows={8}
                             value={message}
                             onChange={(e) => setMessage(e.target.value)}
-                            className="w-full p-3 bg-slate-50 border border-sky-100 rounded-lg text-sm focus:ring-2 focus:ring-sky-500 outline-none transition-all resize-none"
+                            className="w-full p-4 bg-slate-50 border border-sky-100 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all resize-none"
                             placeholder="..."
                         ></textarea>
                     </div>
 
-                    <div className="bg-sky-50 p-4 rounded-lg flex items-start gap-3">
-                        <AlertCircle className="text-sky-600 flex-shrink-0" size={20} />
-                        <p className="text-xs text-sky-800 leading-relaxed">
+                    <div className="bg-blue-50/50 p-4 rounded-xl flex items-start gap-3 border border-blue-100/50">
+                        <AlertCircle className="text-blue-600 flex-shrink-0" size={20} />
+                        <p className="text-xs text-blue-800 leading-relaxed">
                             {l.infoText}
                         </p>
                     </div>
@@ -136,37 +136,11 @@ export default function ContactPage() {
                     <button
                         onClick={handleSendEmail}
                         disabled={!message}
-                        className="w-full py-3 bg-sky-600 hover:bg-sky-700 disabled:opacity-50 disabled:hover:bg-sky-600 text-white rounded-lg font-bold flex items-center justify-center gap-2 transition-all shadow-md active:scale-95"
+                        className="w-full py-4 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:hover:bg-blue-600 text-white rounded-xl font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-blue-900/20 active:scale-95 text-lg"
                     >
-                        <Send size={18} />
+                        <Send size={20} />
                         {l.buttonText}
                     </button>
-                </div>
-
-                {/* Info Sidebar */}
-                <div className="space-y-6">
-                    <div className="bg-gradient-to-br from-slate-900 to-slate-800 p-6 rounded-xl text-white shadow-lg">
-                        <h3 className="font-bold mb-4 flex items-center gap-2">
-                            <MessageCircle size={20} className="text-sky-400" />
-                            Admin Support
-                        </h3>
-                        <p className="text-slate-300 text-sm mb-4 leading-relaxed">
-                            {l.directEmail}
-                        </p>
-                        <div className="bg-white/10 p-3 rounded-lg flex items-center gap-3 border border-white/10 group hover:bg-white/20 transition-colors cursor-pointer"
-                            onClick={() => window.location.href = `mailto:${adminEmail}`}>
-                            <Mail size={18} className="text-sky-400" />
-                            <span className="text-sm font-medium">{adminEmail}</span>
-                        </div>
-                    </div>
-
-                    <div className="bg-amber-50 p-6 rounded-xl border border-amber-100">
-                        <h4 className="text-amber-900 font-bold text-sm mb-2">Udruga Građana Baljci</h4>
-                        <p className="text-amber-800/70 text-xs leading-relaxed">
-                            Sjedište: Baljci, Općina Ružić<br />
-                            Hrvatska
-                        </p>
-                    </div>
                 </div>
             </div>
         </div>
