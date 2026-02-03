@@ -25,9 +25,14 @@ export default function Hero() {
                     <span>|</span>
                     <button onClick={() => setLanguage('de')} className={`hover:text-zinc-800 ${language === 'de' ? 'text-zinc-900 font-bold' : ''}`}>DE</button>
                 </div>
-                <Link href="/login" className="text-xs text-zinc-400 hover:text-zinc-600 transition-colors uppercase tracking-wider">
-                    {t.login}
-                </Link>
+                <div className="flex gap-6 items-center">
+                    <Link href="/donate" className="text-xs font-bold text-amber-700 hover:text-amber-800 transition-colors uppercase tracking-wider flex items-center gap-2">
+                        Doniraj ❤️
+                    </Link>
+                    <Link href="/login" className="text-xs text-zinc-400 hover:text-zinc-600 transition-colors uppercase tracking-wider">
+                        {t.login}
+                    </Link>
+                </div>
             </div>
 
             {/* Main Content */}
