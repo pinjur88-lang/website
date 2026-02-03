@@ -9,6 +9,7 @@ interface User {
     name: string;
     email: string;
     role: 'admin' | 'member';
+    membership_tier: 'free' | 'silver' | 'gold';
 }
 
 interface AuthContextType {
@@ -54,11 +55,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 // Check if user is the admin email
                 const isAdmin = session.user.email === 'udrugabaljci@gmail.com';
 
+                // Get profile details (tier)
+                const { data: profileData } = await supabase
+                    .from('profiles')
+                    .select('membership_tier')
+                    .eq('id', session.user.id)
+                    .single();
+
                 const memberUser: User = {
                     id: session.user.id,
                     name: session.user.user_metadata?.display_name || 'Član',
                     email: session.user.email!,
-                    role: isAdmin ? 'admin' : 'member'
+                    role: isAdmin ? 'admin' : 'member',
+                    membership_tier: profileData?.membership_tier || 'free'
                 };
                 setUser(memberUser);
                 localStorage.setItem('mock_session', JSON.stringify(memberUser));
@@ -97,7 +106,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                     id: sbData.user?.id || 'admin-master',
                     name: 'Administrator',
                     email,
-                    role: 'admin'
+                    role: 'admin',
+                    membership_tier: 'gold' // Admins are always top tier
                 };
                 setUser(adminUser);
                 localStorage.setItem('mock_session', JSON.stringify(adminUser));
@@ -135,11 +145,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
                     const isAdmin = data.user.email === 'udrugabaljci@gmail.com';
 
+                    // Get profile details (tier)
+                    const { data: profileData } = await supabase
+                        .from('profiles')
+                        .select('membership_tier')
+                        .eq('id', data.user.id)
+                        .single();
+
                     const memberUser: User = {
                         id: data.user.id,
                         name: data.user.user_metadata?.display_name || 'Član',
                         email: data.user.email!,
-                        role: isAdmin ? 'admin' : 'member'
+                        role: isAdmin ? 'admin' : 'member',
+                        membership_tier: profileData?.membership_tier || 'free'
                     };
                     setUser(memberUser);
 

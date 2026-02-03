@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { Calendar, MessageCircle, Phone, Image as ImageIcon, Map as MapIcon, Scroll } from 'lucide-react';
+import { Calendar, MessageCircle, Phone, Image as ImageIcon, Map as MapIcon, Scroll, Mail, Vote } from 'lucide-react';
 import { getAnnouncements, getGalleryImages } from '@/actions/cms';
 import { useLanguage } from '@/lib/language-context';
 import Image from 'next/image';
@@ -123,41 +123,42 @@ export default function DashboardHome() {
 
                 {/* Sidebar - Quick Actions */}
                 <div className="space-y-6">
-                    {/* Map Widget */}
-                    <div className="bg-gradient-to-br from-indigo-900 to-slate-900 p-6 rounded-lg shadow-lg border border-indigo-500/30 text-white relative overflow-hidden group">
-                        <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                            <MapIcon size={100} />
+
+                    {/* Contact Admin Widget */}
+                    <div className="bg-white p-6 rounded-lg shadow-sm border border-sky-100 group hover:border-sky-300 transition-all">
+                        <div className="flex items-center gap-3 mb-3">
+                            <div className="p-2 bg-sky-50 rounded-lg text-sky-600 group-hover:bg-sky-600 group-hover:text-white transition-colors">
+                                <Mail size={20} />
+                            </div>
+                            <h3 className="font-bold text-slate-900">{t.contactAdmin || 'Contact Admin'}</h3>
                         </div>
-                        <h3 className="text-lg font-bold mb-2 flex items-center gap-2 relative z-10">
-                            <MapIcon className="text-indigo-400" />
-                            {t.title === "Association Baljci" ? "Interactive Map" : "Interaktivna Karta"}
-                        </h3>
-                        <p className="text-indigo-200 text-sm mb-4 relative z-10 leading-relaxed">
+                        <p className="text-slate-500 text-xs mb-4 leading-relaxed">
                             {t.title === "Association Baljci"
-                                ? "Explore the village, find ancestral homes, and see historical photos."
-                                : "Istražite selo, pronađite djedovinu i pogledajte povijesne fotografije."}
+                                ? "Have questions or concerns about the village? Contact us directly."
+                                : "Imate li pitanja ili briga u vezi sela? Kontaktirajte nas izravno."}
                         </p>
-                        <a href="/map" className="block w-full py-2 bg-indigo-500 hover:bg-indigo-400 text-center rounded-md font-bold text-sm transition-colors relative z-10 shadow-md">
-                            {t.title === "Association Baljci" ? "Open Map" : "Otvori Kartu"}
+                        <a href="/dashboard/contact" className="text-sky-600 text-xs font-bold hover:underline flex items-center gap-1">
+                            {t.title === "Association Baljci" ? "Send Message" : "Pošalji Poruku"}
+                            <span className="text-lg">→</span>
                         </a>
                     </div>
 
-                    {/* Memorial Archive Widget */}
-                    <div className="bg-gradient-to-br from-amber-900 to-stone-900 p-6 rounded-lg shadow-lg border border-amber-500/30 text-white relative overflow-hidden group">
-                        <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                            <Scroll size={100} />
+                    {/* Voting Hall Widget */}
+                    <div className="bg-gradient-to-br from-sky-600 to-sky-700 p-6 rounded-lg shadow-md text-white group hover:shadow-lg transition-all">
+                        <div className="flex items-center gap-3 mb-3">
+                            <div className="p-2 bg-white/20 rounded-lg">
+                                <Vote size={20} />
+                            </div>
+                            <h3 className="font-bold">{t.votingHall || 'Dvorana za Glasovanje'}</h3>
                         </div>
-                        <h3 className="text-lg font-bold mb-2 flex items-center gap-2 relative z-10">
-                            <Scroll className="text-amber-400" />
-                            {t.title === "Association Baljci" ? "Memorial Archive" : "Memorijalni Arhiv"}
-                        </h3>
-                        <p className="text-amber-200 text-sm mb-4 relative z-10 leading-relaxed">
+                        <p className="text-sky-100 text-xs mb-4 leading-relaxed">
                             {t.title === "Association Baljci"
-                                ? "Discover family origins, clan distributions, and historical records."
-                                : "Istražite porijeklo obitelji, rasprostranjenost klanova i povijesne zapise."}
+                                ? "Your decision matters! Participate in the latest poll on communal spending."
+                                : "Vaša odluka je važna! Sudjelujte u novom glasovanju o utrošku sredstava."}
                         </p>
-                        <a href="/dashboard/memorial" className="block w-full py-2 bg-amber-600 hover:bg-amber-500 text-center rounded-md font-bold text-sm transition-colors relative z-10 shadow-md">
-                            {t.title === "Association Baljci" ? "Open Archive" : "Otvori Arhiv"}
+                        <a href="/dashboard/voting" className="text-white text-xs font-bold hover:underline flex items-center gap-1">
+                            {t.voteNow || 'Glasaj Sada'}
+                            <span className="text-lg">→</span>
                         </a>
                     </div>
 

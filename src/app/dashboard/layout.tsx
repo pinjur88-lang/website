@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '@/lib/auth-context';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { LayoutDashboard, Users, FileText, Settings, LogOut, Menu, X, Hammer, BookOpen, Map, Trash2, Lightbulb, AlertTriangle, MessageSquare, ImageIcon, Scale } from 'lucide-react';
+import { LayoutDashboard, Users, FileText, Settings, LogOut, Menu, X, Hammer, BookOpen, Map, Trash2, Lightbulb, AlertTriangle, MessageSquare, ImageIcon, Scale, Mail, Vote } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -34,6 +34,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             items: [
                 { name: t.overview, href: '/dashboard', icon: LayoutDashboard },
                 { name: t.map, href: '/dashboard/map', icon: Map },
+                { name: t.voting, href: '/dashboard/voting', icon: Vote },
             ]
         },
         {
@@ -42,6 +43,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 { name: t.community, href: '/dashboard/community', icon: MessageSquare },
                 { name: t.gallery, href: '/dashboard/gallery', icon: ImageIcon },
                 { name: t.donations, href: '/dashboard/donations', icon: FileText },
+                { name: t.contactAdmin, href: '/dashboard/contact', icon: Mail },
             ]
         },
         {
