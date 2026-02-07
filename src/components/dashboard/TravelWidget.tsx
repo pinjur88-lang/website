@@ -39,6 +39,9 @@ export default function TravelWidget() {
 
         if (error) {
             console.error('Error loading visits:', error);
+            // Alert only on severe errors, or maybe just log?
+            // If the relationship is missing, this will trigger.
+            // alert('Greška pri učitavanju: ' + error.message); 
         } else if (data) {
             const mappedVisits = data.map((visit: any) => ({
                 id: visit.id,
