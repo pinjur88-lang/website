@@ -1,8 +1,13 @@
 'use client'
 
 import React, { useEffect, useRef, useState } from 'react';
-import { Network } from 'vis-network';
-import { DataSet } from 'vis-data';
+
+// Valid imports for types if needed, but we used 'any' mostly or dynamic
+// import { Network } from 'vis-network'; 
+// import { DataSet } from 'vis-data';
+// Keeping Type Definitions if they don't cause side-effects
+import type { Network } from 'vis-network';
+
 
 interface Person {
     original_id: string;
@@ -40,82 +45,92 @@ export default function FamilyTree() {
         setItems(Array.isArray(data) ? data : []);
     };
 
+
     const loadPersonGraph = async (id: string) => {
-        const res = await fetch(`/api/genealogy?id=${id}`);
-        const data = await res.json();
+        try {
+            const res = await fetch(`/api/genealogy?id=${id}`);
+            const data = await res.json();
 
-        if (data.error) return;
+            if (data.error) throw new Error(data.error);
 
-        const { person, parents, children } = data;
+            const { person, parents, children } = data;
 
-        // Create datasets
-        const nodes = new DataSet<any>([]);
-        const edges = new DataSet<any>([]);
+            // Dynamically import vis-network to avoid SSR/Build issues
+            const { DataSet } = await import('vis-data');
+            const { Network } = await import('vis-network');
 
-        const addNode = (p: Person, group: string, labelPrefix = '') => {
-            if (!p) return;
-            try {
-                const existing = nodes.get(p.original_id);
-                if (!existing) {
-                    nodes.add({
-                        id: p.original_id,
-                        label: `${labelPrefix}${p.name} ${p.surname}\n(${p.birth_year || '?'})`,
-                        group: group,
-                        title: `Origin: ${p.origin || 'Unknown'}`
-                    });
-                }
-            } catch (e) {
-                console.error(e);
-            }
-        };
+            // Create datasets
+            const nodes = new DataSet<any>([]);
+            const edges = new DataSet<any>([]);
 
-        addNode(person, 'focus');
-        setSelectedPerson(person);
-
-        parents?.forEach((p: Person) => {
-            addNode(p, 'parent');
-            edges.add({ from: p.original_id, to: person.original_id, arrows: 'to' });
-        });
-
-        children?.forEach((p: Person) => {
-            addNode(p, 'child');
-            edges.add({ from: person.original_id, to: p.original_id, arrows: 'to' });
-        });
-
-        if (containerRef.current) {
-            const data = { nodes, edges };
-            const options = {
-                nodes: {
-                    shape: 'box',
-                    font: { size: 14 }
-                },
-                groups: {
-                    focus: { color: { background: '#97C2FC', border: '#2B7CE9' }, borderWidth: 2 },
-                    parent: { color: { background: '#E0E0E0', border: '#CCCCCC' } },
-                    child: { color: { background: '#E0E0E0', border: '#CCCCCC' } }
-                },
-                layout: {
-                    hierarchical: {
-                        direction: 'UD',
-                        sortMethod: 'directed',
-                        levelSeparation: 100,
-                        nodeSpacing: 150
+            const addNode = (p: Person, group: string, labelPrefix = '') => {
+                if (!p) return;
+                try {
+                    const existing = nodes.get(p.original_id);
+                    if (!existing) {
+                        nodes.add({
+                            id: p.original_id,
+                            label: `${labelPrefix}${p.name} ${p.surname}\n(${p.birth_year || '?'})`,
+                            group: group,
+                            title: `Origin: ${p.origin || 'Unknown'}`
+                        });
                     }
-                },
-                physics: false
+                } catch (e) {
+                    console.error(e);
+                }
             };
 
-            if (networkRef.current) {
-                networkRef.current.setData(data);
-            } else {
-                networkRef.current = new Network(containerRef.current, data, options);
-                networkRef.current.on('click', (params) => {
-                    if (params.nodes.length > 0) {
-                        const clickedId = params.nodes[0];
-                        loadPersonGraph(clickedId);
-                    }
-                });
+            addNode(person, 'focus');
+            setSelectedPerson(person);
+
+            parents?.forEach((p: Person) => {
+                addNode(p, 'parent');
+                edges.add({ from: p.original_id, to: person.original_id, arrows: 'to' });
+            });
+
+            children?.forEach((p: Person) => {
+                addNode(p, 'child');
+                edges.add({ from: person.original_id, to: p.original_id, arrows: 'to' });
+            });
+
+            if (containerRef.current) {
+                const graphData = { nodes, edges }; // Renamed from 'data' to avoid conflict
+                const options = {
+                    nodes: {
+                        shape: 'box',
+                        font: { size: 14 }
+                    },
+                    groups: {
+                        focus: { color: { background: '#97C2FC', border: '#2B7CE9' }, borderWidth: 2 },
+                        parent: { color: { background: '#E0E0E0', border: '#CCCCCC' } },
+                        child: { color: { background: '#E0E0E0', border: '#CCCCCC' } }
+                    },
+                    layout: {
+                        hierarchical: {
+                            direction: 'UD',
+                            sortMethod: 'directed',
+                            levelSeparation: 100,
+                            nodeSpacing: 150
+                        }
+                    },
+                    physics: false
+                };
+
+                if (networkRef.current) {
+                    networkRef.current.setData(graphData);
+                } else {
+                    networkRef.current = new Network(containerRef.current, graphData, options);
+                    networkRef.current.on('click', (params: any) => {
+                        if (params.nodes.length > 0) {
+                            const clickedId = params.nodes[0];
+                            loadPersonGraph(clickedId);
+                        }
+                    });
+                }
             }
+        } catch (err) {
+            console.error("Failed to load graph:", err);
+            alert("Greška pri učitavanju obiteljskog stabla. Pokušajte ponovno.");
         }
     };
 
