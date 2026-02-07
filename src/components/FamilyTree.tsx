@@ -133,14 +133,14 @@ export default function FamilyTree() {
                 <button onClick={handleSearch} className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Search</button>
             </div>
 
-            <div className="flex gap-4 h-full min-h-[600px]">
+            <div className="flex flex-col lg:flex-row gap-4 h-full min-h-[600px]">
                 {/* Sidebar Results */}
-                <div className="w-1/4 min-w-[250px] border rounded bg-white overflow-y-auto max-h-[800px]">
+                <div className="w-full lg:w-1/4 min-w-[250px] border rounded bg-white overflow-y-auto h-[200px] lg:h-auto lg:max-h-[800px]">
                     {items.length === 0 && <div className="p-4 text-gray-400">No results found</div>}
                     {items.map(p => (
                         <div
                             key={p.original_id}
-                            className="p-3 border-b cursor-pointer hover:bg-blue-50 transition-colors"
+                            className={`p-3 border-b cursor-pointer hover:bg-blue-50 transition-colors ${selectedPerson?.original_id === p.original_id ? 'bg-blue-100 border-l-4 border-l-blue-600' : ''}`}
                             onClick={() => loadPersonGraph(p.original_id)}
                         >
                             <div className="font-semibold text-gray-800">{p.name} {p.surname}</div>
@@ -150,7 +150,7 @@ export default function FamilyTree() {
                 </div>
 
                 {/* Graph */}
-                <div className="flex-1 border rounded bg-gray-50 relative" ref={containerRef}>
+                <div className="flex-1 border rounded bg-gray-50 relative min-h-[400px]" ref={containerRef}>
                     {!selectedPerson && (
                         <div className="absolute inset-0 flex items-center justify-center text-gray-400">
                             Select a person to view their tree

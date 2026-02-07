@@ -34,7 +34,7 @@ export default function MembersGrid() {
     ];
 
     return (
-        <section className="py-24 bg-[#f8f9fa] px-4">
+        <section className="py-12 md:py-24 bg-[#f8f9fa] px-4">
             <div className="max-w-7xl mx-auto">
                 {/* Section Header */}
                 <div className="text-center mb-16">

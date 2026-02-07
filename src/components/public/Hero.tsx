@@ -15,8 +15,8 @@ export default function Hero() {
             <AccessRequestModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
 
             {/* Top Bar */}
-            <div className="w-full p-6 flex justify-between items-center border-b border-zinc-200 bg-white">
-                <div className="flex gap-2 text-xs font-sans tracking-widest text-zinc-400">
+            <div className="w-full p-6 flex flex-wrap justify-between items-center gap-4 border-b border-zinc-200 bg-white">
+                <div className="flex gap-2 text-xs font-sans tracking-widest text-zinc-400 overflow-x-auto">
                     <button onClick={() => setLanguage('hr')} className={`hover:text-zinc-800 ${language === 'hr' ? 'text-zinc-900 font-bold' : ''}`}>CRO</button>
                     <span>|</span>
                     <button onClick={() => setLanguage('sr')} className={`hover:text-zinc-800 ${language === 'sr' ? 'text-zinc-900 font-bold' : ''}`}>SRB</button>

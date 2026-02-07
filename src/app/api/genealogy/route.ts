@@ -33,6 +33,11 @@ export async function GET(request: Request) {
         }
     );
 
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    if (authError || !user) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     if (id) {
         // Fetch specific person and their immediate family for graph
         const { data: person, error } = await supabase
