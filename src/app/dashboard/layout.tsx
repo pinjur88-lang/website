@@ -59,6 +59,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             title: "Baština",
             items: [
                 { name: t.memorial, href: '/dashboard/memorial', icon: BookOpen },
+                { name: t.genealogy, href: '/dashboard/genealogy', icon: Users },
                 { name: t.handbook, href: '/dashboard/handbook', icon: BookOpen },
                 { name: t.statute, href: '/dashboard/statute', icon: Scale },
             ]
