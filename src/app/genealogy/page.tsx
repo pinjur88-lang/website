@@ -1,5 +1,9 @@
+'use client';
+
 import React from 'react';
-import FamilyTree from '@/components/FamilyTree';
+import dynamic from 'next/dynamic';
+
+const FamilyTree = dynamic(() => import('@/components/FamilyTree'), { ssr: false });
 
 export default function GenealogyPage() {
     return (

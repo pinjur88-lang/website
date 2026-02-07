@@ -1,8 +1,8 @@
 'use client'
 
 import React, { useEffect, useRef, useState } from 'react';
-import { Network } from 'vis-network/standalone/esm/vis-network';
-import { DataSet } from 'vis-data/standalone/esm/vis-data';
+import { Network } from 'vis-network';
+import { DataSet } from 'vis-data';
 
 interface Person {
     original_id: string;
