@@ -85,40 +85,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setIsLoading(true);
 
         try {
-            // 1. BACKDOOR: Admin Shared Password
-            if (email === 'udrugabaljci@gmail.com' && password === 'Jojlolomoj2026!') {
-                // We MUST sign in to Supabase to appease the Middleware
-                const { data: sbData, error: sbError } = await supabase.auth.signInWithPassword({
-                    email,
-                    password
-                });
-
-                if (sbError) {
-                    console.error("Admin Supabase Login Failed:", sbError.message);
-                    // Decide: do we let them in anyway? 
-                    // NO. If we do, Middleware will bounce them back. 
-                    // We must treat this as a failure or the Middleware needs to be relaxed.
-                    // For now, let's show the error so the user knows WHY it is failing.
-                    return { error: `Admin Sync Error: ${sbError.message}` };
-                }
-
-                const adminUser: User = {
-                    id: sbData.user?.id || 'admin-master',
-                    name: 'Administrator',
-                    email,
-                    role: 'admin',
-                    membership_tier: 'gold' // Admins are always top tier
-                };
-                setUser(adminUser);
-                localStorage.setItem('mock_session', JSON.stringify(adminUser));
-                setIsLoading(false);
-                router.push('/admin');
-                return { error: null };
-            }
-
-            // 2. REAL AUTH: For Members (Supabase)
+            // 1. Supabase Auth
             if (password) {
-                // Attempt Supabase Login
                 const { data, error } = await supabase.auth.signInWithPassword({
                     email,
                     password
@@ -130,13 +98,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 }
 
                 if (data.user) {
-                    // SUCCESS - Redirect immediately
-                    // The onAuthStateChange listener (above) will handle:
-                    // 1. Fetching profile/tier
-                    // 2. Checking 'requests' approval status (and logging out if needed)
-                    // 3. Setting the local 'user' state
+                    // Check if Admin to redirect properly
+                    const { data: profile } = await supabase
+                        .from('profiles')
+                        .select('role')
+                        .eq('id', data.user.id)
+                        .single();
 
-                    router.push('/dashboard');
+                    if (profile?.role === 'admin') {
+                        router.push('/admin');
+                    } else {
+                        router.push('/dashboard');
+                    }
                     return { error: null };
                 }
             }

@@ -13,7 +13,6 @@ export async function createCommunityPost(content: string, authorId: string, isA
             .from('community_posts')
             .insert([{
                 content,
-                author_id: authorId, // Fix generic error
                 user_id: authorId,   // Maintaining our schema usage
                 is_anonymous: isAnonymous
             }])

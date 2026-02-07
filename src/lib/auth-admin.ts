@@ -23,14 +23,17 @@ export async function verifyAdmin() {
         return false;
     }
 
-    // Check for hardcoded admin email
-    if (user.email === 'udrugabaljci@gmail.com') {
+    // Check DB Role
+    const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .single();
+
+    if (profile?.role === 'admin') {
         return true;
     }
 
-    // Ideally we also check 'role' in public.profiles or app_metadata,
-    // but for now relying on email is the requested strict check.
-    // If you add other admins later, add DB check here.
     return false;
 }
 

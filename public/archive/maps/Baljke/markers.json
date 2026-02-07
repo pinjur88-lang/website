@@ -1,0 +1,2040 @@
+{
+  "Baljke-I.jpg": [
+    {
+      "text": "BALKE",
+      "suggested_modern_name": "Baljke",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        77,
+        420,
+        96,
+        502
+      ]
+    },
+    {
+      "text": "Mudrich Stan",
+      "suggested_modern_name": "Mudri\u0107 Stan",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        657,
+        592,
+        677,
+        687
+      ]
+    },
+    {
+      "text": "Cod Gabrovaz",
+      "suggested_modern_name": "Kod Gabrovca",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        736,
+        714,
+        755,
+        805
+      ]
+    },
+    {
+      "text": "Svilaja",
+      "suggested_modern_name": "Svilaja",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        860,
+        707,
+        884,
+        765
+      ]
+    },
+    {
+      "text": "Mirlovich",
+      "suggested_modern_name": "Mirlovi\u0107",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        486,
+        856,
+        503,
+        914
+      ]
+    },
+    {
+      "text": "Balke",
+      "suggested_modern_name": "Baljke",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        390,
+        835,
+        404,
+        870
+      ]
+    },
+    {
+      "text": "Petrle",
+      "suggested_modern_name": "Petrle",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        386,
+        800,
+        399,
+        832
+      ]
+    },
+    {
+      "text": "Comune",
+      "suggested_modern_name": "Op\u0107ina",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        55,
+        417,
+        71,
+        507
+      ]
+    },
+    {
+      "text": "Circolo di Zara",
+      "suggested_modern_name": "Okrug Zadar",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        101,
+        431,
+        118,
+        613
+      ]
+    },
+    {
+      "text": "Distretto di Dernis",
+      "suggested_modern_name": "Kotar Drni\u0161",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        121,
+        383,
+        137,
+        544
+      ]
+    },
+    {
+      "text": "Gasparini",
+      "suggested_modern_name": "Gasparini",
+      "type": "SURNAME",
+      "box_2d": [
+        542,
+        543,
+        561,
+        602
+      ]
+    }
+  ],
+  "Baljke-II.jpg": [
+    {
+      "text": "Fog: II",
+      "suggested_modern_name": null,
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        20,
+        440,
+        45,
+        500
+      ]
+    },
+    {
+      "text": "N. 6 Balke W. C. I. 17 cc",
+      "suggested_modern_name": null,
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        25,
+        760,
+        45,
+        910
+      ]
+    },
+    {
+      "text": "Loggia Patierno",
+      "suggested_modern_name": "Lo\u017ea Patierno",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        228,
+        185,
+        260,
+        220
+      ]
+    },
+    {
+      "text": "Bunari in Valle Pella",
+      "suggested_modern_name": "Bunari u Vali Pella",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        455,
+        55,
+        485,
+        115
+      ]
+    },
+    {
+      "text": "Valle Rupa",
+      "suggested_modern_name": "Uvala Rupa",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        475,
+        430,
+        495,
+        475
+      ]
+    },
+    {
+      "text": "Ruppe",
+      "suggested_modern_name": "Rupe",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        538,
+        295,
+        570,
+        355
+      ]
+    },
+    {
+      "text": "2493",
+      "suggested_modern_name": null,
+      "type": "PLOT_NUMBER",
+      "box_2d": [
+        546,
+        398,
+        556,
+        414
+      ]
+    },
+    {
+      "text": "Balle",
+      "suggested_modern_name": "Bale",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        555,
+        505,
+        570,
+        525
+      ]
+    },
+    {
+      "text": "Svilaja",
+      "suggested_modern_name": "Svilaja",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        720,
+        165,
+        745,
+        225
+      ]
+    },
+    {
+      "text": "2492",
+      "suggested_modern_name": null,
+      "type": "PLOT_NUMBER",
+      "box_2d": [
+        728,
+        255,
+        735,
+        272
+      ]
+    },
+    {
+      "text": "Valle Corte Poterna",
+      "suggested_modern_name": "Uvala Corte Poterna",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        740,
+        625,
+        765,
+        665
+      ]
+    },
+    {
+      "text": "Somma Promina",
+      "suggested_modern_name": "Somma Promina",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        805,
+        680,
+        835,
+        745
+      ]
+    },
+    {
+      "text": "Valle Grana Kalanova",
+      "suggested_modern_name": "Uvala Grana Kalanova",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        865,
+        480,
+        895,
+        535
+      ]
+    },
+    {
+      "text": "Gorgne Do",
+      "suggested_modern_name": "Gornji Dol",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        895,
+        45,
+        930,
+        130
+      ]
+    }
+  ],
+  "Baljke-III.jpg": [
+    {
+      "text": "Fog. III",
+      "suggested_modern_name": null,
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        15,
+        445,
+        45,
+        505
+      ]
+    },
+    {
+      "text": "N. 6",
+      "suggested_modern_name": null,
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        25,
+        740,
+        40,
+        765
+      ]
+    },
+    {
+      "text": "Batke W C II, 17 M",
+      "suggested_modern_name": null,
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        20,
+        770,
+        45,
+        890
+      ]
+    },
+    {
+      "text": "Lipovac",
+      "suggested_modern_name": "Lipovac",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        735,
+        145,
+        755,
+        190
+      ]
+    },
+    {
+      "text": "Ocupina",
+      "suggested_modern_name": "Okupina",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        645,
+        365,
+        660,
+        405
+      ]
+    },
+    {
+      "text": "Gruba",
+      "suggested_modern_name": "Gruba",
+      "type": "SURNAME",
+      "box_2d": [
+        660,
+        365,
+        675,
+        405
+      ]
+    },
+    {
+      "text": "Dolla",
+      "suggested_modern_name": "Dola",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        810,
+        540,
+        835,
+        590
+      ]
+    },
+    {
+      "text": "Selo",
+      "suggested_modern_name": "Selo",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        622,
+        578,
+        640,
+        608
+      ]
+    },
+    {
+      "text": "Duch",
+      "suggested_modern_name": "Duh",
+      "type": "SURNAME",
+      "box_2d": [
+        470,
+        710,
+        485,
+        755
+      ]
+    },
+    {
+      "text": "Radomiglia",
+      "suggested_modern_name": "Radomilja",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        485,
+        700,
+        500,
+        765
+      ]
+    },
+    {
+      "text": "Milanov",
+      "suggested_modern_name": "Milanov",
+      "type": "SURNAME",
+      "box_2d": [
+        415,
+        790,
+        430,
+        835
+      ]
+    },
+    {
+      "text": "Bonur",
+      "suggested_modern_name": "Bunar",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        430,
+        790,
+        445,
+        830
+      ]
+    },
+    {
+      "text": "Mejta",
+      "suggested_modern_name": "Me\u0111a",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        390,
+        840,
+        405,
+        875
+      ]
+    },
+    {
+      "text": "Degni Do",
+      "suggested_modern_name": "Donji Dol",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        805,
+        715,
+        835,
+        805
+      ]
+    }
+  ],
+  "Baljke-IV.jpg": [
+    {
+      "text": "Dragove Doline",
+      "suggested_modern_name": "Dragove Doline",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        168,
+        592,
+        192,
+        725
+      ]
+    },
+    {
+      "text": "Svilaja",
+      "suggested_modern_name": "Svilaja",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        392,
+        498,
+        424,
+        560
+      ]
+    },
+    {
+      "text": "Gradarica",
+      "suggested_modern_name": "Gradarica",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        228,
+        108,
+        256,
+        170
+      ]
+    },
+    {
+      "text": "Dogni Do",
+      "suggested_modern_name": "Donji Do",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        902,
+        0,
+        940,
+        85
+      ]
+    },
+    {
+      "text": "Koz",
+      "suggested_modern_name": "Koz",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        75,
+        218,
+        98,
+        252
+      ]
+    },
+    {
+      "text": "1622",
+      "suggested_modern_name": null,
+      "type": "PLOT_NUMBER",
+      "box_2d": [
+        438,
+        512,
+        452,
+        538
+      ]
+    },
+    {
+      "text": "N. 6 Baljke",
+      "suggested_modern_name": "Baljke",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        22,
+        760,
+        48,
+        860
+      ]
+    }
+  ],
+  "Baljke-IX.jpg": [
+    {
+      "text": "Fog IX",
+      "suggested_modern_name": null,
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        25,
+        430,
+        50,
+        485
+      ]
+    },
+    {
+      "text": "Svilaja",
+      "suggested_modern_name": "Svilaja",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        75,
+        790,
+        105,
+        855
+      ]
+    },
+    {
+      "text": "Dognji Do",
+      "suggested_modern_name": "Donji Dol",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        110,
+        10,
+        155,
+        95
+      ]
+    },
+    {
+      "text": "Jasvitz",
+      "suggested_modern_name": "Jazvi\u0107",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        375,
+        300,
+        415,
+        375
+      ]
+    },
+    {
+      "text": "Bodina",
+      "suggested_modern_name": "Bodina",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        695,
+        435,
+        735,
+        510
+      ]
+    },
+    {
+      "text": "Crvaninovaz",
+      "suggested_modern_name": "Crvaninovac",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        920,
+        570,
+        945,
+        645
+      ]
+    },
+    {
+      "text": "N 6 Bathe W C L 17 d 6",
+      "suggested_modern_name": null,
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        25,
+        755,
+        45,
+        920
+      ]
+    }
+  ],
+  "Baljke-V.jpg": [
+    {
+      "text": "Fog:o V",
+      "suggested_modern_name": null,
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        10,
+        420,
+        45,
+        480
+      ]
+    },
+    {
+      "text": "Ruppe",
+      "suggested_modern_name": "Rupe",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        250,
+        790,
+        290,
+        855
+      ]
+    },
+    {
+      "text": "Svilaja",
+      "suggested_modern_name": "Svilaja",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        715,
+        215,
+        750,
+        285
+      ]
+    },
+    {
+      "text": "Suvva",
+      "suggested_modern_name": "Suva",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        660,
+        615,
+        700,
+        680
+      ]
+    },
+    {
+      "text": "Sas",
+      "suggested_modern_name": "\u0160a\u0161",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        425,
+        460,
+        450,
+        495
+      ]
+    },
+    {
+      "text": "Confine",
+      "suggested_modern_name": null,
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        275,
+        595,
+        325,
+        625
+      ]
+    },
+    {
+      "text": "3113",
+      "suggested_modern_name": null,
+      "type": "PLOT_NUMBER",
+      "box_2d": [
+        675,
+        260,
+        695,
+        285
+      ]
+    },
+    {
+      "text": "3100",
+      "suggested_modern_name": null,
+      "type": "PLOT_NUMBER",
+      "box_2d": [
+        245,
+        860,
+        265,
+        890
+      ]
+    },
+    {
+      "text": "Balte",
+      "suggested_modern_name": "Baljke",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        15,
+        795,
+        35,
+        840
+      ]
+    }
+  ],
+  "Baljke-VI.jpg": [
+    {
+      "text": "VERLICCA",
+      "suggested_modern_name": "Vrlika",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        315,
+        180,
+        670,
+        585
+      ]
+    },
+    {
+      "text": "LATO",
+      "suggested_modern_name": null,
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        310,
+        270,
+        715,
+        675
+      ]
+    },
+    {
+      "text": "Fog. VI",
+      "suggested_modern_name": null,
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        10,
+        440,
+        25,
+        505
+      ]
+    },
+    {
+      "text": "No 6 Balke",
+      "suggested_modern_name": "Baljke",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        10,
+        760,
+        25,
+        840
+      ]
+    },
+    {
+      "text": "Gnaglierizza greb",
+      "suggested_modern_name": "Gnjilari\u0107a greb",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        230,
+        30,
+        245,
+        120
+      ]
+    },
+    {
+      "text": "1041",
+      "suggested_modern_name": null,
+      "type": "PLOT_NUMBER",
+      "box_2d": [
+        265,
+        22,
+        275,
+        40
+      ]
+    },
+    {
+      "text": "Confine col Comune di Balke",
+      "suggested_modern_name": "Baljke",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        250,
+        65,
+        350,
+        210
+      ]
+    },
+    {
+      "text": "Ruppe",
+      "suggested_modern_name": "Rupe",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        585,
+        150,
+        600,
+        190
+      ]
+    },
+    {
+      "text": "Anto",
+      "suggested_modern_name": "Anto",
+      "type": "SURNAME",
+      "box_2d": [
+        605,
+        155,
+        615,
+        180
+      ]
+    },
+    {
+      "text": "Braskovara",
+      "suggested_modern_name": null,
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        700,
+        340,
+        710,
+        380
+      ]
+    },
+    {
+      "text": "1047",
+      "suggested_modern_name": null,
+      "type": "PLOT_NUMBER",
+      "box_2d": [
+        869,
+        18,
+        880,
+        40
+      ]
+    },
+    {
+      "text": "1045",
+      "suggested_modern_name": null,
+      "type": "PLOT_NUMBER",
+      "box_2d": [
+        923,
+        22,
+        934,
+        42
+      ]
+    },
+    {
+      "text": "Jama Sechetaza",
+      "suggested_modern_name": "Jama \u0160eketaza",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        909,
+        80,
+        925,
+        150
+      ]
+    },
+    {
+      "text": "H IN CAMPAGNA",
+      "suggested_modern_name": null,
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        757,
+        473,
+        770,
+        562
+      ]
+    },
+    {
+      "text": "1048",
+      "suggested_modern_name": null,
+      "type": "PLOT_NUMBER",
+      "box_2d": [
+        710,
+        505,
+        721,
+        520
+      ]
+    },
+    {
+      "text": "Cvinska Glava",
+      "suggested_modern_name": "Svinska Glava",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        725,
+        565,
+        735,
+        615
+      ]
+    },
+    {
+      "text": "Selo Maskovica",
+      "suggested_modern_name": "Selo Ma\u0161kovica",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        735,
+        565,
+        745,
+        615
+      ]
+    }
+  ],
+  "Baljke-VII.jpg": [
+    {
+      "text": "Fog. VII",
+      "suggested_modern_name": null,
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        10,
+        442,
+        45,
+        502
+      ]
+    },
+    {
+      "text": "Strana",
+      "suggested_modern_name": "Strana",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        525,
+        675,
+        552,
+        735
+      ]
+    },
+    {
+      "text": "Amizza",
+      "suggested_modern_name": "Ami\u017ei\u0107",
+      "type": "SURNAME",
+      "box_2d": [
+        578,
+        452,
+        602,
+        502
+      ]
+    },
+    {
+      "text": "Guglich",
+      "suggested_modern_name": "Guli\u0107",
+      "type": "SURNAME",
+      "box_2d": [
+        662,
+        360,
+        685,
+        422
+      ]
+    },
+    {
+      "text": "Zalletta",
+      "suggested_modern_name": "Zaleta",
+      "type": "SURNAME",
+      "box_2d": [
+        685,
+        525,
+        710,
+        578
+      ]
+    },
+    {
+      "text": "Milancovich",
+      "suggested_modern_name": "Milankovi\u0107",
+      "type": "SURNAME",
+      "box_2d": [
+        755,
+        552,
+        778,
+        635
+      ]
+    },
+    {
+      "text": "Vlaca",
+      "suggested_modern_name": "Vlaka",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        738,
+        252,
+        770,
+        302
+      ]
+    },
+    {
+      "text": "Repi",
+      "suggested_modern_name": null,
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        798,
+        502,
+        832,
+        538
+      ]
+    },
+    {
+      "text": "Mudrich",
+      "suggested_modern_name": "Mudri\u0107",
+      "type": "SURNAME",
+      "box_2d": [
+        845,
+        228,
+        870,
+        290
+      ]
+    },
+    {
+      "text": "Gutich",
+      "suggested_modern_name": "Guti\u0107",
+      "type": "SURNAME",
+      "box_2d": [
+        895,
+        310,
+        918,
+        360
+      ]
+    },
+    {
+      "text": "Baich",
+      "suggested_modern_name": "Baji\u0107",
+      "type": "SURNAME",
+      "box_2d": [
+        890,
+        435,
+        912,
+        478
+      ]
+    },
+    {
+      "text": "Iancovich",
+      "suggested_modern_name": "Jankovi\u0107",
+      "type": "SURNAME",
+      "box_2d": [
+        910,
+        532,
+        932,
+        598
+      ]
+    },
+    {
+      "text": "Strada per Dernis",
+      "suggested_modern_name": "Cesta za Drni\u0161",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        735,
+        135,
+        805,
+        190
+      ]
+    }
+  ],
+  "Baljke-VIII.jpg": [
+    {
+      "text": "Fog: VIII",
+      "suggested_modern_name": null,
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        15,
+        440,
+        55,
+        520
+      ]
+    },
+    {
+      "text": "Dogne Do",
+      "suggested_modern_name": "Donji Dol",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        115,
+        815,
+        145,
+        915
+      ]
+    },
+    {
+      "text": "Bodina",
+      "suggested_modern_name": "Bodina",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        565,
+        602,
+        590,
+        665
+      ]
+    },
+    {
+      "text": "Stana",
+      "suggested_modern_name": "Stana",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        710,
+        105,
+        735,
+        160
+      ]
+    },
+    {
+      "text": "N. 6 Batke W.C.H. 17 ac",
+      "suggested_modern_name": null,
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        10,
+        765,
+        30,
+        905
+      ]
+    },
+    {
+      "text": "2144",
+      "suggested_modern_name": null,
+      "type": "PLOT_NUMBER",
+      "box_2d": [
+        472,
+        30,
+        492,
+        55
+      ]
+    },
+    {
+      "text": "2150",
+      "suggested_modern_name": null,
+      "type": "PLOT_NUMBER",
+      "box_2d": [
+        488,
+        715,
+        500,
+        725
+      ]
+    },
+    {
+      "text": "2151",
+      "suggested_modern_name": null,
+      "type": "PLOT_NUMBER",
+      "box_2d": [
+        510,
+        735,
+        525,
+        750
+      ]
+    },
+    {
+      "text": "2152",
+      "suggested_modern_name": null,
+      "type": "PLOT_NUMBER",
+      "box_2d": [
+        555,
+        770,
+        570,
+        795
+      ]
+    },
+    {
+      "text": "2153",
+      "suggested_modern_name": null,
+      "type": "PLOT_NUMBER",
+      "box_2d": [
+        565,
+        795,
+        580,
+        810
+      ]
+    }
+  ],
+  "Baljke-X.jpg": [
+    {
+      "text": "Fog: X",
+      "suggested_modern_name": null,
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        25,
+        435,
+        55,
+        485
+      ]
+    },
+    {
+      "text": "No 6 Batke W.C. II. 17 C.g",
+      "suggested_modern_name": null,
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        28,
+        755,
+        48,
+        905
+      ]
+    },
+    {
+      "text": "Svilaja",
+      "suggested_modern_name": "Svilaja",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        260,
+        310,
+        295,
+        370
+      ]
+    },
+    {
+      "text": "1416",
+      "suggested_modern_name": null,
+      "type": "PLOT_NUMBER",
+      "box_2d": [
+        298,
+        340,
+        310,
+        360
+      ]
+    },
+    {
+      "text": "Runghera",
+      "suggested_modern_name": "Runjevac",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        75,
+        815,
+        105,
+        875
+      ]
+    },
+    {
+      "text": "(Dinara)",
+      "suggested_modern_name": "Dinara",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        415,
+        575,
+        438,
+        615
+      ]
+    },
+    {
+      "text": "(Dinara)",
+      "suggested_modern_name": "Dinara",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        600,
+        282,
+        625,
+        322
+      ]
+    },
+    {
+      "text": "1415",
+      "suggested_modern_name": null,
+      "type": "PLOT_NUMBER",
+      "box_2d": [
+        645,
+        52,
+        658,
+        72
+      ]
+    }
+  ],
+  "Baljke-XI.jpg": [
+    {
+      "text": "Fog: XI",
+      "suggested_modern_name": null,
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        25,
+        470,
+        55,
+        540
+      ]
+    },
+    {
+      "text": "N 6 Balke. W.C.u.17.ch",
+      "suggested_modern_name": null,
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        25,
+        750,
+        50,
+        920
+      ]
+    },
+    {
+      "text": "Stara Steblie",
+      "suggested_modern_name": "Stara Steblja",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        235,
+        815,
+        256,
+        875
+      ]
+    },
+    {
+      "text": "Crivac Vrelo",
+      "suggested_modern_name": "Crivac Vrelo",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        494,
+        668,
+        518,
+        738
+      ]
+    },
+    {
+      "text": "Bunie",
+      "suggested_modern_name": "Bunje",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        618,
+        562,
+        638,
+        602
+      ]
+    },
+    {
+      "text": "Potok",
+      "suggested_modern_name": "Potok",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        640,
+        502,
+        660,
+        542
+      ]
+    },
+    {
+      "text": "Torrente",
+      "suggested_modern_name": null,
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        738,
+        310,
+        768,
+        352
+      ]
+    },
+    {
+      "text": "Vaca",
+      "suggested_modern_name": "Vlaka",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        858,
+        385,
+        882,
+        422
+      ]
+    },
+    {
+      "text": "Dogni Poglie",
+      "suggested_modern_name": "Donje Polje",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        885,
+        390,
+        940,
+        550
+      ]
+    },
+    {
+      "text": "Nevaj",
+      "suggested_modern_name": null,
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        805,
+        722,
+        838,
+        770
+      ]
+    }
+  ],
+  "Baljke-XII.jpg": [
+    {
+      "text": "Podvornice",
+      "suggested_modern_name": "Podvornice",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        65,
+        310,
+        95,
+        395
+      ]
+    },
+    {
+      "text": "Cutich",
+      "suggested_modern_name": "\u0106uti\u0107",
+      "type": "SURNAME",
+      "box_2d": [
+        130,
+        295,
+        155,
+        350
+      ]
+    },
+    {
+      "text": "Gaich",
+      "suggested_modern_name": "Gaji\u0107",
+      "type": "SURNAME",
+      "box_2d": [
+        215,
+        370,
+        245,
+        425
+      ]
+    },
+    {
+      "text": "Sred-Sello",
+      "suggested_modern_name": "Srednje Selo",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        170,
+        600,
+        205,
+        682
+      ]
+    },
+    {
+      "text": "Obradovich",
+      "suggested_modern_name": "Obradovi\u0107",
+      "type": "SURNAME",
+      "box_2d": [
+        135,
+        720,
+        165,
+        810
+      ]
+    },
+    {
+      "text": "Draga",
+      "suggested_modern_name": "Draga",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        180,
+        840,
+        210,
+        895
+      ]
+    },
+    {
+      "text": "Ballie",
+      "suggested_modern_name": "Bali\u0107",
+      "type": "SURNAME",
+      "box_2d": [
+        340,
+        575,
+        375,
+        650
+      ]
+    },
+    {
+      "text": "Zakaliger",
+      "suggested_modern_name": "Zakaljiger",
+      "type": "SURNAME",
+      "box_2d": [
+        385,
+        645,
+        405,
+        720
+      ]
+    },
+    {
+      "text": "Tossich",
+      "suggested_modern_name": "To\u0161i\u0107",
+      "type": "SURNAME",
+      "box_2d": [
+        385,
+        790,
+        405,
+        860
+      ]
+    },
+    {
+      "text": "Borcovich",
+      "suggested_modern_name": "Borkovi\u0107",
+      "type": "SURNAME",
+      "box_2d": [
+        425,
+        840,
+        450,
+        915
+      ]
+    },
+    {
+      "text": "Maexich",
+      "suggested_modern_name": "Ma\u0161i\u0107",
+      "type": "SURNAME",
+      "box_2d": [
+        455,
+        780,
+        475,
+        850
+      ]
+    },
+    {
+      "text": "S: Giovanni",
+      "suggested_modern_name": "Sveti Ivan",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        435,
+        355,
+        460,
+        440
+      ]
+    },
+    {
+      "text": "Pugias",
+      "suggested_modern_name": "Pujas",
+      "type": "SURNAME",
+      "box_2d": [
+        490,
+        685,
+        520,
+        745
+      ]
+    },
+    {
+      "text": "Terech",
+      "suggested_modern_name": "Tere\u0107",
+      "type": "SURNAME",
+      "box_2d": [
+        535,
+        630,
+        565,
+        685
+      ]
+    },
+    {
+      "text": "Siroche Gnive",
+      "suggested_modern_name": "\u0160iroke Njive",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        625,
+        285,
+        655,
+        380
+      ]
+    },
+    {
+      "text": "Podine",
+      "suggested_modern_name": "Podine",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        675,
+        470,
+        700,
+        520
+      ]
+    },
+    {
+      "text": "Gaj",
+      "suggested_modern_name": "Gaj",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        825,
+        145,
+        865,
+        185
+      ]
+    }
+  ],
+  "Baljke-XIII.jpg": [
+    {
+      "text": "Fog: XIII",
+      "suggested_modern_name": null,
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        10,
+        445,
+        35,
+        505
+      ]
+    },
+    {
+      "text": "Kuk",
+      "suggested_modern_name": "Kuk",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        265,
+        490,
+        288,
+        528
+      ]
+    },
+    {
+      "text": "Strana",
+      "suggested_modern_name": "Strana",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        494,
+        335,
+        518,
+        392
+      ]
+    },
+    {
+      "text": "1795",
+      "suggested_modern_name": null,
+      "type": "PLOT_NUMBER",
+      "box_2d": [
+        482,
+        418,
+        498,
+        444
+      ]
+    },
+    {
+      "text": "1796",
+      "suggested_modern_name": null,
+      "type": "PLOT_NUMBER",
+      "box_2d": [
+        372,
+        632,
+        392,
+        655
+      ]
+    },
+    {
+      "text": "Zamique",
+      "suggested_modern_name": "Zaminje",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        482,
+        882,
+        508,
+        918
+      ]
+    },
+    {
+      "text": "Bugarica",
+      "suggested_modern_name": "Bugarica",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        804,
+        406,
+        820,
+        446
+      ]
+    },
+    {
+      "text": "Sluctica",
+      "suggested_modern_name": "Sluki\u0107a",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        818,
+        406,
+        832,
+        444
+      ]
+    }
+  ],
+  "Baljke-XIV.jpg": [
+    {
+      "text": "Fog: XIV",
+      "suggested_modern_name": null,
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        25,
+        435,
+        55,
+        525
+      ]
+    },
+    {
+      "text": "N 6 Batke II C 1. 17 dh",
+      "suggested_modern_name": null,
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        25,
+        740,
+        50,
+        905
+      ]
+    },
+    {
+      "text": "Drusi\u017ea",
+      "suggested_modern_name": "Dru\u0161ica",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        120,
+        125,
+        155,
+        205
+      ]
+    },
+    {
+      "text": "Simme",
+      "suggested_modern_name": "\u0160ime",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        100,
+        235,
+        120,
+        270
+      ]
+    },
+    {
+      "text": "scaplanza",
+      "suggested_modern_name": "\u0160kaplanza",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        72,
+        290,
+        95,
+        335
+      ]
+    },
+    {
+      "text": "Lungo",
+      "suggested_modern_name": "Dugo",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        135,
+        105,
+        155,
+        150
+      ]
+    }
+  ],
+  "Baljke-XV.jpg": [
+    {
+      "text": "Fog. XV",
+      "suggested_modern_name": null,
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        10,
+        430,
+        50,
+        490
+      ]
+    },
+    {
+      "text": "N 6 Balke W.C. II. 17 - di",
+      "suggested_modern_name": null,
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        20,
+        750,
+        45,
+        900
+      ]
+    },
+    {
+      "text": "Vene. Lughe",
+      "suggested_modern_name": "Vene Lughe",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        140,
+        780,
+        165,
+        850
+      ]
+    },
+    {
+      "text": "R U X I",
+      "suggested_modern_name": "Ru\u017ei\u0107i",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        190,
+        810,
+        340,
+        905
+      ]
+    },
+    {
+      "text": "Pollice \u00e8 corrispondente alla Scala rettificata",
+      "suggested_modern_name": null,
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        970,
+        370,
+        988,
+        550
+      ]
+    }
+  ],
+  "Baljke-XVI.jpg": [
+    {
+      "text": "Fog. XVI",
+      "suggested_modern_name": null,
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        15,
+        440,
+        45,
+        490
+      ]
+    },
+    {
+      "text": "Dogni Poglie",
+      "suggested_modern_name": "Donje Polje",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        265,
+        80,
+        290,
+        165
+      ]
+    },
+    {
+      "text": "Dogni Poglie",
+      "suggested_modern_name": "Donje Polje",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        255,
+        615,
+        290,
+        705
+      ]
+    },
+    {
+      "text": "Neaj",
+      "suggested_modern_name": "Neaj",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        120,
+        770,
+        145,
+        815
+      ]
+    },
+    {
+      "text": "Mestrovic",
+      "suggested_modern_name": "Me\u0161trovi\u0107",
+      "type": "SURNAME",
+      "box_2d": [
+        545,
+        350,
+        565,
+        398
+      ]
+    },
+    {
+      "text": "Ornizza Draga",
+      "suggested_modern_name": "Ornica Draga",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        400,
+        15,
+        420,
+        80
+      ]
+    },
+    {
+      "text": "MOSECH",
+      "suggested_modern_name": "Mose\u0107",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        415,
+        80,
+        510,
+        380
+      ]
+    },
+    {
+      "text": "UMIGLIANO",
+      "suggested_modern_name": "Umljan",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        630,
+        370,
+        950,
+        910
+      ]
+    },
+    {
+      "text": "Torrente",
+      "suggested_modern_name": "Torrente",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        640,
+        620,
+        690,
+        660
+      ]
+    },
+    {
+      "text": "Valle",
+      "suggested_modern_name": "Valle",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        260,
+        580,
+        310,
+        610
+      ]
+    },
+    {
+      "text": "N 6 Balki",
+      "suggested_modern_name": "Baljci",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        20,
+        745,
+        38,
+        820
+      ]
+    }
+  ],
+  "Baljke-XVII.jpg": [
+    {
+      "text": "Fog: XVII",
+      "suggested_modern_name": null,
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        10,
+        438,
+        28,
+        482
+      ]
+    },
+    {
+      "text": "Blisnize",
+      "suggested_modern_name": "Bliznice",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        35,
+        698,
+        65,
+        765
+      ]
+    },
+    {
+      "text": "Blisnize",
+      "suggested_modern_name": "Bliznice",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        73,
+        860,
+        86,
+        900
+      ]
+    },
+    {
+      "text": "379",
+      "suggested_modern_name": null,
+      "type": "PLOT_NUMBER",
+      "box_2d": [
+        89,
+        715,
+        100,
+        729
+      ]
+    },
+    {
+      "text": "376",
+      "suggested_modern_name": null,
+      "type": "PLOT_NUMBER",
+      "box_2d": [
+        80,
+        726,
+        90,
+        740
+      ]
+    },
+    {
+      "text": "375",
+      "suggested_modern_name": null,
+      "type": "PLOT_NUMBER",
+      "box_2d": [
+        92,
+        720,
+        102,
+        735
+      ]
+    },
+    {
+      "text": "125",
+      "suggested_modern_name": null,
+      "type": "PLOT_NUMBER",
+      "box_2d": [
+        74,
+        694,
+        88,
+        706
+      ]
+    },
+    {
+      "text": "Valle Zelenike",
+      "suggested_modern_name": "Uvala Zelenika",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        372,
+        400,
+        392,
+        445
+      ]
+    },
+    {
+      "text": "Goryne Poglie",
+      "suggested_modern_name": "Gornje Polje",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        576,
+        152,
+        606,
+        248
+      ]
+    },
+    {
+      "text": "Punta Gnesina",
+      "suggested_modern_name": "Punta Gnjezina",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        625,
+        0,
+        695,
+        95
+      ]
+    },
+    {
+      "text": "Gnesina",
+      "suggested_modern_name": "Gnjezina",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        720,
+        220,
+        736,
+        255
+      ]
+    },
+    {
+      "text": "VICH",
+      "suggested_modern_name": "Vi\u0107",
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        755,
+        35,
+        835,
+        245
+      ]
+    }
+  ],
+  "Baljke-XVIII.jpg": [
+    {
+      "text": "Fog: XVIII",
+      "suggested_modern_name": null,
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        5,
+        430,
+        45,
+        520
+      ]
+    },
+    {
+      "text": "N 6 Batke M.C. N. 17. ai",
+      "suggested_modern_name": null,
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        10,
+        740,
+        30,
+        910
+      ]
+    },
+    {
+      "text": "Foglio 5 congiunto alla scala rettificata",
+      "suggested_modern_name": null,
+      "type": "LOCATION_NAME",
+      "box_2d": [
+        970,
+        360,
+        990,
+        540
+      ]
+    }
+  ]
+}

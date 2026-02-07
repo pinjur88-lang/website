@@ -192,17 +192,17 @@ export default function AnnouncementManager({ profileId }: { profileId: string }
                                 </div>
                             ) : (
                                 <>
-                                    <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <div className="absolute top-4 right-4 flex gap-2 transition-opacity">
                                         <button
                                             onClick={() => startEditing(item)}
-                                            className="text-zinc-400 hover:text-sky-600 transition-colors p-1"
+                                            className="text-stone-300 hover:text-sky-600 transition-colors p-1"
                                             title="Uredi"
                                         >
                                             <Pencil size={18} />
                                         </button>
                                         <button
                                             onClick={() => handleDelete(item.id)}
-                                            className="text-zinc-400 hover:text-red-600 transition-colors p-1"
+                                            className="text-stone-300 hover:text-red-500 transition-colors p-1"
                                             title="Obriši"
                                         >
                                             <Trash2 size={18} />

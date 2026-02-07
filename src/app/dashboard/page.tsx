@@ -7,6 +7,7 @@ import { useLanguage } from '@/lib/language-context';
 import Image from 'next/image';
 import WeatherWidget from '@/components/dashboard/WeatherWidget';
 import TravelWidget from '@/components/dashboard/TravelWidget';
+import GalleryCarousel from '@/components/dashboard/GalleryCarousel';
 
 type Announcement = {
     id: string;
@@ -98,25 +99,7 @@ export default function DashboardHome() {
                         {images.length === 0 ? (
                             <p className="text-slate-500 italic">Nema slika u galeriji.</p>
                         ) : (
-                            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                                {images.slice(0, 6).map(img => (
-                                    <div key={img.id} className="relative aspect-square bg-stone-100 rounded-sm overflow-hidden border border-stone-200 group">
-                                        <Image
-                                            src={img.url}
-                                            alt={img.caption || 'Gallery Image'}
-                                            fill
-                                            className="object-cover transition-transform group-hover:scale-105"
-                                        />
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                        {images.length > 6 && (
-                            <div className="text-center mt-4">
-                                <a href="/dashboard/gallery" className="text-sm font-bold text-stone-600 hover:text-stone-900 underline">
-                                    Pogledaj sve slike
-                                </a>
-                            </div>
+                            <GalleryCarousel images={images.slice(0, 5)} />
                         )}
                     </section>
                 </div>
