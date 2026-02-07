@@ -33,7 +33,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             title: null,
             items: [
                 { name: t.overview, href: '/dashboard', icon: LayoutDashboard },
-                { name: t.map, href: '/dashboard/map', icon: Map },
+                {
+                    name: t.map,
+                    href: '/dashboard/map',
+                    icon: Map,
+                    children: [
+                        { name: t.map, href: '/dashboard/map', icon: Map },
+                        { name: t.genealogy, href: '/dashboard/genealogy', icon: Users }
+                    ]
+                },
                 { name: t.voting, href: '/dashboard/voting', icon: Vote },
             ]
         },
@@ -59,7 +67,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             title: "Baština",
             items: [
                 { name: t.memorial, href: '/dashboard/memorial', icon: BookOpen },
-                { name: t.genealogy, href: '/dashboard/genealogy', icon: Users },
                 { name: t.handbook, href: '/dashboard/handbook', icon: BookOpen },
                 { name: t.statute, href: '/dashboard/statute', icon: Scale },
             ]
@@ -96,8 +103,37 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                                     </h3>
                                 )}
                                 <div className="space-y-1">
-                                    {group.items.map((item) => {
-                                        const isActive = pathname === item.href;
+                                    {group.items.map((item: any) => {
+                                        const isActive = pathname === item.href || (item.children && item.children.some((child: any) => pathname === child.href));
+
+                                        if (item.children) {
+                                            return (
+                                                <div key={item.href} className="space-y-1">
+                                                    <div className={`flex items-center gap-3 px-4 py-2.5 rounded-md text-sm font-medium transition-colors ${isActive ? 'text-sky-900' : 'text-slate-600'}`}>
+                                                        <item.icon size={18} />
+                                                        {item.name}
+                                                    </div>
+                                                    <div className="pl-9 space-y-1">
+                                                        {item.children.map((child: any) => {
+                                                            const isChildActive = pathname === child.href;
+                                                            return (
+                                                                <Link
+                                                                    key={child.href}
+                                                                    href={child.href}
+                                                                    className={`flex items-center gap-3 px-4 py-2 rounded-md text-sm transition-colors ${isChildActive
+                                                                        ? 'bg-sky-100 text-sky-900 font-medium'
+                                                                        : 'text-slate-500 hover:bg-sky-50 hover:text-sky-900'
+                                                                        }`}
+                                                                >
+                                                                    {child.name}
+                                                                </Link>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                </div>
+                                            );
+                                        }
+
                                         return (
                                             <Link
                                                 key={item.href}
