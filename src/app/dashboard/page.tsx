@@ -160,25 +160,29 @@ export default function DashboardHome() {
                         </p>
 
                         <div className="space-y-3">
-                            <button
-                                onClick={() => alert("WhatsApp grupa je u pripremi. Uskoro ćete dobiti poveznicu!")}
-                                className="flex items-center gap-3 w-full p-3 rounded-md bg-[#25D366]/10 text-[#075e54] hover:bg-[#25D366]/20 transition-colors border border-[#25D366]/20 group text-left"
+                            <a
+                                href="https://chat.whatsapp.com/EJ4lyzlugri05X0z0B801c?mode=gi_t"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-3 w-full p-3 rounded-md bg-[#25D366]/10 text-[#075e54] hover:bg-[#25D366]/20 transition-colors border border-[#25D366]/20 group"
                             >
                                 <div className="bg-[#25D366] text-white p-2 rounded-full group-hover:scale-110 transition-transform">
                                     <MessageCircle size={18} />
                                 </div>
-                                <span className="font-semibold text-sm">{t.joinWhatsapp} <span className="text-[10px] opacity-70 ml-1">(Uskoro)</span></span>
-                            </button>
+                                <span className="font-semibold text-sm">{t.joinWhatsapp}</span>
+                            </a>
 
-                            <button
-                                onClick={() => alert("Viber grupa je u pripremi. Uskoro ćete dobiti poveznicu!")}
-                                className="flex items-center gap-3 w-full p-3 rounded-md bg-[#7360f2]/10 text-[#7360f2] hover:bg-[#7360f2]/20 transition-colors border border-[#7360f2]/20 group text-left"
+                            <a
+                                href="https://invite.viber.com/?g=aD_xKl7mA1bKZTm6fyYEono7H4h5GNRy"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-3 w-full p-3 rounded-md bg-[#7360f2]/10 text-[#7360f2] hover:bg-[#7360f2]/20 transition-colors border border-[#7360f2]/20 group"
                             >
                                 <div className="bg-[#7360f2] text-white p-2 rounded-full group-hover:scale-110 transition-transform">
                                     <Phone size={18} />
                                 </div>
-                                <span className="font-semibold text-sm">{t.joinViber} <span className="text-[10px] opacity-70 ml-1">(Uskoro)</span></span>
-                            </button>
+                                <span className="font-semibold text-sm">{t.joinViber}</span>
+                            </a>
                         </div>
                     </div>
                 </div>
