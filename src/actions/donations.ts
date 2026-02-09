@@ -117,10 +117,12 @@ export async function uploadDonationReport(formData: FormData) {
         if (!file || !title) return { error: "Missing file or title" };
 
         const fileName = `${Date.now()}_${file.name}`;
+        const fileBuffer = Buffer.from(await file.arrayBuffer());
+
         const { data: uploadData, error: uploadError } = await supabaseAdmin
             .storage
             .from('documents')
-            .upload(fileName, file, {
+            .upload(fileName, fileBuffer, {
                 contentType: file.type,
                 upsert: false
             });
