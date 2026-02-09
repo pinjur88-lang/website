@@ -44,7 +44,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     ]
                 },
                 */
-                { name: t.voting, href: '/dashboard/voting', icon: Vote },
+                /* { name: t.voting, href: '/dashboard/voting', icon: Vote }, */
             ]
         },
         {
