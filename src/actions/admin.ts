@@ -39,6 +39,20 @@ export async function approveRequest(requestId: string, email: string, name: str
 
         if (updateError) throw updateError;
 
+        // 2. [NEW] Promote the actual User Profile if it exists
+        // In the new Standard Flow, the user likely already created an account with 'pending' role.
+        if (email) {
+            const { error: profileError } = await supabaseAdmin
+                .from('profiles')
+                .update({ role: 'member' })
+                .eq('email', email);
+
+            if (profileError) {
+                console.error("Failed to promote user profile:", profileError);
+                // We don't fail the request approval, but we log it.
+            }
+        }
+
         revalidatePath('/admin');
         return { success: true };
     } catch (error: any) {
