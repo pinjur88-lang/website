@@ -1,9 +1,9 @@
-"use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/lib/auth-context';
 import { useLanguage } from '@/lib/language-context';
 import { Lock } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
 
 export default function LoginPage() {
     const { t } = useLanguage();
@@ -13,6 +13,17 @@ export default function LoginPage() {
     const { login, isLoading } = useAuth();
     const [isLocalLoading, setIsLocalLoading] = useState(false);
 
+    const searchParams = useSearchParams();
+
+    useEffect(() => {
+        const errorParam = searchParams.get('error');
+        if (errorParam === 'PendingApproval') {
+            setError("Vaš račun čeka odobrenje administratora (provjera članarine/donacije). Molimo pričekajte email potvrdu.");
+        } else if (errorParam === 'AuthCodeError') {
+            setError("Greška pri autorizaciji. Molimo pokušajte ponovno.");
+        }
+    }, [searchParams]);
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
@@ -20,8 +31,7 @@ export default function LoginPage() {
 
         const { error: loginError } = await login(email, password);
         if (loginError) {
-            // If it's a specific Supabase error, show it (translated roughly by fallback)
-            setError(loginError === 'Email not confirmed'
+            setError(loginError.includes('Email not confirmed')
                 ? "Molimo potvrdite svoju email adresu prije prijave (provjerite inbox)."
                 : (loginError === 'Invalid login credentials' ? t.loginError : loginError)
             );
