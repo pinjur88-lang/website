@@ -34,6 +34,7 @@ export default async function MapPage() {
                     </span>
                 </div>
                 <div className="flex items-center gap-6">
+
                     <a href="/dashboard" className="text-xs font-sans uppercase tracking-widest text-zinc-500 hover:text-zinc-900 transition-colors">
                         Nadzorna ploča
                     </a>

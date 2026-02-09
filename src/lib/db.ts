@@ -149,12 +149,14 @@ export const db = {
             date: formatDateTime(item.created_at),
         }));
     },
-    addCommunityPost: async (content: string) => {
+    addCommunityPost: async (content: string, authorId: string) => {
         const { error } = await supabase
             .from('community_posts')
             .insert([{
                 content,
-                author: 'Anonimni Član'
+                author_id: authorId,
+                user_id: authorId,
+                is_anonymous: false // Default for legacy/simple usage
             }]);
         if (error) throw error;
     }

@@ -8,12 +8,20 @@ export async function createCommunityPost(content: string, authorId: string, isA
         return { error: "Content cannot be empty" };
     }
 
+    if (!authorId) {
+        console.error("createCommunityPost called without authorId!");
+        return { error: "Author ID is missing" };
+    }
+
+    console.log(`Creating post for author: ${authorId}, content: ${content.substring(0, 20)}...`);
+
     try {
         const { data, error } = await supabase
             .from('community_posts')
             .insert([{
                 content,
-                user_id: authorId,   // Maintaining our schema usage
+                user_id: authorId,   // Keep for compatibility if needed
+                author_id: authorId, // Fix: Error says this is required
                 is_anonymous: isAnonymous
             }])
             .select()

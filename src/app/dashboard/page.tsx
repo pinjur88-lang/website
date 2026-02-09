@@ -107,24 +107,11 @@ export default function DashboardHome() {
                 {/* Sidebar - Quick Actions */}
                 <div className="space-y-6">
 
-                    {/* Contact Admin Widget */}
-                    <div className="bg-white p-6 rounded-lg shadow-sm border border-sky-100 group hover:border-sky-300 transition-all">
-                        <div className="flex items-center gap-3 mb-3">
-                            <div className="p-2 bg-sky-50 rounded-lg text-sky-600 group-hover:bg-sky-600 group-hover:text-white transition-colors">
-                                <Mail size={20} />
-                            </div>
-                            <h3 className="font-bold text-slate-900">{t.contactAdmin || 'Contact Admin'}</h3>
-                        </div>
-                        <p className="text-slate-500 text-xs mb-4 leading-relaxed">
-                            {t.title === "Association Baljci"
-                                ? "Have questions or concerns about the village? Contact us directly."
-                                : "Imate li pitanja ili briga u vezi sela? Kontaktirajte nas izravno."}
-                        </p>
-                        <a href="/dashboard/contact" className="text-sky-600 text-xs font-bold hover:underline flex items-center gap-1">
-                            {t.title === "Association Baljci" ? "Send Message" : "Pošalji Poruku"}
-                            <span className="text-lg">→</span>
-                        </a>
-                    </div>
+                    {/* Weather Widget (Top) */}
+                    <WeatherWidget />
+
+                    {/* Visitor Calendar */}
+                    <TravelWidget />
 
                     {/* Voting Hall Widget */}
                     <div className="bg-gradient-to-br from-sky-600 to-sky-700 p-6 rounded-lg shadow-md text-white group hover:shadow-lg transition-all">
@@ -145,46 +132,69 @@ export default function DashboardHome() {
                         </a>
                     </div>
 
-                    {/* Weather Widget */}
-                    <WeatherWidget />
+                    {/* Digitalni Spomenar Widget */}
+                    <div className="bg-gradient-to-br from-amber-600 to-orange-700 p-6 rounded-lg shadow-md text-white group hover:shadow-lg transition-all relative overflow-hidden">
+                        <div className="absolute top-0 right-0 p-4 opacity-10">
+                            <ImageIcon size={100} />
+                        </div>
+                        <div className="relative z-10">
+                            <div className="flex items-center gap-3 mb-3">
+                                <div className="p-2 bg-white/20 rounded-lg">
+                                    <ImageIcon size={20} />
+                                </div>
+                                <h3 className="font-bold">Digitalni Spomenar</h3>
+                            </div>
+                            <p className="text-orange-50 text-xs mb-4 leading-relaxed font-medium">
+                                Imate stare fotografije u kutiji cipela? Gradimo trajnu povijest Baljaka.
+                            </p>
+                            <p className="text-orange-100/80 text-[10px] mb-4 italic border-l-2 border-orange-400 pl-2">
+                                "Nagrada: Za svaku sliku, Admin (Ogie) će vam besplatno restaurirati jednu!"
+                            </p>
+                            <a href="/dashboard/spomenar" className="text-white text-xs font-bold hover:underline flex items-center gap-1">
+                                Učitaj Fotografije <span className="text-lg">→</span>
+                            </a>
+                        </div>
+                    </div>
 
-                    {/* Visitor Calendar */}
-                    <TravelWidget />
-
-                    {/* Social Groups Card */}
-                    {/* Social Groups Card */}
-                    <div className="bg-white p-6 rounded-lg shadow-sm border border-sky-100 sticky top-4">
-                        <h3 className="text-lg font-bold text-slate-800 mb-2">{t.socialTitle}</h3>
-                        <p className="text-sm text-slate-600 mb-4 leading-relaxed">
-                            {t.socialDesc}
-                        </p>
-
-                        <div className="space-y-3">
+                    {/* Social Groups Card (Compact) */}
+                    <div className="bg-white p-4 rounded-lg shadow-sm border border-sky-100">
+                        <h3 className="text-sm font-bold text-slate-800 mb-2">{t.socialTitle}</h3>
+                        <div className="space-y-2">
                             <a
                                 href="https://chat.whatsapp.com/EJ4lyzlugri05X0z0B801c?mode=gi_t"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="flex items-center gap-3 w-full p-3 rounded-md bg-[#25D366]/10 text-[#075e54] hover:bg-[#25D366]/20 transition-colors border border-[#25D366]/20 group"
+                                className="flex items-center gap-2 w-full p-2 rounded-md bg-[#25D366]/5 text-[#075e54] hover:bg-[#25D366]/10 transition-colors border border-[#25D366]/20 group"
                             >
-                                <div className="bg-[#25D366] text-white p-2 rounded-full group-hover:scale-110 transition-transform">
-                                    <MessageCircle size={18} />
-                                </div>
-                                <span className="font-semibold text-sm">{t.joinWhatsapp}</span>
+                                <MessageCircle size={16} className="text-[#25D366]" />
+                                <span className="font-semibold text-xs">{t.joinWhatsapp}</span>
                             </a>
 
                             <a
                                 href="https://invite.viber.com/?g=aD_xKl7mA1bKZTm6fyYEono7H4h5GNRy"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="flex items-center gap-3 w-full p-3 rounded-md bg-[#7360f2]/10 text-[#7360f2] hover:bg-[#7360f2]/20 transition-colors border border-[#7360f2]/20 group"
+                                className="flex items-center gap-2 w-full p-2 rounded-md bg-[#7360f2]/5 text-[#7360f2] hover:bg-[#7360f2]/10 transition-colors border border-[#7360f2]/20 group"
                             >
-                                <div className="bg-[#7360f2] text-white p-2 rounded-full group-hover:scale-110 transition-transform">
-                                    <Phone size={18} />
-                                </div>
-                                <span className="font-semibold text-sm">{t.joinViber}</span>
+                                <Phone size={16} className="text-[#7360f2]" />
+                                <span className="font-semibold text-xs">{t.joinViber}</span>
                             </a>
                         </div>
                     </div>
+
+                    {/* Contact Admin Widget (Bottom, Compact) - REMOVED PER USER REQUEST */
+                    /*
+                    <div className="bg-white p-4 rounded-lg shadow-sm border border-sky-100 group hover:border-sky-300 transition-all">
+                        <div className="flex items-center justify-between mb-2">
+                            <h3 className="font-bold text-slate-900 text-sm">{t.contactAdmin || 'Contact Admin'}</h3>
+                            <Mail size={16} className="text-sky-600" />
+                        </div>
+                        <a href="/dashboard/contact" className="text-sky-600 text-xs font-bold hover:underline flex items-center gap-1">
+                            {t.title === "Association Baljci" ? "Send Message" : "Pošalji Poruku"}
+                            <span className="text-lg">→</span>
+                        </a>
+                    </div>
+                    */}
                 </div>
             </div>
         </div>

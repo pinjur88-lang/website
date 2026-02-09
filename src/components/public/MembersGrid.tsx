@@ -37,15 +37,8 @@ export default function MembersGrid() {
         <section className="py-12 md:py-24 bg-[#f8f9fa] px-4">
             <div className="max-w-7xl mx-auto">
                 {/* Section Header */}
-                <div className="text-center mb-16">
-                    <h2 className="font-serif text-4xl md:text-5xl text-[#2f3e46] mb-4 relative inline-block">
-                        {t.exploreHeritage}
-                        <span className="block text-sm font-sans font-medium text-[#2f3e46]/60 uppercase tracking-[0.2em] mt-3">
-                            {t.membersOnly}
-                        </span>
-                    </h2>
-                    <div className="w-16 h-1 bg-[#556B2F] mx-auto mt-6"></div>
-                </div>
+                {/* Section Header Removed per user request */}
+                <div className="mb-8"></div>
 
                 {/* Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

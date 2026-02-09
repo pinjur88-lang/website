@@ -27,7 +27,7 @@ export default function Hero() {
                 </div>
                 <div className="flex gap-6 items-center">
                     <Link href="/donate" className="text-xs font-bold text-amber-700 hover:text-amber-800 transition-colors uppercase tracking-wider flex items-center gap-2">
-                        Doniraj ❤️
+                        Doniraj
                     </Link>
                     <Link href="/login" className="text-xs text-zinc-400 hover:text-zinc-600 transition-colors uppercase tracking-wider">
                         {t.login}

@@ -52,6 +52,11 @@ export default function CommunityPage() {
         e.preventDefault();
         if (!content.trim() || !user) return;
 
+        if (!user.id) {
+            alert("Greška: Nije moguće identificirati korisnika. Molimo osvježite stranicu ili se ponovno prijavite.");
+            return;
+        }
+
         setSubmitting(true);
         // We reuse the existing "createCommunityPost" as creating a "Topic"
         const { error } = await createCommunityPost(content, user.id, isAnonymous);

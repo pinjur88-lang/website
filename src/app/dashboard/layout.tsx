@@ -33,6 +33,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             title: null,
             items: [
                 { name: t.overview, href: '/dashboard', icon: LayoutDashboard },
+                /* REMOVED PER USER REQUEST
                 {
                     name: t.map,
                     href: '/dashboard/map',
@@ -42,6 +43,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                         { name: t.genealogy, href: '/dashboard/genealogy', icon: Users }
                     ]
                 },
+                */
                 { name: t.voting, href: '/dashboard/voting', icon: Vote },
             ]
         },

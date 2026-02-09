@@ -30,7 +30,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // 1. Check LocalStorage (for Admin Backdoor)
         const storedUser = localStorage.getItem('mock_session');
         if (storedUser) {
-            setUser(JSON.parse(storedUser));
+            try {
+                const parsed = JSON.parse(storedUser);
+                if (parsed && parsed.id) {
+                    setUser(parsed);
+                } else {
+                    localStorage.removeItem('mock_session');
+                }
+            } catch (e) {
+                localStorage.removeItem('mock_session');
+            }
         }
 
         // 2. Check Supabase Session (For Members)
