@@ -92,7 +92,7 @@ export default function SpomenarPage() {
                                     Posebna Nagrada
                                 </h3>
                                 <p className="text-amber-800 text-sm leading-relaxed mb-4">
-                                    Za svaku sliku koju učitate, naš Admin (Ogie) će vam <strong>profesionalno restaurirati i kolorizirati</strong> jednu fotografiju po vašem izboru – potpuno BESPLATNO!
+                                    Za svaku sliku koju učitate, naš Admin će vam <strong>profesionalno restaurirati i kolorizirati</strong> jednu fotografiju po vašem izboru – potpuno BESPLATNO!
                                 </p>
                                 <p className="text-xs text-amber-600/80 italic">
                                     "Vi dobivate novu profilnu sliku, a povijest dobiva novi zapis. Poštena razmjena!"

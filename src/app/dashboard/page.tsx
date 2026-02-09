@@ -148,7 +148,7 @@ export default function DashboardHome() {
                                 Imate stare fotografije u kutiji cipela? Gradimo trajnu povijest Baljaka.
                             </p>
                             <p className="text-orange-100/80 text-[10px] mb-4 italic border-l-2 border-orange-400 pl-2">
-                                "Nagrada: Za svaku sliku, Admin (Ogie) će vam besplatno restaurirati jednu!"
+                                "Nagrada: Za svaku sliku, Admin će vam besplatno restaurirati jednu!"
                             </p>
                             <a href="/dashboard/spomenar" className="text-white text-xs font-bold hover:underline flex items-center gap-1">
                                 Učitaj Fotografije <span className="text-lg">→</span>
