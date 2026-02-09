@@ -49,4 +49,37 @@ export async function checkApprovedRequest(email: string) {
     }
 }
 
+export async function promoteMember(userId: string, email: string) {
+    if (!userId || !email) return { error: "Missing data" };
+
+    const { data: { user }, error: authError } = await supabaseAdmin.auth.admin.getUserById(userId);
+
+    if (authError || !user) {
+        return { error: "User verification failed" };
+    }
+
+    if (user.email !== email) {
+        return { error: "Email mismatch" };
+    }
+
+    const approvalResult = await checkApprovedRequest(email);
+    if (approvalResult.error || !approvalResult.data) {
+        return { error: "Request not approved" };
+    }
+
+    const { error: updateError } = await supabaseAdmin
+        .from('profiles')
+        .update({ role: 'member' })
+        .eq('id', userId);
+
+    if (updateError) return { error: updateError.message };
+
+    await supabaseAdmin
+        .from('requests')
+        .update({ status: 'registered' })
+        .eq('email', email);
+
+    return { success: true };
+}
+
 

@@ -57,6 +57,22 @@ export async function middleware(request: NextRequest) {
         if (!user) {
             return NextResponse.redirect(new URL('/login', request.url))
         }
+
+        // Enforce Role Check
+        const { data: profile } = await supabase
+            .from('profiles')
+            .select('role')
+            .eq('id', user.id)
+            .single()
+
+        // Block if no role or role is not member/admin
+        // valid roles: 'admin', 'member'
+        if (!profile || (profile.role !== 'admin' && profile.role !== 'member')) {
+            // Redirect to a 'pending' or 'unauthorized' page, or just home
+            // For now, redirect to home with error parameter
+            // But we should ideally have a /pending page
+            return NextResponse.redirect(new URL('/login?error=PendingApproval', request.url))
+        }
     }
 
     return response

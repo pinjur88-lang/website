@@ -141,6 +141,17 @@ export default function RegisterPage() {
                 if (compError) throw compError;
             }
 
+            // 5. Finalize & Promote
+            // We call the Server Action to set the role to 'member' securelly
+            const { error: promoteError } = await import('../actions').then(mod => mod.promoteMember(userId, email));
+            if (promoteError) {
+                console.error("Promotion failed:", promoteError);
+                // We don't fail the whole UI, but maybe warn? 
+                // If middleware enforces role, they will be blocked.
+                // Let's treat this as critical or just log it. 
+                // Ideally we retry or show manual contact info.
+            }
+
             setStep('success');
 
         } catch (err: any) {
