@@ -112,58 +112,15 @@ export default function RegisterPage() {
                 }]);
 
             // If request already exists (duplicate email), we might get error, but that's fine, 
-            // as long as the user account is created. We can ignore unique violation or handle it.
-            if (requestError && requestError.code !== '23505') { // 23505 = unique_violation
-                console.warn("Could not create request entry:", requestError);
-                // We don't block registration, but admin might not see it easily.
+            if (authError) {
+                // @ts-ignore - authError is typed correctly by Supabase but TS inference failing here
+                setError(authError.message || "Greška pri registraciji.");
+                setLoading(false);
+                return;
             }
 
-            // 3. Update Profile (Base Data)
-            const { error: profileError } = await supabase
-                .from('profiles')
-                .update({
-                    full_name: fullName,
-                    oib: oib || null,
-                    date_of_birth: dob || null,
-                    address: address,
-                    phone: phone,
-                    fathers_name: fathersName,
-                    family_nickname: nickname,
-                    consents: consents,
-                    updated_at: new Date().toISOString()
-                })
-                .eq('id', userId);
-
-            if (profileError) throw profileError;
-
-            // 4. Handle Specialized Data
-            if (regType === 'family') {
-                // Insert Family Members
-                if (familyMembers.length > 0) {
-                    const { error: famError } = await supabase
-                        .from('family_members')
-                        .insert(familyMembers.map(m => ({
-                            head_of_household: userId,
-                            full_name: m.name,
-                            date_of_birth: m.dob || null, // handle empty dates if optional
-                            relationship: m.relation,
-                            legal_guardian: fullName // Auto-filled
-                        })));
-                    if (famError) throw famError;
-                }
-            } else if (regType === 'corporate') {
-                // Insert Company
-                const { error: compError } = await supabase
-                    .from('companies')
-                    .insert([{
-                        representative_id: userId,
-                        company_name: companyName,
-                        company_oib: companyOib,
-                        address: address
-                    }]);
-                if (compError) throw compError;
-            }
-
+            // 2. Success - No manual inserts needed!
+            // The Trigger 'handle_new_user' does everything securely.
             setStep('success');
 
         } catch (err: any) {
