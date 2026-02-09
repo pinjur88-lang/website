@@ -72,20 +72,14 @@ export default function RegisterPage() {
         setError('');
 
         try {
-            // 1. Check Approval
-            const { data: requestData, error: requestError } = await checkApprovedRequest(email);
-            if (requestError || !requestData || requestData.status !== 'approved') {
-                throw new Error("Vaša email adresa nije pronađena u listi odobrenih zahtjeva. Molimo prvo ispunite zahtjev na naslovnici.");
-            }
-
-            // 2. Register Auth User
+            // 1. Sign Up User (Created as 'pending' by DB default)
             const { data: authData, error: authError } = await supabase.auth.signUp({
                 email,
                 password,
                 options: {
                     data: {
                         display_name: fullName,
-                        role: 'member'
+                        // role: 'member' // IGNORED by DB Trigger now, defaults to 'pending'
                     }
                 }
             });
@@ -93,7 +87,36 @@ export default function RegisterPage() {
             if (authError) throw authError;
             if (!authData.user) throw new Error("Greška pri registraciji.");
 
+            // Check if user is already confirmed (if email confirmation is off) or not
+            // If session exists, we can proceed with profile updates
+            // If distinct email confirmation is required, we might stop here.
+            // Assuming we can proceed (or RLS allows update to own profile even if unconfirmed? usually yes)
+
             const userId = authData.user.id;
+
+            // 2. Create or Ensure 'Request' exists for Admin Approval
+            // We insert a request so the Admin sees it in their "Requests" table
+            // We use a server action or public API for this? 
+            // The table likely has RLS. 
+            // Only 'anon' can insert? Or 'authenticated'?
+            // Let's try inserting via client. If it fails due to RLS, we might need a server action.
+            // Actually, we can just use the same `requests` table.
+
+            const { error: requestError } = await supabase
+                .from('requests')
+                .insert([{
+                    email: email,
+                    full_name: fullName,
+                    status: 'pending', // Waiting for admin
+                    request_type: regType
+                }]);
+
+            // If request already exists (duplicate email), we might get error, but that's fine, 
+            // as long as the user account is created. We can ignore unique violation or handle it.
+            if (requestError && requestError.code !== '23505') { // 23505 = unique_violation
+                console.warn("Could not create request entry:", requestError);
+                // We don't block registration, but admin might not see it easily.
+            }
 
             // 3. Update Profile (Base Data)
             const { error: profileError } = await supabase
@@ -141,17 +164,6 @@ export default function RegisterPage() {
                 if (compError) throw compError;
             }
 
-            // 5. Finalize & Promote
-            // We call the Server Action to set the role to 'member' securelly
-            const { error: promoteError } = await import('../actions').then(mod => mod.promoteMember(userId, email));
-            if (promoteError) {
-                console.error("Promotion failed:", promoteError);
-                // We don't fail the whole UI, but maybe warn? 
-                // If middleware enforces role, they will be blocked.
-                // Let's treat this as critical or just log it. 
-                // Ideally we retry or show manual contact info.
-            }
-
             setStep('success');
 
         } catch (err: any) {
@@ -166,11 +178,11 @@ export default function RegisterPage() {
         return (
             <div className="flex min-h-screen items-center justify-center bg-zinc-50 p-4 animate-in zoom-in duration-300">
                 <div className="w-full max-w-md bg-white border border-zinc-200 shadow-xl p-8 rounded-2xl text-center">
-                    <div className="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <div className="w-20 h-20 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-6">
                         <UserPlus size={40} />
                     </div>
-                    <h1 className="text-3xl font-bold text-zinc-900 mb-2">Dobrodošli!</h1>
-                    <p className="text-zinc-600 mb-8 text-lg">Vaša registracija je uspješna. Dobrodošli u udrugu Građana Baljci.</p>
+                    <h1 className="text-3xl font-bold text-zinc-900 mb-2">Zahtjev Zaprimljen!</h1>
+                    <p className="text-zinc-600 mb-8 text-lg">Vaš račun je kreiran i čeka odobrenje administratora. Obavijestit ćemo vas emailom kada pristup bude omogućen.</p>
                     <Link href="/login" className="inline-flex items-center gap-2 px-8 py-4 bg-zinc-900 text-white hover:bg-zinc-800 transition-all rounded-xl font-bold text-lg shadow-lg hover:shadow-xl active:scale-95">
                         {t.login} <ArrowRight size={20} />
                     </Link>

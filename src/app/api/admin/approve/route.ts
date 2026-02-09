@@ -30,6 +30,27 @@ export async function POST(request: Request) {
             throw new Error(`Database error: ${dbError.message}`);
         }
 
+        // 5. [NEW] Promote the actual User Profile if it exists
+        // Fetch the request details to get the email
+        const { data: requestData, error: fetchError } = await supabaseAdmin
+            .from('requests')
+            .select('email')
+            .eq('id', requestId)
+            .single();
+
+        if (requestData && requestData.email) {
+            // Update profile
+            const { error: updateError } = await supabaseAdmin
+                .from('profiles')
+                .update({ role: 'member' })
+                .eq('email', requestData.email);
+
+            if (updateError) {
+                console.error("Failed to promote user profile:", updateError);
+                // We don't fail the request approval, but we log it.
+            }
+        }
+
         return NextResponse.json({ success: true });
 
     } catch (error: any) {
