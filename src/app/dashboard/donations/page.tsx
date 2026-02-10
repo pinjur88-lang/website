@@ -44,7 +44,7 @@ export default function DonationsPage() {
         formData.append('title', uploadTitle);
         formData.append('description', uploadDesc);
         formData.append('file', selectedFile);
-        formData.append('userId', user.id);
+        // userId is now handled server-side from session
 
         const result = await uploadDonationReport(formData);
 

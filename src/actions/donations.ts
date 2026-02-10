@@ -2,6 +2,7 @@
 
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import { revalidatePath } from 'next/cache';
+import { verifyAdmin, verifyUser } from '@/lib/auth-admin';
 
 // 1. GET PROJECTS
 export async function getProjects() {
@@ -54,7 +55,7 @@ export async function createDonation(donationData: {
     donorEmail: string;
     message: string;
     isAnonymous: boolean;
-    userId?: string | null;
+    // userId is NO LONGER accepted from client for security
 }) {
     try {
         // Validation
@@ -65,6 +66,10 @@ export async function createDonation(donationData: {
             return { error: "Name is required" };
         }
 
+        // Resolve User Server-Side
+        const user = await verifyUser();
+        const userId = user ? user.id : null;
+
         const { error } = await supabaseAdmin
             .from('donations')
             .insert([{
@@ -73,7 +78,7 @@ export async function createDonation(donationData: {
                 donor_name: donationData.donorName,
                 donor_email: donationData.donorEmail, // Saved privately
                 message: donationData.message,
-                user_id: donationData.userId || null, // NULL for guests
+                user_id: userId, // Securely derived
                 is_anonymous: donationData.isAnonymous
             }]);
 
@@ -93,6 +98,8 @@ export async function createDonation(donationData: {
 
 // 4. GET DONATION REPORTS (Legacy/Admin)
 export async function getDonationReports() {
+    // Only Admin should see reports? Or public transparency?
+    // Assuming transparency for now, but let's be careful.
     try {
         const { data, error } = await supabaseAdmin
             .from('donation_reports')
@@ -108,11 +115,15 @@ export async function getDonationReports() {
 
 // 5. UPLOAD DONATION REPORT
 export async function uploadDonationReport(formData: FormData) {
+    if (!await verifyAdmin()) return { error: "Unauthorized" };
+
     try {
         const title = formData.get('title') as string;
         const description = formData.get('description') as string;
         const file = formData.get('file') as File;
-        const userId = formData.get('userId') as string;
+        // userId from client is IGNORED directly, we use the session user (who is admin)
+        const user = await verifyUser();
+        const userId = user?.id;
 
         if (!file || !title) return { error: "Missing file or title" };
 
@@ -153,6 +164,8 @@ export async function uploadDonationReport(formData: FormData) {
 
 // 6. DELETE DONATION REPORT
 export async function deleteDonationReport(id: string, fileUrl: string) {
+    if (!await verifyAdmin()) return { error: "Unauthorized" };
+
     try {
         // Extract filename from URL
         const fileName = fileUrl.split('/').pop();

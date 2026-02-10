@@ -97,8 +97,7 @@ export default function DonatePage() {
             donorName: nameToUse,
             donorEmail: emailToUse,
             message: inMemoryOf ? `U sjećanje na: ${message}` : message,
-            isAnonymous,
-            userId: user?.id
+            isAnonymous
         });
 
         setSubmitting(false);

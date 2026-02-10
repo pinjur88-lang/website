@@ -44,7 +44,7 @@ export default function AlbumList({ onSelectAlbum }: AlbumListProps) {
         e.preventDefault();
         if (!newTitle || !user) return;
 
-        const { data, error } = await createAlbum(newTitle, user.id);
+        const { data, error } = await createAlbum(newTitle);
         if (error) {
             alert('Failed to create album');
         } else {

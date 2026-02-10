@@ -75,7 +75,7 @@ export default function AlbumView({ album, onBack }: AlbumViewProps) {
                 .from('gallery')
                 .getPublicUrl(filePath);
 
-            const { error: dbError } = await saveAlbumImageRef(publicUrl, album.id, user.id, file.name);
+            const { error: dbError } = await saveAlbumImageRef(publicUrl, album.id, file.name);
             if (dbError) throw dbError;
 
             loadImages();

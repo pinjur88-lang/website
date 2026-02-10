@@ -189,16 +189,13 @@ export async function getGalleryImages(albumId?: string) {
 
 // ALBUM ACTIONS
 
-export async function createAlbum(title: string, userId: string) {
+export async function createAlbum(title: string) {
     if (!title) return { error: "Title is required" };
     const user = await verifyUser();
     if (!user) return { error: "Unauthorized" };
 
     try {
-        const payload: any = { title };
-        if (userId && userId !== 'admin-master') {
-            payload.created_by = userId;
-        }
+        const payload: any = { title, created_by: user.id };
 
         const { data, error } = await supabaseAdmin
             .from('albums')
@@ -254,15 +251,17 @@ export async function deleteAlbum(id: string) {
     }
 }
 
-export async function saveAlbumImageRef(url: string, albumId: string, userId: string, caption?: string) {
+export async function saveAlbumImageRef(url: string, albumId: string, caption?: string) {
     const user = await verifyUser();
     if (!user) return { error: "Unauthorized" };
 
     try {
-        const payload: any = { url, caption, album_id: albumId };
-        if (userId && userId !== 'admin-master') {
-            payload.uploaded_by = userId;
-        }
+        const payload: any = {
+            url,
+            caption,
+            album_id: albumId,
+            uploaded_by: user.id // Securely set
+        };
 
         const { data, error } = await supabaseAdmin
             .from('gallery_images')
