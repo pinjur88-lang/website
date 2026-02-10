@@ -276,3 +276,59 @@ export async function saveAlbumImageRef(url: string, albumId: string, userId: st
         return { error: error.message };
     }
 }
+export async function registerSpomenarImage(fileName: string, userId: string) {
+    // This action is called after a user uploads a file to 'spomenar_uploads' bucket.
+    // We want to automatically add it to a "Digitalni Spomenar" album in the gallery.
+
+    try {
+        // 1. Get Public URL
+        const { data: publicUrlData } = supabaseAdmin.storage
+            .from('spomenar_uploads')
+            .getPublicUrl(fileName);
+
+        const publicUrl = publicUrlData.publicUrl;
+
+        // 2. Find or Create "Digitalni Spomenar" Album
+        const { data: album, error: albumError } = await supabaseAdmin
+            .from('albums')
+            .select('id')
+            .eq('title', 'Digitalni Spomenar')
+            .single();
+
+        let albumId;
+
+        if (albumError || !album) {
+            // Create it
+            const { data: newAlbum, error: createError } = await supabaseAdmin
+                .from('albums')
+                .insert([{
+                    title: 'Digitalni Spomenar',
+                    created_by: userId // The first uploader becomes the "creator" effectively, or we could use a system ID
+                }])
+                .select()
+                .single();
+
+            if (createError) throw createError;
+            albumId = newAlbum.id;
+        } else {
+            albumId = album.id;
+        }
+
+        // 3. Insert Image Record
+        const { error: insertError } = await supabaseAdmin
+            .from('gallery_images')
+            .insert([{
+                url: publicUrl,
+                album_id: albumId,
+                uploaded_by: userId,
+                caption: 'Priloženo za Digitalni Spomenar'
+            }]);
+
+        if (insertError) throw insertError;
+
+        return { success: true };
+    } catch (error: any) {
+        console.error("Spomenar registration error:", error);
+        return { error: error.message };
+    }
+}

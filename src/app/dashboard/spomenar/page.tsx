@@ -4,8 +4,11 @@ import { useState } from 'react';
 import { Upload, Camera, Image as ImageIcon, Heart, ArrowLeft, Send } from 'lucide-react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/lib/auth-context';
+import { registerSpomenarImage } from '@/actions/cms';
 
 export default function SpomenarPage() {
+    const { user } = useAuth();
     const [dragActive, setDragActive] = useState(false);
     const [uploading, setUploading] = useState(false);
 
@@ -25,7 +28,17 @@ export default function SpomenarPage() {
 
             if (error) throw error;
 
-            alert("Hvala! Slika je uspješno učitana. Obavijestit ćemo vas kada restauracija bude gotova.");
+
+
+            // 2. Register in Gallery (Server Action)
+            if (user) {
+                const result = await registerSpomenarImage(fileName, user.id);
+                if (result.error) console.error("Gallery registration warning:", result.error);
+            } else {
+                console.warn("User not found, skipping gallery registration");
+            }
+
+            alert("Hvala! Slika je uspješno učitana i dodana u 'Digitalni Spomenar' galeriju.");
         } catch (error: any) {
             console.error("Upload error:", error);
             alert("Greška pri učitavanju: " + (error.message || "Nepoznata greška"));
