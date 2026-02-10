@@ -5,6 +5,7 @@ import { X, Send, AlertCircle, CheckSquare, Square } from 'lucide-react';
 import Image from 'next/image';
 import { useLanguage } from '@/lib/language-context';
 import { db } from '@/lib/db';
+import { submitAccessRequest } from '@/actions/public';
 
 interface AccessRequestModalProps {
     isOpen: boolean;
@@ -76,23 +77,27 @@ export default function AccessRequestModal({ isOpen, onClose }: AccessRequestMod
             .join(', ');
 
         try {
-            await db.addRequest({
+            // Use Server Action instead of client DB
+            const result = await submitAccessRequest({
                 name: formData.name,
                 email: formData.email,
                 phone: formData.phone,
                 contact_method: selectedMethods,
-
                 oib: formData.oib,
                 dob: formData.dob,
                 address: formData.address,
                 accepted_statute: acceptedStatute,
-
                 reason: formData.reason,
             });
-            setIsSubmitted(true);
+
+            if (result.error) {
+                setErrorMsg(result.error);
+            } else {
+                setIsSubmitted(true);
+            }
         } catch (error: any) {
             console.error('Failed to submit request', error);
-            setErrorMsg(error.message || 'Greška u povezivanju s bazom podataka.');
+            setErrorMsg('Greška u komunikaciji sa serverom.');
         } finally {
             setLoading(false);
         }

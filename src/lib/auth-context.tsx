@@ -27,22 +27,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const router = useRouter();
 
     useEffect(() => {
-        // 1. Check LocalStorage (for Admin Backdoor)
-        const storedUser = localStorage.getItem('mock_session');
-        if (storedUser) {
-            try {
-                const parsed = JSON.parse(storedUser);
-                if (parsed && parsed.id) {
-                    setUser(parsed);
-                } else {
-                    localStorage.removeItem('mock_session');
-                }
-            } catch (e) {
-                localStorage.removeItem('mock_session');
-            }
-        }
-
-        // 2. Check Supabase Session (For Members)
+        // 1. Check Supabase Session
         const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
             if (session?.user) {
                 // SECURITY: Double check approval status in requests table
@@ -56,7 +41,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                     console.warn('User logged in but not approved (or revoked). Logging out.');
                     await supabase.auth.signOut();
                     setUser(null);
-                    localStorage.removeItem('mock_session');
                     setIsLoading(false);
                     return;
                 }
@@ -79,9 +63,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                     membership_tier: profileData?.membership_tier || 'free'
                 };
                 setUser(memberUser);
-                localStorage.setItem('mock_session', JSON.stringify(memberUser));
-            } else if (!storedUser) {
-                // Only clear if not using backdoor
+            } else {
                 setUser(null);
             }
             setIsLoading(false);
