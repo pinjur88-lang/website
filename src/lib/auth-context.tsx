@@ -29,44 +29,49 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     useEffect(() => {
         // 1. Check Supabase Session
         const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-            if (session?.user) {
-                // SECURITY: Double check approval status in requests table
-                const { data: reqData } = await supabase
-                    .from('requests')
-                    .select('status')
-                    .eq('email', session.user.email!)
-                    .single();
+            try {
+                if (session?.user) {
+                    // SECURITY: Double check approval status in requests table
+                    const { data: reqData, error: reqError } = await supabase
+                        .from('requests')
+                        .select('status')
+                        .eq('email', session.user.email!)
+                        .maybeSingle(); // Use maybeSingle to avoid 406 if not found
 
-                if (reqData && reqData.status !== 'approved') {
-                    console.warn('User logged in but not approved (or revoked). Logging out.');
-                    await supabase.auth.signOut();
+                    if (reqData && reqData.status !== 'approved') {
+                        console.warn('User logged in but not approved (or revoked). Logging out.');
+                        await supabase.auth.signOut();
+                        setUser(null);
+                        return; // Finally will handle isLoading
+                    }
+
+                    // Check if user is the admin email
+                    const isAdmin = session.user.email === 'udrugabaljci@gmail.com';
+
+                    // Get profile details (tier)
+                    const { data: profileData } = await supabase
+                        .from('profiles')
+                        .select('membership_tier')
+                        .eq('id', session.user.id)
+                        .maybeSingle();
+
+                    const memberUser: User = {
+                        id: session.user.id,
+                        name: session.user.user_metadata?.display_name || 'Član',
+                        email: session.user.email!,
+                        role: isAdmin ? 'admin' : 'member',
+                        membership_tier: profileData?.membership_tier || 'free'
+                    };
+                    setUser(memberUser);
+                } else {
                     setUser(null);
-                    setIsLoading(false);
-                    return;
                 }
-
-                // Check if user is the admin email
-                const isAdmin = session.user.email === 'udrugabaljci@gmail.com';
-
-                // Get profile details (tier)
-                const { data: profileData } = await supabase
-                    .from('profiles')
-                    .select('membership_tier')
-                    .eq('id', session.user.id)
-                    .single();
-
-                const memberUser: User = {
-                    id: session.user.id,
-                    name: session.user.user_metadata?.display_name || 'Član',
-                    email: session.user.email!,
-                    role: isAdmin ? 'admin' : 'member',
-                    membership_tier: profileData?.membership_tier || 'free'
-                };
-                setUser(memberUser);
-            } else {
+            } catch (err) {
+                console.error("Auth State Check Error:", err);
                 setUser(null);
+            } finally {
+                setIsLoading(false);
             }
-            setIsLoading(false);
         });
 
         return () => subscription.unsubscribe();
@@ -94,7 +99,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                         .from('profiles')
                         .select('role')
                         .eq('id', data.user.id)
-                        .single();
+                        .maybeSingle();
 
                     if (profile?.role === 'admin') {
                         router.push('/admin');
