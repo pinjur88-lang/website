@@ -276,9 +276,12 @@ export async function saveAlbumImageRef(url: string, albumId: string, userId: st
         return { error: error.message };
     }
 }
-export async function registerSpomenarImage(fileName: string, userId: string) {
+export async function registerSpomenarImage(fileName: string) {
     // This action is called after a user uploads a file to 'spomenar_uploads' bucket.
     // We want to automatically add it to a "Digitalni Spomenar" album in the gallery.
+
+    const user = await verifyUser();
+    if (!user) return { error: "Unauthorized" };
 
     try {
         // 1. Get Public URL
@@ -303,7 +306,7 @@ export async function registerSpomenarImage(fileName: string, userId: string) {
                 .from('albums')
                 .insert([{
                     title: 'Digitalni Spomenar',
-                    created_by: userId // The first uploader becomes the "creator" effectively, or we could use a system ID
+                    created_by: user.id
                 }])
                 .select()
                 .single();
@@ -320,7 +323,7 @@ export async function registerSpomenarImage(fileName: string, userId: string) {
             .insert([{
                 url: publicUrl,
                 album_id: albumId,
-                uploaded_by: userId,
+                uploaded_by: user.id,
                 caption: 'Priloženo za Digitalni Spomenar'
             }]);
 

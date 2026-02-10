@@ -32,7 +32,7 @@ export default function SpomenarPage() {
 
             // 2. Register in Gallery (Server Action)
             if (user) {
-                const result = await registerSpomenarImage(fileName, user.id);
+                const result = await registerSpomenarImage(fileName);
                 if (result.error) console.error("Gallery registration warning:", result.error);
             } else {
                 console.warn("User not found, skipping gallery registration");
