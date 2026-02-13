@@ -125,6 +125,7 @@ export default function AlbumView({ album, onBack }: AlbumViewProps) {
             <div className="flex items-center gap-4 border-b border-stone-200 pb-4">
                 <button
                     onClick={onBack}
+                    title="Back"
                     className="p-2 hover:bg-stone-100 rounded-full text-stone-600 transition-colors"
                 >
                     <ArrowLeft size={20} />
@@ -142,6 +143,7 @@ export default function AlbumView({ album, onBack }: AlbumViewProps) {
                             multiple
                             onChange={handleFileUpload}
                             disabled={uploading}
+                            title="Select images to upload"
                             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed"
                         />
                         <button
@@ -180,6 +182,7 @@ export default function AlbumView({ album, onBack }: AlbumViewProps) {
                                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                     <button
                                         onClick={(e) => { e.stopPropagation(); handleDelete(img.id); }}
+                                        title="Delete image"
                                         className="p-2 bg-white text-red-600 rounded-full hover:bg-red-50"
                                     >
                                         <Trash2 size={20} />
@@ -199,6 +202,7 @@ export default function AlbumView({ album, onBack }: AlbumViewProps) {
                     <button
                         className="absolute top-4 right-4 text-white/70 hover:text-white"
                         onClick={() => setSelectedIndex(null)}
+                        title="Close"
                     >
                         <ArrowLeft size={32} /> {/* Using ArrowLeft as 'Back' or could use X */}
                     </button>
@@ -216,6 +220,7 @@ export default function AlbumView({ album, onBack }: AlbumViewProps) {
                             <button
                                 className="absolute left-4 p-2 bg-black/50 text-white rounded-full hover:bg-black/70 transition"
                                 onClick={(e) => { e.stopPropagation(); setSelectedIndex(selectedIndex - 1); }}
+                                title="Previous image"
                             >
                                 <ArrowLeft size={32} />
                             </button>
@@ -226,6 +231,7 @@ export default function AlbumView({ album, onBack }: AlbumViewProps) {
                             <button
                                 className="absolute right-4 p-2 bg-black/50 text-white rounded-full hover:bg-black/70 transition"
                                 onClick={(e) => { e.stopPropagation(); setSelectedIndex(selectedIndex + 1); }}
+                                title="Next image"
                             >
                                 <ArrowLeft size={32} className="rotate-180" />
                             </button>
@@ -239,6 +245,7 @@ export default function AlbumView({ album, onBack }: AlbumViewProps) {
                                         <input
                                             type="text"
                                             defaultValue={images[selectedIndex].caption}
+                                            title="Edit image caption"
                                             className="bg-white/20 text-white border-none rounded px-2 py-1 outline-none focus:ring-1 focus:ring-white"
                                             id={`caption-edit-${images[selectedIndex].id}`}
                                             onKeyDown={async (e) => {
@@ -252,6 +259,7 @@ export default function AlbumView({ album, onBack }: AlbumViewProps) {
                                         />
                                         <button
                                             className="text-white hover:text-green-400 text-xs uppercase font-bold"
+                                            title="Save caption"
                                             onClick={async () => {
                                                 const input = document.getElementById(`caption-edit-${images[selectedIndex].id}`) as HTMLInputElement;
                                                 if (!input) return;
@@ -263,6 +271,7 @@ export default function AlbumView({ album, onBack }: AlbumViewProps) {
                                         >Save</button>
                                         <button
                                             className="text-white hover:text-red-400 text-xs uppercase font-bold"
+                                            title="Cancel editing"
                                             onClick={() => {
                                                 setImages(prev => prev.map(img => img.id === images[selectedIndex].id ? { ...img, isEditing: false } : img));
                                             }}
@@ -275,6 +284,7 @@ export default function AlbumView({ album, onBack }: AlbumViewProps) {
                                         {(user?.role === 'admin' || user?.email === 'udrugabaljci@gmail.com' || user?.id === images[selectedIndex].uploaded_by) && (
                                             <button
                                                 className="text-xs text-white/50 hover:text-white uppercase font-bold tracking-wider"
+                                                title="Edit caption"
                                                 onClick={() => {
                                                     setImages(prev => prev.map(img => img.id === images[selectedIndex].id ? { ...img, isEditing: true } : img));
                                                 }}
