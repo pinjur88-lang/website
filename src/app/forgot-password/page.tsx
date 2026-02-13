@@ -13,8 +13,14 @@ export default function ForgotPasswordPage() {
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.MouseEvent) => {
         e.preventDefault();
+
+        if (!email) {
+            setError("Email is required.");
+            return;
+        }
+
         setIsLoading(true);
         setMessage('');
         setError('');
@@ -42,7 +48,7 @@ export default function ForgotPasswordPage() {
                     <p className="text-xs text-zinc-400 mt-1 text-center">{t.passwordResetDesc}</p>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="space-y-4">
                     <div>
                         <label htmlFor="email" className="block text-xs font-medium text-zinc-500 mb-1 uppercase">{t.emailLabel}</label>
                         <input
@@ -67,13 +73,14 @@ export default function ForgotPasswordPage() {
                     )}
 
                     <button
-                        type="submit"
+                        type="button"
+                        onClick={handleSubmit}
                         disabled={isLoading}
                         className="w-full py-2 bg-zinc-900 hover:bg-zinc-800 text-white rounded-sm text-sm transition-colors uppercase tracking-wider disabled:opacity-50"
                     >
                         {isLoading ? t.sending : t.sendResetLink}
                     </button>
-                </form>
+                </div>
 
                 <div className="mt-6 pt-6 border-t border-zinc-100 text-center">
                     <Link href="/login" className="text-xs text-zinc-500 hover:text-zinc-800 flex items-center justify-center gap-1 transition-colors">

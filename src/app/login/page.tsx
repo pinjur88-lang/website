@@ -26,8 +26,15 @@ function LoginContent() {
         }
     }, [searchParams]);
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.MouseEvent) => {
         e.preventDefault();
+
+        // Manual Validation
+        if (!email || !password) {
+            setError("Molimo ispunite email i lozinku.");
+            return;
+        }
+
         setError('');
         setIsLocalLoading(true);
 
@@ -51,7 +58,7 @@ function LoginContent() {
                 <p className="text-xs text-zinc-400 mt-1 uppercase">{t.onlyMembers}</p>
             </div>
 
-            <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
+            <div className="space-y-4">
                 <div>
                     <label htmlFor="email" className="block text-xs font-medium text-zinc-500 mb-1 uppercase">{t.emailLabel}</label>
                     <input
@@ -62,11 +69,6 @@ function LoginContent() {
                         placeholder="ime@primjer.hr"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        onKeyDown={(e) => {
-                            if (e.key === 'Enter') {
-                                e.preventDefault(); // Prevent auto request, user must click
-                            }
-                        }}
                     />
                 </div>
                 <div>
@@ -78,11 +80,6 @@ function LoginContent() {
                         className="w-full px-3 py-2 border border-zinc-300 rounded-sm text-sm focus:outline-none focus:ring-1 focus:ring-zinc-800 text-zinc-900 bg-white"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        onKeyDown={(e) => {
-                            if (e.key === 'Enter') {
-                                e.preventDefault(); // Prevent auto request
-                            }
-                        }}
                     />
                 </div>
 
@@ -102,7 +99,7 @@ function LoginContent() {
                 >
                     {(isLoading || isLocalLoading) ? t.checking : t.signIn}
                 </button>
-            </form>
+            </div>
 
             <div className="mt-6 pt-6 border-t border-zinc-100 text-center">
                 <p className="text-xs text-zinc-400">

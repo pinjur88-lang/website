@@ -26,8 +26,14 @@ export default function UpdatePasswordPage() {
         checkSession();
     }, [supabase.auth]);
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.MouseEvent) => {
         e.preventDefault();
+
+        if (!password || password.length < 6) {
+            setError("Password must be at least 6 characters.");
+            return;
+        }
+
         setIsLoading(true);
         setMessage('');
         setError('');
@@ -56,7 +62,7 @@ export default function UpdatePasswordPage() {
                     <p className="text-xs text-zinc-400 mt-1 text-center">{t.updatePasswordDesc}</p>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="space-y-4">
                     <div>
                         <label htmlFor="password" className="block text-xs font-medium text-zinc-500 mb-1 uppercase">{t.newPassword}</label>
                         <input
@@ -81,13 +87,14 @@ export default function UpdatePasswordPage() {
                     )}
 
                     <button
-                        type="submit"
+                        type="button"
+                        onClick={handleSubmit}
                         disabled={isLoading}
                         className="w-full py-2 bg-zinc-900 hover:bg-zinc-800 text-white rounded-sm text-sm transition-colors uppercase tracking-wider disabled:opacity-50"
                     >
                         {isLoading ? t.sending : t.updatePassword}
                     </button>
-                </form>
+                </div>
 
                 <div className="mt-6 pt-6 border-t border-zinc-100 text-center">
                     <Link href="/login" className="text-xs text-zinc-500 hover:text-zinc-800 flex items-center justify-center gap-1 transition-colors">
