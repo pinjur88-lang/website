@@ -2,6 +2,8 @@
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import { verifyAdmin, verifyUser } from '@/lib/auth-admin';
 import { redirect } from 'next/navigation';
+
+export const dynamic = 'force-dynamic';
 import MapWrapper from '@/components/public/MapWrapper';
 
 export default async function MapPage() {

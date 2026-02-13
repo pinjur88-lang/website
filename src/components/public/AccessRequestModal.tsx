@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { X, Send, AlertCircle, CheckSquare, Square } from 'lucide-react';
 import Image from 'next/image';
 import { useLanguage } from '@/lib/language-context';
-import { db } from '@/lib/db';
 import { submitAccessRequest } from '@/actions/public';
 
 interface AccessRequestModalProps {
@@ -38,6 +37,9 @@ export default function AccessRequestModal({ isOpen, onClose }: AccessRequestMod
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
 
+    // Validation state
+    const [fieldErrors, setFieldErrors] = useState<Set<string>>(new Set());
+
     // Prevent background scrolling when modal is open
     useEffect(() => {
         if (isOpen) {
@@ -59,16 +61,39 @@ export default function AccessRequestModal({ isOpen, onClose }: AccessRequestMod
         }));
     };
 
+    const clearError = (field: string) => {
+        if (fieldErrors.has(field)) {
+            const next = new Set(fieldErrors);
+            next.delete(field);
+            setFieldErrors(next);
+        }
+    };
+
+    const validateForm = () => {
+        const errors = new Set<string>();
+
+        if (!formData.name.trim()) errors.add('name');
+        if (!formData.dob.trim()) errors.add('dob');
+        if (!formData.address.trim()) errors.add('address');
+        if (!formData.email.trim()) errors.add('email');
+        if (!formData.phone.trim()) errors.add('phone');
+        if (!formData.reason.trim()) errors.add('reason');
+        if (!acceptedStatute) errors.add('statute');
+
+        setFieldErrors(errors);
+        return errors.size === 0;
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setLoading(true);
         setErrorMsg('');
 
-        if (!acceptedStatute) {
-            setErrorMsg(t.statuteError);
-            setLoading(false);
+        if (!validateForm()) {
+            setErrorMsg(t.formError || "Molimo ispunite sva označena polja."); // Fallback if t.formError missing
             return;
         }
+
+        setLoading(true);
 
         // Create comma separated string of selected methods
         const selectedMethods = Object.entries(contactMethods)
@@ -110,6 +135,7 @@ export default function AccessRequestModal({ isOpen, onClose }: AccessRequestMod
                     <button
                         onClick={onClose}
                         className="absolute top-4 right-4 text-zinc-400 hover:text-zinc-800 transition-colors z-10"
+                        aria-label="Close"
                     >
                         <X size={20} />
                     </button>
@@ -129,15 +155,18 @@ export default function AccessRequestModal({ isOpen, onClose }: AccessRequestMod
                                     </div>
                                 </div>
 
-                                <form onSubmit={handleSubmit} className="space-y-4">
+                                <form onSubmit={handleSubmit} className="space-y-4" noValidate>
                                     <div>
                                         <label htmlFor="name" className="block text-xs font-bold text-zinc-500 mb-1 uppercase">{t.nameLabel} *</label>
                                         <input
                                             id="name"
                                             required
-                                            className="w-full bg-zinc-50 border border-zinc-200 p-2 text-sm focus:outline-none focus:border-zinc-500 rounded-sm text-zinc-900"
+                                            className={`w-full bg-zinc-50 border p-2 text-sm focus:outline-none focus:border-zinc-500 rounded-sm text-zinc-900 ${fieldErrors.has('name') ? 'border-red-500 bg-red-50' : 'border-zinc-200'}`}
                                             value={formData.name}
-                                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                            onChange={(e) => {
+                                                setFormData({ ...formData, name: e.target.value });
+                                                clearError('name');
+                                            }}
                                         />
                                     </div>
 
@@ -148,9 +177,12 @@ export default function AccessRequestModal({ isOpen, onClose }: AccessRequestMod
                                                 id="dob"
                                                 required
                                                 type="date"
-                                                className="w-full bg-zinc-50 border border-zinc-200 p-2 text-sm focus:outline-none focus:border-zinc-500 rounded-sm text-zinc-900"
+                                                className={`w-full bg-zinc-50 border p-2 text-sm focus:outline-none focus:border-zinc-500 rounded-sm text-zinc-900 ${fieldErrors.has('dob') ? 'border-red-500 bg-red-50' : 'border-zinc-200'}`}
                                                 value={formData.dob}
-                                                onChange={(e) => setFormData({ ...formData, dob: e.target.value })}
+                                                onChange={(e) => {
+                                                    setFormData({ ...formData, dob: e.target.value });
+                                                    clearError('dob');
+                                                }}
                                             />
                                         </div>
                                         <div>
@@ -169,10 +201,13 @@ export default function AccessRequestModal({ isOpen, onClose }: AccessRequestMod
                                         <input
                                             id="address"
                                             required
-                                            className="w-full bg-zinc-50 border border-zinc-200 p-2 text-sm focus:outline-none focus:border-zinc-500 rounded-sm text-zinc-900"
+                                            className={`w-full bg-zinc-50 border p-2 text-sm focus:outline-none focus:border-zinc-500 rounded-sm text-zinc-900 ${fieldErrors.has('address') ? 'border-red-500 bg-red-50' : 'border-zinc-200'}`}
                                             placeholder="npr. Šibenik, Hrvatska"
                                             value={formData.address}
-                                            onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                                            onChange={(e) => {
+                                                setFormData({ ...formData, address: e.target.value });
+                                                clearError('address');
+                                            }}
                                         />
                                     </div>
 
@@ -183,9 +218,12 @@ export default function AccessRequestModal({ isOpen, onClose }: AccessRequestMod
                                                 id="email"
                                                 type="email"
                                                 required
-                                                className="w-full bg-zinc-50 border border-zinc-200 p-2 text-sm focus:outline-none focus:border-zinc-500 rounded-sm text-zinc-900"
+                                                className={`w-full bg-zinc-50 border p-2 text-sm focus:outline-none focus:border-zinc-500 rounded-sm text-zinc-900 ${fieldErrors.has('email') ? 'border-red-500 bg-red-50' : 'border-zinc-200'}`}
                                                 value={formData.email}
-                                                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                                onChange={(e) => {
+                                                    setFormData({ ...formData, email: e.target.value });
+                                                    clearError('email');
+                                                }}
                                             />
                                         </div>
                                         <div>
@@ -194,12 +232,31 @@ export default function AccessRequestModal({ isOpen, onClose }: AccessRequestMod
                                                 id="phone"
                                                 type="tel"
                                                 required
-                                                className="w-full bg-zinc-50 border border-zinc-200 p-2 text-sm focus:outline-none focus:border-zinc-500 rounded-sm text-zinc-900"
+                                                className={`w-full bg-zinc-50 border p-2 text-sm focus:outline-none focus:border-zinc-500 rounded-sm text-zinc-900 ${fieldErrors.has('phone') ? 'border-red-500 bg-red-50' : 'border-zinc-200'}`}
                                                 placeholder="+385..."
                                                 value={formData.phone}
-                                                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                                                onChange={(e) => {
+                                                    setFormData({ ...formData, phone: e.target.value });
+                                                    clearError('phone');
+                                                }}
                                             />
                                         </div>
+                                    </div>
+
+                                    <div>
+                                        <label htmlFor="reason" className="block text-xs font-bold text-zinc-500 mb-1 uppercase">{t.reasonLabel || "Razlog Zahtjeva"} *</label>
+                                        <textarea
+                                            id="reason"
+                                            required
+                                            rows={2}
+                                            className={`w-full bg-zinc-50 border p-2 text-sm focus:outline-none focus:border-zinc-500 rounded-sm text-zinc-900 resize-none ${fieldErrors.has('reason') ? 'border-red-500 bg-red-50' : 'border-zinc-200'}`}
+                                            placeholder="Obiteljska veza, itd..."
+                                            value={formData.reason}
+                                            onChange={(e) => {
+                                                setFormData({ ...formData, reason: e.target.value });
+                                                clearError('reason');
+                                            }}
+                                        />
                                     </div>
 
                                     <div>
@@ -223,13 +280,16 @@ export default function AccessRequestModal({ isOpen, onClose }: AccessRequestMod
                                     <div className="pt-2">
                                         <button
                                             type="button"
-                                            onClick={() => setAcceptedStatute(!acceptedStatute)}
+                                            onClick={() => {
+                                                setAcceptedStatute(!acceptedStatute);
+                                                if (!acceptedStatute) clearError('statute');
+                                            }}
                                             className="flex items-start gap-3 w-full text-left group"
                                         >
-                                            <div className={`mt-0.5 transition-colors ${acceptedStatute ? 'text-zinc-900' : 'text-zinc-400 group-hover:text-zinc-600'}`}>
+                                            <div className={`mt-0.5 transition-colors ${acceptedStatute ? 'text-zinc-900' : (fieldErrors.has('statute') ? 'text-red-500' : 'text-zinc-400 group-hover:text-zinc-600')}`}>
                                                 {acceptedStatute ? <CheckSquare size={20} /> : <Square size={20} />}
                                             </div>
-                                            <span className="text-sm font-medium text-zinc-900 leading-tight">
+                                            <span className={`text-sm font-medium leading-tight ${fieldErrors.has('statute') ? 'text-red-500' : 'text-zinc-900'}`}>
                                                 {t.statuteLabel} <span className="text-red-500">*</span>
                                             </span>
                                         </button>

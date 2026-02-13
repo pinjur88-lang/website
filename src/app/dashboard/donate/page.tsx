@@ -16,6 +16,7 @@ export default function DashboardDonatePage() {
     };
 
     const STRIPE_LINK = "https://buy.stripe.com/5kQbJ160x3l6g8Q6FK4ZG00";
+    const WISE_LINK = "https://wise.com/pay/me/udrugabaljci"; // Placeholder - Update with actual link
 
     const content = {
         en: {
@@ -74,8 +75,6 @@ export default function DashboardDonatePage() {
                     institution: "Institution: 621",
                     transit: "Transit: 16001",
                     swift: "BIC: TRWICAW1XXX (For outside Canada)",
-                    note: "Note: For Interac e-Transfer, use email below.",
-                    email: "Email: finance@udrugabaljci.com",
                     autoDeposit: "(Auto-deposit enabled)",
                 },
             },
@@ -137,8 +136,6 @@ export default function DashboardDonatePage() {
                     institution: "Institution: 621",
                     transit: "Transit: 16001",
                     swift: "BIC: TRWICAW1XXX (Izvan Kanade)",
-                    note: "Napomena: Za Interac e-Transfer koristite email ispod.",
-                    email: "Email: finance@udrugabaljci.com",
                     autoDeposit: "(Auto-deposit enabled)",
                 },
             },
@@ -200,8 +197,6 @@ export default function DashboardDonatePage() {
                     institution: "Institution: 621",
                     transit: "Transit: 16001",
                     swift: "BIC: TRWICAW1XXX (Außerhalb Kanada)",
-                    note: "Hinweis: Für Interac e-Transfer nutzen Sie die E-Mail unten.",
-                    email: "E-Mail: finance@udrugabaljci.com",
                     autoDeposit: "(Auto-deposit aktiviert)",
                 },
             },
@@ -328,7 +323,7 @@ export default function DashboardDonatePage() {
                             </div>
                         </div>
 
-                        <div className="mt-auto bg-zinc-100 dark:bg-black/40 rounded-xl p-6 border border-zinc-200 dark:border-zinc-800">
+                        <div className="mt-auto bg-blue-50 dark:bg-blue-900/20 rounded-xl p-6 border border-blue-100 dark:border-blue-900/50">
                             <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-6 border-b border-zinc-200 dark:border-zinc-700 pb-2">
                                 {t.option2.bankDetails}
                             </h3>
@@ -336,7 +331,7 @@ export default function DashboardDonatePage() {
                             <div className="grid md:grid-cols-2 gap-6">
                                 {/* Wise Quick Pay QR Code - LEFT */}
                                 <div className="flex flex-col items-center justify-center">
-                                    <div className="bg-white p-4 rounded-xl border border-zinc-200 shadow-sm">
+                                    <div className="bg-white p-4 rounded-xl border border-zinc-200 shadow-sm mb-3">
                                         <Image
                                             src="/wise-quick-pay-qr-code.png"
                                             alt="Wise Quick Pay QR Code"
@@ -345,7 +340,19 @@ export default function DashboardDonatePage() {
                                             className="object-contain"
                                         />
                                         <p className="text-center text-xs text-zinc-500 mt-2 font-medium">Scan to Pay with Wise</p>
+                                        <p className="text-center text-[10px] text-blue-600 font-bold uppercase tracking-wider mt-1">Wise to Wise</p>
                                     </div>
+                                    <a
+                                        href={WISE_LINK}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-xs font-semibold text-blue-600 hover:text-blue-700 hover:underline flex items-center gap-1"
+                                    >
+                                        <span>Click to Pay (Link)</span>
+                                        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                        </svg>
+                                    </a>
                                 </div>
 
                                 {/* Bank Details - RIGHT - Simplified */}
@@ -403,10 +410,7 @@ export default function DashboardDonatePage() {
                                             <p className="font-bold text-zinc-900 dark:text-zinc-200">{t.option2.canada.institution}</p>
                                             <p className="font-bold text-zinc-900 dark:text-zinc-200">{t.option2.canada.transit}</p>
                                             <p>{t.option2.canada.swift}</p>
-                                            <div className="mt-1 pt-1 border-t border-zinc-200 dark:border-zinc-700">
-                                                <p className="select-all font-bold text-emerald-600 dark:text-emerald-400">{t.option2.canada.email}</p>
-                                                <p className="text-zinc-400 italic text-[10px]">{t.option2.canada.note}</p>
-                                            </div>
+
                                         </div>
                                     </div>
                                 </div>
