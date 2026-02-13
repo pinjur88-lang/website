@@ -51,7 +51,7 @@ function LoginContent() {
                 <p className="text-xs text-zinc-400 mt-1 uppercase">{t.onlyMembers}</p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
                 <div>
                     <label htmlFor="email" className="block text-xs font-medium text-zinc-500 mb-1 uppercase">{t.emailLabel}</label>
                     <input
@@ -62,6 +62,11 @@ function LoginContent() {
                         placeholder="ime@primjer.hr"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                e.preventDefault(); // Prevent auto request, user must click
+                            }
+                        }}
                     />
                 </div>
                 <div>
@@ -73,13 +78,19 @@ function LoginContent() {
                         className="w-full px-3 py-2 border border-zinc-300 rounded-sm text-sm focus:outline-none focus:ring-1 focus:ring-zinc-800 text-zinc-900 bg-white"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                e.preventDefault(); // Prevent auto request
+                            }
+                        }}
                     />
                 </div>
 
                 {error && <p className="text-xs text-red-600 text-center">{error}</p>}
 
                 <button
-                    type="submit"
+                    type="button"
+                    onClick={handleSubmit}
                     disabled={isLoading || isLocalLoading}
                     className="w-full py-2 bg-zinc-900 hover:bg-zinc-800 text-white rounded-sm text-sm transition-colors uppercase tracking-wider relative"
                 >
