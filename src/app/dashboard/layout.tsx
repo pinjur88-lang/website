@@ -57,20 +57,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             ]
         },
         {
-            title: "Usluge & Info",
-            items: [
-                { name: t.renovation, href: '/dashboard/renovation', icon: Hammer },
-                { name: t.infrastructure, href: '/dashboard/infrastructure', icon: Lightbulb },
-                { name: t.dumping, href: '/dashboard/dumping', icon: AlertTriangle },
-                { name: t.oib, href: '/dashboard/oib', icon: FileText },
-            ]
-        },
-        {
-            title: "Baština",
+            title: "Baština & Usluge",
             items: [
                 { name: t.memorial, href: '/dashboard/memorial', icon: BookOpen },
                 { name: t.handbook, href: '/dashboard/handbook', icon: BookOpen },
                 { name: t.statute, href: '/dashboard/statute', icon: Scale },
+                { name: t.renovation, href: '/dashboard/renovation', icon: Hammer },
+                { name: t.infrastructure, href: '/dashboard/infrastructure', icon: Lightbulb },
+                { name: t.dumping, href: '/dashboard/dumping', icon: AlertTriangle },
+                { name: t.oib, href: '/dashboard/oib', icon: FileText },
             ]
         }
     ];
