@@ -293,6 +293,18 @@ export const translations = {
         contactOffice: "Općinski Ured",
         processTitle: "Proces",
         processSteps: "Općina prikuplja popis kvarova. Koncesionaru šalju nalog jednom ili dvaput mjesečno. Koncesionar popravlja sve odjednom. Vrijeme čekanja: 2-4 tjedna.",
+
+        // Password Reset
+        forgotPassword: "Zaboravljena lozinka?",
+        resetPassword: "Resetiraj Lozinku",
+        sendResetLink: "Pošalji Link za Resetiranje",
+        backToLogin: "Povratak na Prijavu",
+        updatePassword: "Nova Lozinka",
+        newPassword: "Unesite novu lozinku",
+        passwordUpdated: "Lozinka uspješno ažurirana!",
+        checkEmail: "Provjerite svoj email za link za resetiranje.",
+        passwordResetDesc: "Unesite svoju email adresu i poslat ćemo vam link za postavljanje nove lozinke.",
+        updatePasswordDesc: "Unesite svoju novu lozinku ispod.",
     },
     sr: {
         exploreHeritage: "Istražite Našu Digitalnu Baštinu",
@@ -581,6 +593,18 @@ export const translations = {
         harvestList: "Jovin Pršut, Marijin Sir, Markova Rakija.",
         harvestWhy: "Novac ostaje u selu.",
         harvestEtiquette: "Samo gotovina. Ponesite prazne boce za vino/rakiju.",
+
+        // Password Reset
+        forgotPassword: "Zaboravljena lozinka?",
+        resetPassword: "Resetuj Lozinku",
+        sendResetLink: "Pošalji Link za Resetovanje",
+        backToLogin: "Povratak na Prijavu",
+        updatePassword: "Nova Lozinka",
+        newPassword: "Unesite novu lozinku",
+        passwordUpdated: "Lozinka uspješno ažurirana!",
+        checkEmail: "Provjerite svoj email za link za resetovanje.",
+        passwordResetDesc: "Unesite svoju email adresu i poslat ćemo vam link za postavljanje nove lozinke.",
+        updatePasswordDesc: "Unesite svoju novu lozinku ispod.",
     },
     en: {
         exploreHeritage: "Explore Our Digital Heritage",
@@ -862,6 +886,18 @@ export const translations = {
         harvestList: "Jovo's Prosciutto, Marija's Cheese, Marko's Rakija.",
         harvestWhy: "Money stays in the village.",
         harvestEtiquette: "Cash only. Bring empty bottles for wine/rakija.",
+
+        // Password Reset
+        forgotPassword: "Forgot Password?",
+        resetPassword: "Reset Password",
+        sendResetLink: "Send Reset Link",
+        backToLogin: "Back to Login",
+        updatePassword: "Update Password",
+        newPassword: "Enter new password",
+        passwordUpdated: "Password updated successfully!",
+        checkEmail: "Check your email for the reset link.",
+        passwordResetDesc: "Enter your email address and we'll send you a link to set a new password.",
+        updatePasswordDesc: "Enter your new password below.",
     },
     de: {
         exploreHeritage: "Entdecken Sie Unser Digitales Erbe",
@@ -1143,5 +1179,17 @@ export const translations = {
         harvestList: "Jovos Prosciutto, Marijas Käse, Markos Rakija.",
         harvestWhy: "Geld bleibt im Dorf.",
         harvestEtiquette: "Nur Bargeld. Bringen Sie leere Flaschen für Wein/Rakija mit.",
+
+        // Password Reset
+        forgotPassword: "Passwort vergessen?",
+        resetPassword: "Passwort zurücksetzen",
+        sendResetLink: "Link senden",
+        backToLogin: "Zurück zur Anmeldung",
+        updatePassword: "Passwort aktualisieren",
+        newPassword: "Neues Passwort eingeben",
+        passwordUpdated: "Passwort erfolgreich aktualisiert!",
+        checkEmail: "Überprüfen Sie Ihre E-Mails.",
+        passwordResetDesc: "Geben Sie Ihre E-Mail-Adresse ein und wir senden Ihnen einen Link zum Zurücksetzen Ihres Passworts.",
+        updatePasswordDesc: "Geben Sie unten Ihr neues Passwort ein.",
     },
 };
