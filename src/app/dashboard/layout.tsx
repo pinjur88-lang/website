@@ -52,7 +52,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             items: [
                 { name: t.community, href: '/dashboard/community', icon: MessageSquare },
                 { name: t.gallery, href: '/dashboard/gallery', icon: ImageIcon },
-                { name: t.donations, href: '/dashboard/donations', icon: FileText },
+                { name: t.donations, href: '/dashboard/donate', icon: FileText },
                 { name: t.contactAdmin, href: '/dashboard/contact', icon: Mail },
             ]
         },
