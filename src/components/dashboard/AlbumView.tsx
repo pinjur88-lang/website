@@ -59,28 +59,51 @@ export default function AlbumView({ album, onBack }: AlbumViewProps) {
         if (!e.target.files || e.target.files.length === 0 || !user) return;
 
         setUploading(true);
-        const file = e.target.files[0];
-        const fileExt = file.name.split('.').pop();
-        const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
-        const filePath = `${album.id}/${fileName}`;
+        const files = Array.from(e.target.files);
+        let completed = 0;
 
         try {
-            const { error: uploadError } = await supabase.storage
-                .from('gallery')
-                .upload(filePath, file);
+            // Import compression library dynamically to avoid SSR issues
+            const imageCompression = (await import('browser-image-compression')).default;
 
-            if (uploadError) throw uploadError;
+            const uploadPromises = files.map(async (file) => {
+                // Compression options
+                const options = {
+                    maxSizeMB: 1, // Max 1MB
+                    maxWidthOrHeight: 1920, // Max 1920px
+                    useWebWorker: true
+                };
 
-            const { data: { publicUrl } } = supabase.storage
-                .from('gallery')
-                .getPublicUrl(filePath);
+                try {
+                    const compressedFile = await imageCompression(file, options);
+                    const fileExt = file.name.split('.').pop();
+                    const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
+                    const filePath = `${album.id}/${fileName}`;
 
-            const { error: dbError } = await saveAlbumImageRef(publicUrl, album.id, file.name);
-            if (dbError) throw dbError;
+                    const { error: uploadError } = await supabase.storage
+                        .from('gallery')
+                        .upload(filePath, compressedFile);
 
+                    if (uploadError) throw uploadError;
+
+                    const { data: { publicUrl } } = supabase.storage
+                        .from('gallery')
+                        .getPublicUrl(filePath);
+
+                    const { error: dbError } = await saveAlbumImageRef(publicUrl, album.id, file.name);
+                    if (dbError) throw dbError;
+
+                    completed++;
+                } catch (err) {
+                    console.error('Error uploading file:', file.name, err);
+                    // Continue with other files even if one fails
+                }
+            });
+
+            await Promise.all(uploadPromises);
             loadImages();
         } catch (error: any) {
-            alert('Upload failed: ' + error.message);
+            alert('Upload process failed: ' + error.message);
         } finally {
             setUploading(false);
             e.target.value = '';
@@ -116,6 +139,7 @@ export default function AlbumView({ album, onBack }: AlbumViewProps) {
                         <input
                             type="file"
                             accept="image/*"
+                            multiple
                             onChange={handleFileUpload}
                             disabled={uploading}
                             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed"

@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/lib/auth-context';
-import { createCommunityPost } from '@/actions/community'; // Keeping this for creating new topics
-import { getTopics, Topic } from '@/actions/forum';
+import { getTopics, Topic, createTopic } from '@/actions/forum';
 import { MessageSquare, User, Send, Shield, Search, PlusCircle } from 'lucide-react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
@@ -58,8 +57,8 @@ export default function CommunityPage() {
         }
 
         setSubmitting(true);
-        // We reuse the existing "createCommunityPost" as creating a "Topic"
-        const { error } = await createCommunityPost(content, user.id, isAnonymous);
+        // Use the new server action "createTopic"
+        const { error } = await createTopic(content, user.id, isAnonymous);
 
         if (error) {
             alert('Greška: ' + error);

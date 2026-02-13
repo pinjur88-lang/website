@@ -72,44 +72,38 @@ export default function RegisterPage() {
         setError('');
 
         try {
-            // 1. Sign Up User (Created as 'pending' by DB default)
+            // 1. Sign Up User (Trigger handles Profile + Request creation)
             const { data: authData, error: authError } = await supabase.auth.signUp({
                 email,
                 password,
                 options: {
                     data: {
                         display_name: fullName,
-                        // role: 'member' // IGNORED by DB Trigger now, defaults to 'pending'
+                        full_name: fullName,
+                        oib: oib || null,
+                        address: address,
+                        phone: phone || null,
+                        fathers_name: fathersName || null,
+                        nickname: nickname || null,
+                        dob: dob,
+                        request_type: regType,
+                        // Family Data
+                        family_members: regType === 'family' ? familyMembers : null,
+                        // Corporate Data
+                        company: regType === 'corporate' ? {
+                            name: companyName,
+                            oib: companyOib,
+                            address: address // Using main address for company? Or add company address field? Assuming main.
+                        } : null
                     }
                 }
             });
 
             if (authError) throw authError;
-            if (!authData.user) throw new Error("Greška pri registraciji.");
+            if (!authData.user) throw new Error("Greška pri registraciji - korisnik nije kreiran.");
 
-            // Check if user is already confirmed (if email confirmation is off) or not
-            // If session exists, we can proceed with profile updates
-            // If distinct email confirmation is required, we might stop here.
-            // Assuming we can proceed (or RLS allows update to own profile even if unconfirmed? usually yes)
+            // 2. Success - Trigger handled everything.
 
-            const userId = authData.user.id;
-
-            // 2. Create or Ensure 'Request' exists for Admin Approval
-            // We insert a request so the Admin sees it in their "Requests" table
-            // We use a server action or public API for this? 
-            // The table likely has RLS. 
-            // Only 'anon' can insert? Or 'authenticated'?
-            // Let's try inserting via client. If it fails due to RLS, we might need a server action.
-            // Actually, we can just use the same `requests` table.
-
-            const { error: requestError } = await supabase
-                .from('requests')
-                .insert([{
-                    email: email,
-                    full_name: fullName,
-                    status: 'pending', // Waiting for admin
-                    request_type: regType
-                }]);
 
             // If request already exists (duplicate email), we might get error, but that's fine, 
             if (authError) {
@@ -230,11 +224,11 @@ export default function RegisterPage() {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-1">
                                     <label className="text-xs font-semibold text-zinc-500">EMAIL ADRESA (Mora biti odobrena)</label>
-                                    <input type="email" required value={email} onChange={e => setEmail(e.target.value)} className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-lg focus:ring-2 focus:ring-zinc-900 outline-none" placeholder="ime@primjer.com" />
+                                    <input type="email" required value={email} onChange={e => setEmail(e.target.value)} className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-lg focus:ring-2 focus:ring-zinc-900 outline-none text-zinc-900" placeholder="ime@primjer.com" />
                                 </div>
                                 <div className="space-y-1">
                                     <label className="text-xs font-semibold text-zinc-500">LOZINKA</label>
-                                    <input type="password" required minLength={6} value={password} onChange={e => setPassword(e.target.value)} className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-lg focus:ring-2 focus:ring-zinc-900 outline-none" placeholder="******" />
+                                    <input type="password" required minLength={6} value={password} onChange={e => setPassword(e.target.value)} className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-lg focus:ring-2 focus:ring-zinc-900 outline-none text-zinc-900" placeholder="******" />
                                 </div>
                             </div>
                         </div>
@@ -247,39 +241,39 @@ export default function RegisterPage() {
 
                             <div className="space-y-1">
                                 <label className="text-xs font-semibold text-zinc-500">IME I PREZIME (PUNO) *</label>
-                                <input type="text" required value={fullName} onChange={e => setFullName(e.target.value)} className="w-full p-3 bg-white border border-zinc-300 rounded-lg focus:ring-2 focus:ring-zinc-900 outline-none" placeholder="npr. Ivan Horvat" />
+                                <input type="text" required value={fullName} onChange={e => setFullName(e.target.value)} className="w-full p-3 bg-white border border-zinc-300 rounded-lg focus:ring-2 focus:ring-zinc-900 outline-none text-zinc-900" placeholder="npr. Ivan Horvat" />
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-1">
                                     <label className="text-xs font-semibold text-zinc-500">DATUM ROĐENJA *</label>
-                                    <input type="date" required value={dob} onChange={e => setDob(e.target.value)} className="w-full p-3 bg-white border border-zinc-300 rounded-lg focus:ring-2 focus:ring-zinc-900 outline-none" />
+                                    <input type="date" required value={dob} onChange={e => setDob(e.target.value)} className="w-full p-3 bg-white border border-zinc-300 rounded-lg focus:ring-2 focus:ring-zinc-900 outline-none text-zinc-900" />
                                 </div>
                                 <div className="space-y-1">
                                     <label className="text-xs font-semibold text-zinc-500">OIB (Osobni identifikacijski broj)</label>
-                                    <input type="text" value={oib} onChange={e => setOib(e.target.value)} className="w-full p-3 bg-white border border-zinc-300 rounded-lg focus:ring-2 focus:ring-zinc-900 outline-none" placeholder="Ostavite prazno ako nemate" />
+                                    <input type="text" value={oib} onChange={e => setOib(e.target.value)} className="w-full p-3 bg-white border border-zinc-300 rounded-lg focus:ring-2 focus:ring-zinc-900 outline-none text-zinc-900" placeholder="Ostavite prazno ako nemate" />
                                     <p className="text-[10px] text-zinc-400">Strani državljani bez OIB-a se registriraju kao pridruženi članovi.</p>
                                 </div>
                             </div>
 
                             <div className="space-y-1">
                                 <label className="text-xs font-semibold text-zinc-500">ADRESA PREBIVALIŠTA *</label>
-                                <input type="text" required value={address} onChange={e => setAddress(e.target.value)} className="w-full p-3 bg-white border border-zinc-300 rounded-lg focus:ring-2 focus:ring-zinc-900 outline-none" placeholder="Ulica i broj, Grad, Država" />
+                                <input type="text" required value={address} onChange={e => setAddress(e.target.value)} className="w-full p-3 bg-white border border-zinc-300 rounded-lg focus:ring-2 focus:ring-zinc-900 outline-none text-zinc-900" placeholder="Ulica i broj, Grad, Država" />
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-1">
                                     <label className="text-xs font-semibold text-zinc-500">TELEFON</label>
-                                    <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} className="w-full p-3 bg-white border border-zinc-300 rounded-lg focus:ring-2 focus:ring-zinc-900 outline-none" placeholder="+385..." />
+                                    <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} className="w-full p-3 bg-white border border-zinc-300 rounded-lg focus:ring-2 focus:ring-zinc-900 outline-none text-zinc-900" placeholder="+385..." />
                                 </div>
                                 <div className="space-y-1">
                                     <label className="text-xs font-semibold text-zinc-500">IME OCA (IDENTITET)</label>
-                                    <input type="text" value={fathersName} onChange={e => setFathersName(e.target.value)} className="w-full p-3 bg-white border border-zinc-300 rounded-lg focus:ring-2 focus:ring-zinc-900 outline-none" placeholder="Ime oca" />
+                                    <input type="text" value={fathersName} onChange={e => setFathersName(e.target.value)} className="w-full p-3 bg-white border border-zinc-300 rounded-lg focus:ring-2 focus:ring-zinc-900 outline-none text-zinc-900" placeholder="Ime oca" />
                                 </div>
                             </div>
                             <div className="space-y-1">
                                 <label className="text-xs font-semibold text-zinc-500">OBITELJSKI NADIMAK / Pleme</label>
-                                <input type="text" value={nickname} onChange={e => setNickname(e.target.value)} className="w-full p-3 bg-white border border-zinc-300 rounded-lg focus:ring-2 focus:ring-zinc-900 outline-none" placeholder="npr. Genda, Bibić..." />
+                                <input type="text" value={nickname} onChange={e => setNickname(e.target.value)} className="w-full p-3 bg-white border border-zinc-300 rounded-lg focus:ring-2 focus:ring-zinc-900 outline-none text-zinc-900" placeholder="npr. Genda, Bibić..." />
                             </div>
                         </div>
 
@@ -301,15 +295,15 @@ export default function RegisterPage() {
                                         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                                             <div className="space-y-1">
                                                 <label className="text-[10px] font-bold text-zinc-400">IME I PREZIME</label>
-                                                <input type="text" required value={member.name} onChange={e => updateFamilyMember(idx, 'name', e.target.value)} className="w-full p-2 bg-zinc-50 border border-zinc-200 rounded text-sm" placeholder="Ime" />
+                                                <input type="text" required value={member.name} onChange={e => updateFamilyMember(idx, 'name', e.target.value)} className="w-full p-2 bg-zinc-50 border border-zinc-200 rounded text-sm text-zinc-900" placeholder="Ime" />
                                             </div>
                                             <div className="space-y-1">
                                                 <label className="text-[10px] font-bold text-zinc-400">DATUM ROĐENJA</label>
-                                                <input type="date" required value={member.dob} onChange={e => updateFamilyMember(idx, 'dob', e.target.value)} className="w-full p-2 bg-zinc-50 border border-zinc-200 rounded text-sm" />
+                                                <input type="date" required value={member.dob} onChange={e => updateFamilyMember(idx, 'dob', e.target.value)} className="w-full p-2 bg-zinc-50 border border-zinc-200 rounded text-sm text-zinc-900" />
                                             </div>
                                             <div className="space-y-1">
                                                 <label className="text-[10px] font-bold text-zinc-400">ODNOS</label>
-                                                <select value={member.relation} onChange={e => updateFamilyMember(idx, 'relation', e.target.value)} className="w-full p-2 bg-zinc-50 border border-zinc-200 rounded text-sm">
+                                                <select value={member.relation} onChange={e => updateFamilyMember(idx, 'relation', e.target.value)} className="w-full p-2 bg-zinc-50 border border-zinc-200 rounded text-sm text-zinc-900">
                                                     <option value="child">Dijete</option>
                                                     <option value="spouse">Supružnik</option>
                                                     <option value="parent">Roditelj</option>
@@ -329,11 +323,11 @@ export default function RegisterPage() {
                                 <div className="space-y-3">
                                     <div className="space-y-1">
                                         <label className="text-xs font-semibold text-zinc-500">IME TVRTKE</label>
-                                        <input type="text" required value={companyName} onChange={e => setCompanyName(e.target.value)} className="w-full p-3 bg-white border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none" />
+                                        <input type="text" required value={companyName} onChange={e => setCompanyName(e.target.value)} className="w-full p-3 bg-white border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none text-zinc-900" />
                                     </div>
                                     <div className="space-y-1">
                                         <label className="text-xs font-semibold text-zinc-500">OIB TVRTKE (MBS)</label>
-                                        <input type="text" required value={companyOib} onChange={e => setCompanyOib(e.target.value)} className="w-full p-3 bg-white border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none" />
+                                        <input type="text" required value={companyOib} onChange={e => setCompanyOib(e.target.value)} className="w-full p-3 bg-white border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none text-zinc-900" />
                                     </div>
                                 </div>
                             </div>

@@ -51,7 +51,7 @@ export default function ContactPage() {
     const labels = {
         hr: {
             title: "Kontakt Administratora",
-            subtitle: "Imate li pitanja ili briga u vezi sela? Pošaljite nam poruku izravno.",
+            subtitle: "Imate li pitanja o web stranici ili prijedloge? Javite nam se, trudimo se poboljšati kako bismo vam bolje služili.",
             categoryLabel: "Kategorija",
             subjectLabel: "Predmet",
             messageLabel: "Vaša Poruka",
@@ -61,7 +61,7 @@ export default function ContactPage() {
         },
         en: {
             title: "Contact Administrator",
-            subtitle: "Do you have concerns or questions about the village? Send us a message directly.",
+            subtitle: "Do you have questions about the website or suggestions? Please let us know, we strive to improve to better serve you.",
             categoryLabel: "Category",
             subjectLabel: "Subject",
             messageLabel: "Your Message",
@@ -71,7 +71,7 @@ export default function ContactPage() {
         },
         sr: {
             title: "Kontakt Administratora",
-            subtitle: "Imate li pitanja ili briga u vezi sela? Pošaljite nam poruku direktno.",
+            subtitle: "Imate li pitanja o veb stranici ili predloge? Javite nam se, trudimo se da budemo bolji da bismo vam bolje služili.",
             categoryLabel: "Kategorija",
             subjectLabel: "Predmet",
             messageLabel: "Vaša Poruka",
@@ -81,7 +81,7 @@ export default function ContactPage() {
         },
         de: {
             title: "Administrator Kontaktieren",
-            subtitle: "Haben Sie Bedenken oder Fragen zum Dorf? Senden Sie uns direkt eine Nachricht.",
+            subtitle: "Haben Sie Fragen zur Website oder Vorschläge? Bitte lassen Sie es uns wissen, wir bemühen uns, besser zu werden, um Ihnen besser zu dienen.",
             categoryLabel: "Kategorie",
             subjectLabel: "Betreff",
             messageLabel: "Ihre Nachricht",

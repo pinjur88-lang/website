@@ -25,63 +25,46 @@ export default function OIBPage() {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {/* Option A: Consulate */}
-                <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm opacity-75 hover:opacity-100 transition">
-                    <div className="flex items-center gap-3 mb-4">
-                        <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center text-slate-500 shrink-0">
-                            <Globe size={24} />
-                        </div>
-                        <h2 className="text-xl font-bold text-slate-700">{t.oibOptionA}</h2>
-                    </div>
-                    <p className="text-slate-600 mb-4 h-12">{t.oibOptionADesc}</p>
-                    <div className="p-4 bg-slate-50 rounded-lg border border-slate-100 text-sm text-slate-500">
-                        Recommended only if you are not planning to visit Croatia soon.
-                    </div>
-                </div>
-
+            <div className="max-w-2xl mx-auto">
                 {/* Option B: Drniš (Recommended) */}
-                <div className="bg-white border-2 border-blue-500 rounded-xl p-6 shadow-lg relative transform md:scale-105">
-                    <div className="absolute top-0 right-0 bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg uppercase tracking-wider">
-                        Recommended
-                    </div>
-                    <div className="flex items-center gap-3 mb-4">
-                        <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 shrink-0">
-                            <Clock size={24} />
+                <div className="bg-white border-2 border-blue-500 rounded-xl p-8 shadow-lg relative">
+                    <div className="flex items-center gap-4 mb-6">
+                        <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 shrink-0">
+                            <Clock size={32} />
                         </div>
-                        <h2 className="text-xl font-bold text-slate-900">{t.oibOptionB}</h2>
+                        <h2 className="text-2xl font-bold text-slate-900">{t.oibOptionB}</h2>
                     </div>
-                    <p className="text-slate-600 mb-6">{t.oibOptionBDesc}</p>
+                    <p className="text-slate-600 mb-8 text-lg">{t.oibOptionBDesc}</p>
 
-                    <div className="space-y-4">
-                        <div className="flex items-start gap-3 text-slate-700">
-                            <Briefcase size={18} className="mt-1 text-blue-500" />
+                    <div className="space-y-6">
+                        <div className="flex items-start gap-4 text-slate-700">
+                            <Briefcase size={20} className="mt-1 text-blue-500 shrink-0" />
                             <div>
-                                <span className="font-bold block">{t.oibOffice}</span>
-                                <span className="text-sm">{t.oibAddress}</span>
+                                <span className="font-bold block text-lg">{t.oibOffice}</span>
+                                <span className="text-slate-600">{t.oibAddress}</span>
                             </div>
                         </div>
 
-                        <div className="flex items-start gap-3 text-slate-700">
-                            <CheckCircle size={18} className="mt-1 text-blue-500" />
+                        <div className="flex items-start gap-4 text-slate-700">
+                            <CheckCircle size={20} className="mt-1 text-blue-500 shrink-0" />
                             <div>
-                                <span className="font-bold block">{t.oibBring}</span>
+                                <span className="font-bold block text-lg">{t.oibBring}</span>
                             </div>
                         </div>
 
-                        <div className="flex items-start gap-3 text-slate-700">
-                            <FileText size={18} className="mt-1 text-blue-500" />
+                        <div className="flex items-start gap-4 text-slate-700">
+                            <FileText size={20} className="mt-1 text-blue-500 shrink-0" />
                             <div>
-                                <span className="font-bold block">{t.oibForm}</span>
-                                <a href="https://www.porezna-uprava.hr/en/EN_obrazac/Documents/PinRequest.pdf" target="_blank" className="text-blue-600 hover:underline text-sm flex items-center gap-1 mt-1">
-                                    <Download size={14} /> {t.oibDownload}
+                                <span className="font-bold block text-lg">{t.oibForm}</span>
+                                <a href="https://www.porezna-uprava.hr/en/EN_obrazac/Documents/PinRequest.pdf" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline font-medium flex items-center gap-2 mt-2">
+                                    <Download size={16} /> {t.oibDownload}
                                 </a>
                             </div>
                         </div>
 
-                        <div className="flex items-start gap-3 text-slate-700 bg-blue-50 p-3 rounded-lg">
-                            <Clock size={18} className="mt-1 text-blue-600" />
-                            <span className="text-blue-900 font-medium text-sm">{t.oibTime}</span>
+                        <div className="flex items-start gap-3 text-slate-700 bg-blue-50 p-4 rounded-xl border border-blue-100">
+                            <Clock size={20} className="mt-0.5 text-blue-600 shrink-0" />
+                            <span className="text-blue-900 font-medium">{t.oibTime}</span>
                         </div>
                     </div>
                 </div>

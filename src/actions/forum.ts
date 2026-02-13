@@ -118,3 +118,29 @@ export async function getTopicDetail(topicId: string) {
 
 // NOTE: addComment is better handled client-side like addVisit to avoid auth issues!
 // We will only use server actions for fetching data here.
+
+export async function createTopic(content: string, authorId: string, isAnonymous: boolean) {
+    try {
+        if (!content) throw new Error("Sadržaj ne može biti prazan");
+        if (!authorId) throw new Error("Nedostaje ID autora");
+
+        const { data, error } = await supabaseAdmin
+            .from('community_posts')
+            .insert([{
+                content,
+                user_id: authorId,
+                author_id: authorId,
+                is_anonymous: isAnonymous
+            }])
+            .select()
+            .single();
+
+        if (error) throw error;
+
+        revalidatePath('/dashboard/community');
+        return { data };
+    } catch (error: any) {
+        console.error("Create topic error:", error);
+        return { error: error.message };
+    }
+}
