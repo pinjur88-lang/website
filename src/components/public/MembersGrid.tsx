@@ -10,13 +10,7 @@ export default function MembersGrid() {
     const { t } = useLanguage();
 
     const features = [
-        {
-            id: 1,
-            title: t.feat1Title,
-            description: t.feat1Desc,
-            icon: <MapPin className="w-6 h-6" />,
-            image: "https://images.unsplash.com/photo-1524661135-423995f22d0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-        },
+
         {
             id: 2,
             title: t.feat2Title,
