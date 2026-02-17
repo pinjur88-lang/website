@@ -48,6 +48,7 @@ export default function TopicPage() {
             .insert({
                 post_id: topicId,
                 user_id: user.id,
+                author_id: user.id,
                 content: replyContent
             });
 
@@ -166,6 +167,8 @@ export default function TopicPage() {
                             value={editTopicContent}
                             onChange={(e) => setEditTopicContent(e.target.value)}
                             className="w-full p-2 border border-sky-300 rounded-md text-slate-800 min-h-[150px]"
+                            title="Uredi temu"
+                            placeholder="Sadržaj teme..."
                         />
                         <button
                             onClick={handleUpdateTopic}
@@ -229,6 +232,8 @@ export default function TopicPage() {
                                         value={editCommentContent}
                                         onChange={(e) => setEditCommentContent(e.target.value)}
                                         className="w-full p-2 border border-slate-300 rounded text-sm"
+                                        title="Uredi komentar"
+                                        placeholder="Sadržaj komentara..."
                                     />
                                     <div className="flex gap-2">
                                         <button
@@ -272,6 +277,7 @@ export default function TopicPage() {
                         className="p-3 bg-sky-600 text-white rounded-full hover:bg-sky-700 disabled:opacity-50 transition-colors shadow-md"
                     >
                         <Send size={20} />
+                        <span className="sr-only">Pošalji odgovor</span>
                     </button>
                 </form>
             </div>

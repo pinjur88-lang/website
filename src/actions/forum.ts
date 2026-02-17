@@ -129,6 +129,7 @@ export async function createTopic(content: string, authorId: string, isAnonymous
             .insert([{
                 content,
                 user_id: authorId,
+                author_id: authorId,
                 is_anonymous: isAnonymous
             }])
             .select()
