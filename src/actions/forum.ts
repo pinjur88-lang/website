@@ -27,10 +27,6 @@ export type Comment = {
 
 export async function getTopics() {
     try {
-        // Fetch posts (topics) and join profiles
-        // Also we want comment counts. Supabase requires a separate RPC or subquery for counts usually,
-        // or we fetch all and count. For MVP, fetching all comments is heavy.
-        // Let's just fetch posts for now.
         const { data, error } = await supabaseAdmin
             .from('community_posts')
             .select(`
@@ -38,23 +34,26 @@ export async function getTopics() {
                 content,
                 created_at,
                 user_id,
+                author_id,
                 profiles!user_id(display_name)
             `)
             .order('created_at', { ascending: false });
 
         if (error) throw error;
 
-        // Note: community_posts content is used as the "Thread Title/Content" combined.
-        // In a full forum, we might have separate Title. We will treat the first few words as title.
+        const topics: Topic[] = data.map((post: any) => {
+            // Handle profile could be an array or null due to loose joining
+            const profile = Array.isArray(post.profiles) ? post.profiles[0] : post.profiles;
 
-        const topics: Topic[] = data.map((post: any) => ({
-            id: post.id,
-            title: post.content.length > 50 ? post.content.substring(0, 50) + '...' : post.content,
-            content: post.content,
-            author_name: post.profiles?.display_name || 'Nepoznato',
-            created_at: post.created_at,
-            created_by: post.user_id
-        }));
+            return {
+                id: post.id,
+                title: post.content.length > 50 ? post.content.substring(0, 50) + '...' : post.content,
+                content: post.content,
+                author_name: profile?.display_name || 'Član Udruge',
+                created_at: post.created_at,
+                created_by: post.user_id
+            };
+        });
 
         return { data: topics };
     } catch (error: any) {
@@ -71,6 +70,7 @@ export async function getTopicDetail(topicId: string) {
                 content,
                 created_at,
                 user_id,
+                author_id,
                 profiles!user_id(display_name)
             `)
             .eq('id', topicId)
@@ -85,6 +85,7 @@ export async function getTopicDetail(topicId: string) {
                 content,
                 created_at,
                 user_id,
+                author_id,
                 profiles!user_id(display_name)
             `)
             .eq('post_id', topicId)
@@ -92,22 +93,27 @@ export async function getTopicDetail(topicId: string) {
 
         if (commentsError) throw commentsError;
 
+        const topicProfile = Array.isArray(topic.profiles) ? topic.profiles[0] : topic.profiles;
+
         const formattedTopic: Topic = {
             id: topic.id,
             title: topic.content,
             content: topic.content,
-            author_name: Array.isArray(topic.profiles) ? (topic.profiles[0] as any)?.display_name : (topic.profiles as any)?.display_name || 'Nepoznato',
+            author_name: topicProfile?.display_name || 'Član Udruge',
             created_at: topic.created_at,
             created_by: topic.user_id
         };
 
-        const formattedComments: Comment[] = comments.map((c: any) => ({
-            id: c.id,
-            content: c.content,
-            author_name: Array.isArray(c.profiles) ? (c.profiles[0] as any)?.display_name : (c.profiles as any)?.display_name || 'Nepoznato',
-            created_at: c.created_at,
-            created_by: c.user_id
-        }));
+        const formattedComments: Comment[] = comments.map((c: any) => {
+            const commentProfile = Array.isArray(c.profiles) ? c.profiles[0] : c.profiles;
+            return {
+                id: c.id,
+                content: c.content,
+                author_name: commentProfile?.display_name || 'Član Udruge',
+                created_at: c.created_at,
+                created_by: c.user_id
+            };
+        });
 
         return { topic: formattedTopic, comments: formattedComments };
 
@@ -135,7 +141,12 @@ export async function createTopic(content: string, authorId: string, isAnonymous
             .select()
             .single();
 
-        if (error) throw error;
+        if (error) {
+            console.error("DEBUG: Insert topic error:", error);
+            throw error;
+        }
+
+        console.log("DEBUG: Post created successfully:", data.id);
 
         revalidatePath('/dashboard/community');
         return { data };

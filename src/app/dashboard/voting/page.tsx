@@ -86,7 +86,15 @@ export default function VotingHallPage() {
             )}
 
             <div className="grid grid-cols-1 gap-8">
-                {polls.map((poll) => {
+                {polls.length === 0 ? (
+                    <div className="text-center py-20 bg-white rounded-2xl border border-dashed border-slate-200">
+                        <Vote className="mx-auto text-slate-200 mb-4" size={64} />
+                        <h3 className="text-xl font-bold text-slate-800 mb-2">Trenutno nema aktivnih glasovanja</h3>
+                        <p className="text-slate-500 max-w-sm mx-auto">
+                            Ovdje će se pojaviti važna pitanja o kojima će članovi udruge moći odlučivati.
+                        </p>
+                    </div>
+                ) : polls.map((poll) => {
                     const hasVoted = userVotes[poll.id] !== null;
                     const selectedOption = userVotes[poll.id];
 
@@ -118,12 +126,12 @@ export default function VotingHallPage() {
                                                 disabled={hasVoted || !isSilverOrAbove || votingInProgress === poll.id}
                                                 onClick={() => handleVote(poll.id, index)}
                                                 className={`w-full p-4 rounded-xl border-2 text-left transition-all relative group overflow-hidden ${isSelected
-                                                        ? 'border-sky-500 bg-sky-50'
-                                                        : hasVoted
-                                                            ? 'border-slate-100 cursor-default'
-                                                            : !isSilverOrAbove
-                                                                ? 'border-slate-100 opacity-60 cursor-not-allowed'
-                                                                : 'border-slate-100 hover:border-sky-200 hover:bg-slate-50'
+                                                    ? 'border-sky-500 bg-sky-50'
+                                                    : hasVoted
+                                                        ? 'border-slate-100 cursor-default'
+                                                        : !isSilverOrAbove
+                                                            ? 'border-slate-100 opacity-60 cursor-not-allowed'
+                                                            : 'border-slate-100 hover:border-sky-200 hover:bg-slate-50'
                                                     }`}
                                             >
                                                 <div className="flex items-center justify-between relative z-10">

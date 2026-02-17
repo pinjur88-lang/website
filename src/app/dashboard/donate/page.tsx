@@ -225,15 +225,15 @@ export default function DashboardDonatePage() {
 
                 {/* Option 1: Fast (Small Donors) */}
                 <div className="relative group w-full">
-                    <div className="absolute -inset-0.5 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-3xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
+                    <div className="absolute -inset-0.5 bg-gradient-to-br from-sky-400 to-blue-600 rounded-3xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
                     <div className="relative bg-white dark:bg-zinc-900/90 backdrop-blur-xl border border-zinc-200 dark:border-zinc-800 rounded-2xl p-8 flex flex-col md:flex-row gap-8 items-start">
 
                         <div className="flex-1">
-                            <div className="inline-flex items-center px-3 py-1 rounded-full bg-indigo-100 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 text-xs font-semibold mb-4">
+                            <div className="inline-flex items-center px-3 py-1 rounded-full bg-sky-100 dark:bg-sky-500/10 text-sky-700 dark:text-sky-300 text-xs font-semibold mb-4">
                                 {t.option1.badge}
                             </div>
                             <div className="flex items-start gap-4 mb-4">
-                                <div className="p-3 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 shrink-0">
+                                <div className="p-3 rounded-xl bg-sky-500/10 text-sky-600 dark:text-sky-400 shrink-0">
                                     <CreditCard className="w-8 h-8" />
                                 </div>
                                 <div>
@@ -246,15 +246,15 @@ export default function DashboardDonatePage() {
 
                             <div className="space-y-2 mb-6">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></div>
+                                    <div className="w-2 h-2 rounded-full bg-sky-500 animate-pulse"></div>
                                     <span className="font-medium text-zinc-900 dark:text-white text-sm">{t.option1.speed}</span>
                                 </div>
                                 <div className="flex items-center gap-3">
-                                    <Check className="w-4 h-4 text-indigo-500" />
+                                    <Check className="w-4 h-4 text-sky-500" />
                                     <span className="text-sm text-zinc-600 dark:text-zinc-400">{t.option1.method}</span>
                                 </div>
                                 <div className="flex items-center gap-3">
-                                    <Check className="w-4 h-4 text-indigo-500" />
+                                    <Check className="w-4 h-4 text-sky-500" />
                                     <span className="text-sm text-zinc-600 dark:text-zinc-400">{t.option1.impact}</span>
                                 </div>
                             </div>
@@ -265,7 +265,7 @@ export default function DashboardDonatePage() {
                                 href={STRIPE_LINK}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="py-4 px-6 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition-all shadow-lg hover:shadow-indigo-500/25 active:scale-95 text-center transform hover:-translate-y-0.5 w-full block"
+                                className="py-4 px-6 bg-sky-600 hover:bg-sky-700 text-white rounded-xl font-bold transition-all shadow-lg hover:shadow-sky-500/25 active:scale-95 text-center transform hover:-translate-y-0.5 w-full block"
                             >
                                 {t.option1.button}
                             </a>
@@ -289,15 +289,15 @@ export default function DashboardDonatePage() {
 
                 {/* Option 2: Efficient (Large Donors) */}
                 <div className="relative group w-full">
-                    <div className="absolute -inset-0.5 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-3xl blur opacity-10 group-hover:opacity-30 transition duration-500"></div>
+                    <div className="absolute -inset-0.5 bg-gradient-to-br from-blue-500 to-sky-600 rounded-3xl blur opacity-10 group-hover:opacity-30 transition duration-500"></div>
                     <div className="relative h-full bg-white dark:bg-zinc-900/90 backdrop-blur-xl border border-zinc-200 dark:border-zinc-800 rounded-2xl p-8 flex flex-col">
 
-                        <div className="inline-flex items-center px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 text-xs font-semibold mb-6 w-fit">
+                        <div className="inline-flex items-center px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300 text-xs font-semibold mb-6 w-fit">
                             {t.option2.badge}
                         </div>
 
                         <div className="flex items-start gap-4 mb-6">
-                            <div className="p-3 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 shrink-0">
+                            <div className="p-3 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 shrink-0">
                                 <Landmark className="w-8 h-8" />
                             </div>
                             <div>
@@ -315,9 +315,9 @@ export default function DashboardDonatePage() {
                                     {t.option2.problemText}
                                 </p>
                             </div>
-                            <div className="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-900/10 border border-emerald-100 dark:border-emerald-900/30">
-                                <p className="text-sm text-emerald-800 dark:text-emerald-200">
-                                    <span className="font-bold block mb-1 text-emerald-900 dark:text-emerald-100 uppercase text-xs tracking-wider">{t.option2.solutionLabel}</span>
+                            <div className="p-4 rounded-xl bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-900/30">
+                                <p className="text-sm text-blue-800 dark:text-blue-200">
+                                    <span className="font-bold block mb-1 text-blue-900 dark:text-blue-100 uppercase text-xs tracking-wider">{t.option2.solutionLabel}</span>
                                     {t.option2.solutionText}
                                 </p>
                             </div>
