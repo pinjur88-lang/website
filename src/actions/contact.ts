@@ -22,6 +22,8 @@ export async function sendMessage(formData: FormData) {
         return { error: "Email and Message are required" };
     }
 
+    console.log(`[Contact] Processing message from ${email}. Category: ${category}`);
+
     try {
         // 1. Save to Database
         const { error: dbError } = await supabaseAdmin
@@ -33,26 +35,51 @@ export async function sendMessage(formData: FormData) {
                 message
             }]);
 
-        if (dbError) throw dbError;
-
-        // 2. Send Email
-        if (process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD) {
-            const mailOptions = {
-                from: process.env.GMAIL_USER,
-                to: 'udrugabaljci@gmail.com',
-                subject: `[Web Kontakt] ${category}: ${subject}`,
-                text: `Poruka od: ${email}\nKategorija: ${category}\nPredmet: ${subject}\n\nPoruka:\n${message}`,
-                replyTo: email
-            };
-
-            await transporter.sendMail(mailOptions);
-        } else {
-            console.warn("Email variables missing, only saved to database.");
+        if (dbError) {
+            console.error("[Contact] Database save failed:", dbError);
+            throw dbError;
         }
 
-        return { success: true };
+        console.log("[Contact] Message saved to database successfully.");
+
+        // 2. Send Email
+        let emailSent = false;
+        let emailError = null;
+
+        if (process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD) {
+            try {
+                // Verify connection configuration
+                await transporter.verify();
+                console.log("[Contact] SMTP transporter verified.");
+
+                const mailOptions = {
+                    from: process.env.GMAIL_USER,
+                    to: 'udrugabaljci@gmail.com',
+                    subject: `[Web Kontakt] ${category}: ${subject}`,
+                    text: `Poruka od: ${email}\nKategorija: ${category}\nPredmet: ${subject}\n\nPoruka:\n${message}`,
+                    replyTo: email
+                };
+
+                const info = await transporter.sendMail(mailOptions);
+                console.log("[Contact] Email sent successfully:", info.messageId);
+                emailSent = true;
+            } catch (err: any) {
+                console.error("[Contact] Email sending failed:", err);
+                emailError = err.message;
+            }
+        } else {
+            console.warn("[Contact] Email variables (GMAIL_USER/GMAIL_APP_PASSWORD) missing. Check environment variables.");
+            emailError = "Missing environment variables";
+        }
+
+        return {
+            success: true,
+            emailSent,
+            emailError,
+            message: emailSent ? "Message sent and email delivered." : "Message saved to DB, but email delivery was skipped or failed."
+        };
     } catch (error: any) {
-        console.error("Contact error:", error);
+        console.error("[Contact] General error:", error);
         return { error: error.message };
     }
 }

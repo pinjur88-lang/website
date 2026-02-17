@@ -30,6 +30,11 @@ export default function ContactPage() {
             alert(res.error);
             setStatus('error');
         } else {
+            if (!res.emailSent) {
+                console.warn("Email was not sent:", res.emailError);
+                // We keep it as success but maybe notify? 
+                // For now, let's just log and treat as success since it's in DB.
+            }
             setStatus('success');
             setMessage('');
             setSubject('');
