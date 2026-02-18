@@ -192,7 +192,7 @@ export default function DonatePage() {
                 </div>
                 <div className="mt-6 flex flex-col gap-3">
                   <a
-                    href="https://wise.com/pay/me/udrugabaljci"
+                    href="https://wise.com/pay/business/udrugagradjanabaljci?utm_source=quick_pay"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition-all shadow-md active:scale-95"

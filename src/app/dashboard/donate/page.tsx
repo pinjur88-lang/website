@@ -15,7 +15,7 @@ export default function DashboardDonatePage() {
     };
 
     const STRIPE_LINK = "https://buy.stripe.com/5kQbJ160x3l6g8Q6FK4ZG00";
-    const WISE_LINK = "https://wise.com/pay/me/udrugabaljci";
+    const WISE_LINK = "https://wise.com/pay/business/udrugagradjanabaljci?utm_source=quick_pay";
 
     return (
         <div className="max-w-4xl mx-auto space-y-8 pb-12">
