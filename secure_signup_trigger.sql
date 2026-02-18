@@ -75,7 +75,7 @@ VALUES (
     'pending',
     COALESCE(meta_reg_type, 'individual'),
     now()
-  );
+  ) ON CONFLICT (email) DO NOTHING;
 -- C. Handle Family Members (if present in metadata)
 IF new.raw_user_meta_data->'family_members' IS NOT NULL THEN
 INSERT INTO public.family_members (
