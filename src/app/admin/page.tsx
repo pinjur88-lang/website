@@ -9,6 +9,7 @@ import { getAdminRequests, approveRequest } from '@/actions/admin';
 
 import GalleryManager from '@/components/admin/GalleryManager';
 import MemberDetailModal from '@/components/admin/MemberDetailModal';
+import { getAllMembersForRegistry } from '@/actions/admin';
 
 export default function AdminMembersPage() {
     const [requests, setRequests] = useState<MembershipRequest[]>([]);
@@ -16,24 +17,42 @@ export default function AdminMembersPage() {
     const { user } = useAuth();
 
     // Tabs state
-    const [activeTab, setActiveTab] = useState<'members' | 'announcements' | 'gallery'>('members');
+    const [activeTab, setActiveTab] = useState<'members' | 'announcements' | 'gallery' | 'registry'>('members');
+
+    // Registry state
+    const [registeredMembers, setRegisteredMembers] = useState<any[]>([]);
 
     // Modal state
     const [selectedRequest, setSelectedRequest] = useState<MembershipRequest | null>(null);
 
+    const loadRequests = async () => {
+        const { data, error } = await getAdminRequests();
+        if (error === "Unauthorized") {
+            window.location.href = '/login';
+            return;
+        }
+        if (data) setRequests(data);
+        if (error) alert("Greška pri učitavanju zahtjeva: " + error);
+    };
+
+    const loadRegistry = async () => {
+        const res = await getAllMembersForRegistry();
+        if (res.data) {
+            // Combine and sort by date
+            const all = res.data.profiles.sort((a: any, b: any) =>
+                new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+            );
+            setRegisteredMembers(all);
+        }
+    };
+
     useEffect(() => {
-        const loadRequests = async () => {
-            const { data, error } = await getAdminRequests();
-            if (error === "Unauthorized") {
-                // If the server says unauthorized, force a hard redirect or logout
-                window.location.href = '/login';
-                return;
-            }
-            if (data) setRequests(data);
-            if (error) alert("Greška pri učitavanju: " + error);
+        const init = async () => {
+            setLoading(true);
+            await Promise.all([loadRequests(), loadRegistry()]);
             setLoading(false);
         };
-        loadRequests();
+        init();
     }, []);
 
     const handleApprove = async (req: MembershipRequest) => {
@@ -89,6 +108,12 @@ export default function AdminMembersPage() {
                         className={`flex items-center gap-2 pb-2 px-1 text-sm font-medium transition-colors ${activeTab === 'gallery' ? 'text-zinc-900 border-b-2 border-zinc-900' : 'text-zinc-400 hover:text-zinc-600'}`}
                     >
                         <ImageIcon size={16} /> Galerija
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('registry')}
+                        className={`flex items-center gap-2 pb-2 px-1 text-sm font-medium transition-colors ${activeTab === 'registry' ? 'text-zinc-900 border-b-2 border-zinc-900' : 'text-zinc-400 hover:text-zinc-600'}`}
+                    >
+                        <FileText size={16} /> Registar
                     </button>
                 </div>
             </div>
@@ -206,6 +231,47 @@ export default function AdminMembersPage() {
             {activeTab === 'gallery' && (
                 <div className="bg-white p-6 rounded-lg shadow-sm border border-zinc-200">
                     <GalleryManager />
+                </div>
+            )}
+
+            {/* REGISTRY TAB */}
+            {activeTab === 'registry' && (
+                <div className="bg-white rounded-lg shadow-sm border border-zinc-200 overflow-hidden">
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-sm text-left">
+                            <thead className="bg-zinc-50 text-zinc-700 uppercase text-xs font-semibold">
+                                <tr>
+                                    <th className="px-6 py-4 w-16 text-center">#</th>
+                                    <th className="px-6 py-4">Ime i Prezime</th>
+                                    <th className="px-6 py-4">E-mail</th>
+                                    <th className="px-6 py-4">Status / Tier</th>
+                                    <th className="px-6 py-4 text-right">Datum Registracije</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-zinc-100">
+                                {registeredMembers.map((member, index) => (
+                                    <tr key={member.id} className="hover:bg-zinc-50 transition-colors">
+                                        <td className="px-6 py-4 text-center font-mono text-zinc-400">{index + 1}</td>
+                                        <td className="px-6 py-4 font-medium text-zinc-900">
+                                            {member.full_name || member.display_name || 'Korisnik bez imena'}
+                                        </td>
+                                        <td className="px-6 py-4 text-zinc-600">{member.email}</td>
+                                        <td className="px-6 py-4">
+                                            <span className={`text-[10px] px-2 py-0.5 rounded-full border font-bold uppercase tracking-wider ${member.membership_tier === 'gold' ? 'bg-amber-100 text-amber-800 border-amber-200' :
+                                                member.membership_tier === 'silver' ? 'bg-zinc-100 text-zinc-800 border-zinc-200' :
+                                                    'bg-sky-100 text-sky-800 border-sky-200'
+                                                }`}>
+                                                {member.membership_tier || 'FREE'}
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-4 text-right text-zinc-500 font-mono">
+                                            {new Date(member.created_at).toLocaleDateString('hr-HR')}
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             )}
 

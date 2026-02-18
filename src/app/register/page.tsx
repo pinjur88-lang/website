@@ -35,7 +35,7 @@ export default function RegisterPage() {
     const [companyOib, setCompanyOib] = useState(''); // MBS
 
     // Family Data
-    const [familyMembers, setFamilyMembers] = useState<{ name: string, dob: string, relation: string }[]>([]);
+    const [familyMembers, setFamilyMembers] = useState<{ full_name: string, date_of_birth: string, relationship: string }[]>([]);
 
     // Consents
     const [consents, setConsents] = useState({
@@ -51,7 +51,7 @@ export default function RegisterPage() {
     };
 
     const addFamilyMember = () => {
-        setFamilyMembers([...familyMembers, { name: '', dob: '', relation: 'child' }]);
+        setFamilyMembers([...familyMembers, { full_name: '', date_of_birth: '', relationship: 'child' }]);
     };
 
     const updateFamilyMember = (index: number, field: string, value: string) => {
@@ -85,7 +85,7 @@ export default function RegisterPage() {
                         phone: phone || null,
                         fathers_name: fathersName || null,
                         nickname: nickname || null,
-                        dob: dob,
+                        date_of_birth: dob,
                         request_type: regType,
                         // Family Data
                         family_members: regType === 'family' ? familyMembers : null,
@@ -295,15 +295,15 @@ export default function RegisterPage() {
                                         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                                             <div className="space-y-1">
                                                 <label className="text-[10px] font-bold text-zinc-400">{t.fullNameLabelRequired}</label>
-                                                <input type="text" required value={member.name} onChange={e => updateFamilyMember(idx, 'name', e.target.value)} className="w-full p-2 bg-zinc-50 border border-zinc-200 rounded text-sm text-zinc-900" placeholder="Ime" />
+                                                <input type="text" required value={member.full_name} onChange={e => updateFamilyMember(idx, 'full_name', e.target.value)} className="w-full p-2 bg-zinc-50 border border-zinc-200 rounded text-sm text-zinc-900" placeholder="Ime" />
                                             </div>
                                             <div className="space-y-1">
                                                 <label className="text-[10px] font-bold text-zinc-400">{t.dobLabelRequired}</label>
-                                                <input type="date" required value={member.dob} onChange={e => updateFamilyMember(idx, 'dob', e.target.value)} className="w-full p-2 bg-zinc-50 border border-zinc-200 rounded text-sm text-zinc-900" />
+                                                <input type="date" required value={member.date_of_birth} onChange={e => updateFamilyMember(idx, 'date_of_birth', e.target.value)} className="w-full p-2 bg-zinc-50 border border-zinc-200 rounded text-sm text-zinc-900" />
                                             </div>
                                             <div className="space-y-1">
                                                 <label className="text-[10px] font-bold text-zinc-400">{t.relationLabel}</label>
-                                                <select value={member.relation} onChange={e => updateFamilyMember(idx, 'relation', e.target.value)} className="w-full p-2 bg-zinc-50 border border-zinc-200 rounded text-sm text-zinc-900">
+                                                <select value={member.relationship} onChange={e => updateFamilyMember(idx, 'relationship', e.target.value)} className="w-full p-2 bg-zinc-50 border border-zinc-200 rounded text-sm text-zinc-900">
                                                     <option value="child">{t.relationChild}</option>
                                                     <option value="spouse">{t.relationSpouse}</option>
                                                     <option value="parent">{t.relationParent}</option>
