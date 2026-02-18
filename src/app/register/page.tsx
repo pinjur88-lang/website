@@ -87,14 +87,14 @@ export default function RegisterPage() {
                         nickname: nickname || null,
                         date_of_birth: dob,
                         request_type: regType,
-                        // Family Data
-                        family_members: regType === 'family' ? familyMembers : null,
-                        // Corporate Data
-                        company: regType === 'corporate' ? {
-                            name: companyName,
-                            oib: companyOib,
-                            address: address // Using main address for company? Or add company address field? Assuming main.
-                        } : null
+                        ...(regType === 'family' ? { family_members: familyMembers } : {}),
+                        ...(regType === 'corporate' ? {
+                            company: {
+                                name: companyName,
+                                oib: companyOib,
+                                address: address
+                            }
+                        } : {})
                     }
                 }
             });

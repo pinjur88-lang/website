@@ -1,7 +1,8 @@
 -- ==========================================
--- SECURE SIGNUP TRIGGER (SCHEMA-PERFECT v5)
+-- SECURE SIGNUP TRIGGER (NULL-PROOF v6)
 -- Handles transactional user creation (Profile + Request)
--- Strictly matches verified profiles table schema.
+-- Uses jsonb_typeof to prevent crashes on JSON null values.
+-- Includes EXCEPTION block for better error reporting.
 -- ==========================================
 CREATE OR REPLACE FUNCTION public.handle_new_user() RETURNS trigger AS $$
 DECLARE meta_full_name text;
@@ -29,8 +30,7 @@ meta_reg_type := new.raw_user_meta_data->>'request_type';
 meta_fathers_name := new.raw_user_meta_data->>'fathers_name';
 meta_nickname := new.raw_user_meta_data->>'nickname';
 meta_dob := new.raw_user_meta_data->>'date_of_birth';
--- 2. Insert into PROFILES (Schema Verified)
--- Note: 'email' column is REMOVED as it does not exist in profiles table.
+BEGIN -- 2. Insert into PROFILES (Schema Verified)
 INSERT INTO public.profiles (
     id,
     role,
@@ -60,7 +60,6 @@ SET full_name = EXCLUDED.full_name,
   display_name = EXCLUDED.display_name,
   role = 'pending';
 -- 3. Insert into REQUESTS (Safe Check)
--- We assume requests table HAS an email column for tracking.
 IF NOT EXISTS (
   SELECT 1
   FROM public.requests
@@ -81,8 +80,9 @@ VALUES (
     now()
   );
 END IF;
--- 4. Handle Family Members
-IF new.raw_user_meta_data->'family_members' IS NOT NULL THEN
+-- 4. Handle Family Members (Null-Proof)
+-- jsonb_typeof returns 'array', 'object', 'null', etc.
+IF jsonb_typeof(new.raw_user_meta_data->'family_members') = 'array' THEN
 INSERT INTO public.family_members (
     head_of_household,
     full_name,
@@ -95,8 +95,8 @@ SELECT new.id,
   (fm->>'relationship')
 FROM jsonb_array_elements(new.raw_user_meta_data->'family_members') as fm;
 END IF;
--- 5. Handle Company
-IF new.raw_user_meta_data->'company' IS NOT NULL THEN
+-- 5. Handle Company (Null-Proof)
+IF jsonb_typeof(new.raw_user_meta_data->'company') = 'object' THEN
 INSERT INTO public.companies (
     representative_id,
     company_name,
@@ -108,6 +108,12 @@ SELECT new.id,
   (new.raw_user_meta_data->'company'->>'oib'),
   (new.raw_user_meta_data->'company'->>'address');
 END IF;
+EXCEPTION
+WHEN OTHERS THEN -- Capture any database error and re-raise with detail
+RAISE EXCEPTION 'Registration Trigger Error: % (SQLSTATE: %)',
+SQLERRM,
+SQLSTATE;
+END;
 RETURN new;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
