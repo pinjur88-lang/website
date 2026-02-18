@@ -1,8 +1,8 @@
 -- ==========================================
--- SECURE SIGNUP TRIGGER (ULTRA-ROBUST v7)
--- Includes Debug Logging & Strict Validation
+-- SECURE SIGNUP TRIGGER (DIAGNOSTIC v8)
+-- Self-Contained Table/Function/Trigger
 -- ==========================================
--- 0. Create Debug Log Table
+-- 1. FORCE CREATE DEBUG TABLE
 CREATE TABLE IF NOT EXISTS public.registration_debug_log (
   id SERIAL PRIMARY KEY,
   created_at TIMESTAMPTZ DEFAULT NOW(),
@@ -12,8 +12,10 @@ CREATE TABLE IF NOT EXISTS public.registration_debug_log (
   context TEXT,
   metadata JSONB
 );
+-- 2. CREATE FUNCTION WITH STEP TRACKING
 CREATE OR REPLACE FUNCTION public.handle_new_user() RETURNS trigger AS $$
-DECLARE m_full_name text;
+DECLARE _step text := 'INIT';
+m_full_name text;
 m_display_name text;
 m_oib text;
 m_address text;
@@ -22,7 +24,7 @@ m_reg_type text;
 m_fathers_name text;
 m_nickname text;
 m_dob text;
-BEGIN -- 1. Extract Metadata Safely
+BEGIN _step := 'EXTRACT_METADATA';
 m_full_name := COALESCE(
   new.raw_user_meta_data->>'full_name',
   new.raw_user_meta_data->>'display_name'
@@ -38,8 +40,8 @@ m_reg_type := new.raw_user_meta_data->>'request_type';
 m_fathers_name := new.raw_user_meta_data->>'fathers_name';
 m_nickname := new.raw_user_meta_data->>'nickname';
 m_dob := new.raw_user_meta_data->>'date_of_birth';
-BEGIN -- 2. Insert into PROFILES
--- Profiles table verified to have 'full_name' but NO 'email'
+BEGIN -- PROFILES STEP
+_step := 'INSERT_PROFILES';
 INSERT INTO public.profiles (
     id,
     role,
@@ -62,26 +64,20 @@ VALUES (
     m_phone,
     m_fathers_name,
     m_nickname,
-    NULLIF(m_dob, '')::date
+    NULLIF(TRIM(m_dob), '')::date
   ) ON CONFLICT (id) DO
 UPDATE
 SET full_name = EXCLUDED.full_name,
   display_name = EXCLUDED.display_name,
   role = 'pending';
--- 3. Insert into REQUESTS
--- Requests table verified to have 'name' AND 'email' (NOT NULL)
+-- REQUESTS STEP
+_step := 'INSERT_REQUESTS';
 IF NOT EXISTS (
   SELECT 1
   FROM public.requests
   WHERE email = new.email
 ) THEN
-INSERT INTO public.requests (
-    email,
-    name,
-    status,
-    request_type,
-    created_at
-  )
+INSERT INTO public.requests (email, name, status, request_type, created_at)
 VALUES (
     new.email,
     COALESCE(m_full_name, new.email),
@@ -90,8 +86,8 @@ VALUES (
     now()
   );
 END IF;
--- 4. Handle Family Members (Type Guarded & Filtered)
--- Schema requires 'full_name' and 'date_of_birth' to be NOT NULL
+-- FAMILY STEP
+_step := 'INSERT_FAMILY';
 IF jsonb_typeof(new.raw_user_meta_data->'family_members') = 'array' THEN
 INSERT INTO public.family_members (
     head_of_household,
@@ -101,7 +97,7 @@ INSERT INTO public.family_members (
   )
 SELECT new.id,
   fm->>'full_name',
-  (fm->>'date_of_birth')::date,
+  NULLIF(TRIM(fm->>'date_of_birth'), '')::date,
   COALESCE(fm->>'relationship', 'child')
 FROM jsonb_array_elements(new.raw_user_meta_data->'family_members') as fm
 WHERE (fm->>'full_name') IS NOT NULL
@@ -109,8 +105,8 @@ WHERE (fm->>'full_name') IS NOT NULL
   AND (fm->>'date_of_birth') IS NOT NULL
   AND (fm->>'date_of_birth') != '';
 END IF;
--- 5. Handle Company (Type Guarded & Filtered)
--- Schema requires 'company_name', 'company_oib', 'address' to be NOT NULL
+-- COMPANY STEP
+_step := 'INSERT_COMPANY';
 IF jsonb_typeof(new.raw_user_meta_data->'company') = 'object' THEN
 INSERT INTO public.companies (
     representative_id,
@@ -129,7 +125,8 @@ WHERE (new.raw_user_meta_data->'company'->>'name') IS NOT NULL
   AND (new.raw_user_meta_data->'company'->>'oib') IS NOT NULL;
 END IF;
 EXCEPTION
-WHEN OTHERS THEN -- Persistent Log for Admin Review
+WHEN OTHERS THEN -- Try to log to debug table, but handle case where table creation failed
+BEGIN
 INSERT INTO public.registration_debug_log (
     email,
     error_message,
@@ -141,13 +138,23 @@ VALUES (
     new.email,
     SQLERRM,
     SQLSTATE,
-    'Registration Trigger Failed',
+    'v8 failed at step: ' || _step,
     new.raw_user_meta_data
   );
--- Re-raise to stop the transaction and show error in UI
-RAISE EXCEPTION 'Database error saving new user (Trigger v7): %',
-SQLERRM;
+EXCEPTION
+WHEN OTHERS THEN NULL;
+-- Cannot log if table is missing, proceed to RAISE
+END;
+RAISE EXCEPTION 'Registration Failed at %: % (SQLSTATE: %)',
+_step,
+SQLERRM,
+SQLSTATE;
 END;
 RETURN new;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
+-- 3. FORCE RE-ALIGNE TRIGGER
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+CREATE TRIGGER on_auth_user_created
+AFTER
+INSERT ON auth.users FOR EACH ROW EXECUTE PROCEDURE public.handle_new_user();
