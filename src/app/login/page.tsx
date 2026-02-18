@@ -1,113 +1,157 @@
 "use client";
 
-
 import { Suspense, useState, useEffect } from 'react';
 import { useAuth } from '@/lib/auth-context';
 import { useLanguage } from '@/lib/language-context';
-import { Lock } from 'lucide-react';
+import { Lock, AlertCircle, ArrowRight } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 
 function LoginContent() {
     const { t } = useLanguage();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const { login, isLoading } = useAuth();
-    const [isLocalLoading, setIsLocalLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [isApprovalPending, setIsApprovalPending] = useState(false);
+    const [authCodeError, setAuthCodeError] = useState(false);
+    const { login, isLoading: isAuthLoading } = useAuth();
 
     const searchParams = useSearchParams();
 
     useEffect(() => {
         const errorParam = searchParams.get('error');
         if (errorParam === 'PendingApproval') {
-            setError("Vaš račun čeka odobrenje administratora (provjera članarine/donacije). Molimo pričekajte email potvrdu.");
+            setIsApprovalPending(true);
         } else if (errorParam === 'AuthCodeError') {
-            setError("Greška pri autorizaciji. Molimo pokušajte ponovno.");
+            setAuthCodeError(true);
         }
     }, [searchParams]);
 
-    const handleSubmit = async (e: React.MouseEvent) => {
+    const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
+        setLoading(true);
+        setError("");
+        setIsApprovalPending(false);
+        setAuthCodeError(false);
 
-        // Manual Validation
         if (!email || !password) {
-            setError("Molimo ispunite email i lozinku.");
+            setError(t.loginRequiredFields);
+            setLoading(false);
             return;
         }
 
-        setError('');
-        setIsLocalLoading(true);
-
-        const { error: loginError } = await login(email, password);
-        if (loginError) {
-            setError(loginError.includes('Email not confirmed')
-                ? "Molimo potvrdite svoju email adresu prije prijave (provjerite inbox)."
-                : (loginError === 'Invalid login credentials' ? t.loginError : loginError)
-            );
-            setIsLocalLoading(false);
+        try {
+            const { error: loginError } = await login(email, password);
+            if (loginError) {
+                // Handle specific error cases (loginError is a string here)
+                if (loginError.includes("Email not confirmed")) {
+                    setError(t.loginConfirmEmail);
+                } else if (loginError.includes("Invalid login credentials") || loginError.includes("nema pristup")) {
+                    setError(t.loginError);
+                } else {
+                    setError(loginError);
+                }
+            }
+        } catch (err) {
+            setError(t.loginError);
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
-        <div className="w-full max-w-sm bg-white border border-zinc-200 shadow-sm p-8 rounded-sm">
-            <div className="flex flex-col items-center mb-6">
-                <div className="w-10 h-10 bg-zinc-100 rounded-full flex items-center justify-center mb-2 text-zinc-500">
-                    <Lock size={18} />
+        <div className="min-h-screen bg-zinc-50 flex flex-col justify-center items-center p-4">
+            <div className="w-full max-w-md space-y-8 animate-in fade-in zoom-in duration-500">
+                <div className="bg-white p-8 rounded-2xl border border-zinc-200 shadow-xl relative overflow-hidden">
+                    <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
+                        <Lock size={120} />
+                    </div>
+
+                    <div className="space-y-6 relative">
+                        <div className="text-center space-y-2">
+                            <h1 className="text-3xl font-serif font-bold text-zinc-900">{t.loginTitle}</h1>
+                            <p className="text-zinc-500">{t.signIn}</p>
+                        </div>
+
+                        {/* Status Messages */}
+                        {isApprovalPending && (
+                            <div className="p-4 bg-amber-50 border border-amber-100 text-amber-800 text-sm rounded-xl flex gap-3 animate-in slide-in-from-top-2">
+                                <AlertCircle size={20} className="shrink-0" />
+                                <p>{t.loginPendingApproval}</p>
+                            </div>
+                        )}
+
+                        {authCodeError && (
+                            <div className="p-4 bg-red-50 border border-red-100 text-red-700 text-sm rounded-xl flex gap-3 animate-in slide-in-from-top-2">
+                                <AlertCircle size={20} className="shrink-0" />
+                                <p>{t.loginAuthCodeError}</p>
+                            </div>
+                        )}
+
+                        <form onSubmit={handleLogin} className="space-y-4">
+                            <div className="space-y-2">
+                                <label className="text-sm font-semibold text-zinc-700">{t.emailLabel}</label>
+                                <input
+                                    type="email"
+                                    required
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-xl focus:ring-2 focus:ring-zinc-900 outline-none text-zinc-900 transition-all"
+                                    placeholder={t.loginEmailPlaceholder}
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <div className="flex justify-between items-center">
+                                    <label className="text-sm font-semibold text-zinc-700">{t.passwordLabel}</label>
+                                    <Link href="/login/forgot-password" className="text-xs text-zinc-500 hover:text-zinc-900 transition-colors">
+                                        {t.forgotPassword}
+                                    </Link>
+                                </div>
+                                <input
+                                    type="password"
+                                    required
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-xl focus:ring-2 focus:ring-zinc-900 outline-none text-zinc-900 transition-all"
+                                    placeholder="••••••••"
+                                />
+                            </div>
+
+                            {error && (
+                                <div className="p-4 bg-red-50 text-red-700 text-sm rounded-xl flex gap-2 items-center animate-shake">
+                                    <AlertCircle size={18} />
+                                    {error}
+                                </div>
+                            )}
+
+                            <button
+                                type="submit"
+                                disabled={loading}
+                                className="w-full py-4 bg-zinc-900 hover:bg-zinc-800 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all active:scale-95 disabled:opacity-70 disabled:active:scale-100 flex items-center justify-center gap-2"
+                            >
+                                {loading ? t.loading : t.loginSubmit}
+                                {!loading && <ArrowRight size={20} />}
+                            </button>
+                        </form>
+
+                        <div className="pt-6 border-t border-zinc-100 text-center space-y-4">
+                            <p className="text-zinc-500 text-sm">
+                                {t.noAccount} <Link href="/" className="text-zinc-900 font-bold hover:underline">{t.requestHere}</Link>
+                            </p>
+                            <div className="flex items-center justify-center gap-2 text-sm text-zinc-400">
+                                <span>{t.haveApproval}</span>
+                                <Link href="/register" className="text-zinc-900 font-semibold hover:underline">{t.registerHere}</Link>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <h1 className="text-xl font-serif text-zinc-800 tracking-wide">{t.loginTitle}</h1>
-                <p className="text-xs text-zinc-400 mt-1 uppercase">{t.onlyMembers}</p>
-            </div>
 
-            <div className="space-y-4">
-                <div>
-                    <label htmlFor="email" className="block text-xs font-medium text-zinc-500 mb-1 uppercase">{t.emailLabel}</label>
-                    <input
-                        type="email"
-                        id="email"
-                        required
-                        className="w-full px-3 py-2 border border-zinc-300 rounded-sm text-sm focus:outline-none focus:ring-1 focus:ring-zinc-800 text-zinc-900 bg-white"
-                        placeholder="ime@primjer.hr"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                    />
+                <div className="text-center">
+                    <Link href="/" className="text-zinc-400 hover:text-zinc-600 text-sm transition-colors">
+                        ← {t.navHome}
+                    </Link>
                 </div>
-                <div>
-                    <label htmlFor="password" className="block text-xs font-medium text-zinc-500 mb-1 uppercase">{t.password}</label>
-                    <input
-                        type="password"
-                        id="password"
-                        required
-                        className="w-full px-3 py-2 border border-zinc-300 rounded-sm text-sm focus:outline-none focus:ring-1 focus:ring-zinc-800 text-zinc-900 bg-white"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                </div>
-
-                <div className="flex justify-end">
-                    <a href="/forgot-password" className="text-xs text-zinc-500 hover:text-zinc-800 underline">
-                        {t.forgotPassword}
-                    </a>
-                </div>
-
-                {error && <p className="text-xs text-red-600 text-center">{error}</p>}
-
-                <button
-                    type="button"
-                    onClick={handleSubmit}
-                    disabled={isLoading || isLocalLoading}
-                    className="w-full py-2 bg-zinc-900 hover:bg-zinc-800 text-white rounded-sm text-sm transition-colors uppercase tracking-wider relative"
-                >
-                    {(isLoading || isLocalLoading) ? t.checking : t.signIn}
-                </button>
-            </div>
-
-            <div className="mt-6 pt-6 border-t border-zinc-100 text-center">
-                <p className="text-xs text-zinc-400">
-                    {t.noAccount} <a href="/" className="underline hover:text-zinc-600">{t.requestHere || "Zatraži pristup"}</a>.
-                </p>
-                <p className="text-xs text-zinc-400 mt-2">
-                    Imate odobrenje? <a href="/register" className="underline hover:text-zinc-600 font-bold">Registrirajte se ovdje</a>.
-                </p>
             </div>
         </div>
     );

@@ -23,7 +23,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     if (isLoading || !user) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-amber-50">
-                <div className="text-amber-800 animate-pulse">Učitavanje...</div>
+                <div className="text-amber-800 animate-pulse">{t.loading || 'Učitavanje...'}</div>
             </div>
         );
     }
@@ -32,43 +32,41 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         {
             title: null,
             items: [
-                { name: t.overview, href: '/dashboard', icon: LayoutDashboard },
-                /* REMOVED PER USER REQUEST
-                {
-                    name: t.map,
-                    href: '/dashboard/map',
-                    icon: Map,
-                    children: [
-                        { name: t.map, href: '/dashboard/map', icon: Map },
-                        { name: t.genealogy, href: '/dashboard/genealogy', icon: Users }
-                    ]
-                },
-                */
-                /* { name: t.voting, href: '/dashboard/voting', icon: Vote }, */
+                { name: t.overview || 'Pregled', href: '/dashboard', icon: LayoutDashboard },
             ]
         },
         {
-            title: "Zajednica",
+            title: t.navCommunity || "Zajednica",
             items: [
-                { name: t.community, href: '/dashboard/community', icon: MessageSquare },
-                { name: t.gallery, href: '/dashboard/gallery', icon: ImageIcon },
-                { name: t.donations, href: '/dashboard/donate', icon: FileText },
-                { name: t.contactAdmin, href: '/dashboard/contact', icon: Mail },
+                { name: t.community || 'Forum', href: '/dashboard/community', icon: MessageSquare },
+                { name: t.gallery || 'Galerija', href: '/dashboard/gallery', icon: ImageIcon },
+                { name: t.donations || 'Donacije', href: '/dashboard/donate', icon: FileText },
+                { name: t.contactAdmin || 'Kontakt', href: '/dashboard/contact', icon: Mail },
             ]
         },
         {
-            title: "Baština & Usluge",
+            title: t.navHeritageServices || "Baština & Usluge",
             items: [
-                { name: t.memorial, href: '/dashboard/memorial', icon: BookOpen },
-                { name: t.handbook, href: '/dashboard/handbook', icon: BookOpen },
-                { name: t.statute, href: '/dashboard/statute', icon: Scale },
-                { name: t.renovation, href: '/dashboard/renovation', icon: Hammer },
-                { name: t.infrastructure, href: '/dashboard/infrastructure', icon: Lightbulb },
-                { name: t.dumping, href: '/dashboard/dumping', icon: AlertTriangle },
-                { name: t.oib, href: '/dashboard/oib', icon: FileText },
+                { name: t.memorial || 'Gedenkarchiv', href: '/dashboard/memorial', icon: BookOpen },
+                { name: t.handbook || 'Priručnik', href: '/dashboard/handbook', icon: BookOpen },
+                { name: t.statute || 'Statut', href: '/dashboard/statute', icon: Scale },
+                { name: t.renovation || 'Obnova', href: '/dashboard/renovation', icon: Hammer },
+                { name: t.infrastructure || 'Infrastruktura', href: '/dashboard/infrastructure', icon: Lightbulb },
+                { name: t.dumping || 'Otpad', href: '/dashboard/dumping', icon: AlertTriangle },
+                { name: t.oib || 'OIB', href: '/dashboard/oib', icon: FileText },
             ]
         }
     ];
+
+    // Add Admin Panel if user is admin
+    if (user.role === 'admin') {
+        navGroups.push({
+            title: "Admin",
+            items: [
+                { name: 'Admin Panel', href: '/admin', icon: Users },
+            ]
+        });
+    }
 
     return (
         <div className="min-h-screen bg-sky-50 text-slate-800 font-sans">
@@ -88,7 +86,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         `}>
                     <div className="p-6 border-b border-sky-100 bg-gradient-to-br from-sky-50 to-white flex-shrink-0">
                         <h2 className="text-lg font-bold text-slate-900">{t.title}</h2>
-                        <p className="text-xs text-slate-500 mt-1">Član: {user.name}</p>
+                        <p className="text-xs text-slate-500 mt-1">{t.memberLabel || 'Član'}: {user.name}</p>
                     </div>
 
                     <nav className="flex-1 overflow-y-auto p-4 space-y-6">
@@ -166,7 +164,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                             className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
                         >
                             <LogOut size={16} />
-                            {t.logout}
+                            {t.logout || 'Odjava'}
                         </button>
                     </div>
                 </aside>

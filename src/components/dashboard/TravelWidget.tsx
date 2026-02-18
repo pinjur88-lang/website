@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { MapPin, Plus, Trash2 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth-context';
+import { useLanguage } from '@/lib/language-context';
 
 type Visit = {
     id: string;
@@ -15,6 +16,7 @@ type Visit = {
 
 export default function TravelWidget() {
     const { user } = useAuth();
+    const { t } = useLanguage();
     const [visits, setVisits] = useState<Visit[]>([]);
     const [loading, setLoading] = useState(true);
     const [isAdding, setIsAdding] = useState(false);
@@ -39,14 +41,11 @@ export default function TravelWidget() {
 
         if (error) {
             console.error('Error loading visits:', error);
-            // Alert only on severe errors, or maybe just log?
-            // If the relationship is missing, this will trigger.
-            // alert('Greška pri učitavanju: ' + error.message); 
         } else if (data) {
             const mappedVisits = data.map((visit: any) => ({
                 id: visit.id,
                 userId: visit.user_id,
-                userName: visit.user?.display_name || 'Nepoznato',
+                userName: visit.user?.display_name || (t.unknownUser || 'Nepoznato'),
                 startDate: visit.start_date,
                 endDate: visit.end_date
             }));
@@ -85,7 +84,7 @@ export default function TravelWidget() {
     };
 
     const handleDelete = async (id: string) => {
-        if (!confirm('Obriši najavu dolaska?') || !user) return;
+        if (!confirm(t.confirmDeleteVisit || 'Obriši najavu dolaska?') || !user) return;
 
         const { error } = await supabase
             .from('visits')
@@ -110,19 +109,19 @@ export default function TravelWidget() {
         <div className="bg-white p-6 rounded-lg shadow-sm border border-sky-100 mb-6">
             <h3 className="text-lg font-bold text-slate-800 mb-2 flex items-center gap-2">
                 <MapPin className="text-sky-500" size={20} />
-                Tko dolazi u Baljke?
+                {t.travelTitle || 'Tko dolazi u Baljke?'}
             </h3>
             <p className="text-sm text-slate-500 mb-4">
-                Najavi svoj dolazak i vidi tko će još biti u selu!
+                {t.travelSubtitle || 'Najavi svoj dolazak i vidi tko će još biti u selu!'}
             </p>
 
             {/* List */}
             <div className="space-y-3 mb-4">
                 {loading ? (
-                    <div className="text-center text-xs text-slate-400">Učitavanje...</div>
+                    <div className="text-center text-xs text-slate-400">{t.checking || 'Učitavanje...'}</div>
                 ) : visits.length === 0 ? (
                     <div className="text-center italic text-xs text-slate-400 py-2">
-                        Nitko još nije najavio dolazak. Budi prvi!
+                        {t.noTravelAnnounced || 'Nitko još nije najavio dolazak. Budi prvi!'}
                     </div>
                 ) : (
                     visits.map(visit => (
@@ -138,6 +137,8 @@ export default function TravelWidget() {
                                     <button
                                         onClick={() => handleDelete(visit.id)}
                                         className="text-slate-400 hover:text-red-500 transition-colors"
+                                        title={t.deleteAction || "Delete"}
+                                        aria-label={t.deleteAction || "Delete"}
                                     >
                                         <Trash2 size={14} />
                                     </button>
@@ -154,29 +155,31 @@ export default function TravelWidget() {
                     onClick={() => setIsAdding(true)}
                     className="w-full py-2 bg-slate-800 text-white text-sm font-bold rounded-md hover:bg-slate-700 transition-colors flex items-center justify-center gap-2"
                 >
-                    <Plus size={16} /> Dolazim i ja!
+                    <Plus size={16} /> {t.imComingToo || 'Dolazim i ja!'}
                 </button>
             ) : (
                 <form onSubmit={handleSubmit} className="bg-slate-50 p-3 rounded-md border border-slate-200 animate-in fade-in slide-in-from-top-2">
                     <div className="space-y-2 mb-3">
                         <div>
-                            <label className="text-xs text-slate-500 block mb-1">Dolazak</label>
+                            <label className="text-xs text-slate-500 block mb-1">{t.arrival || 'Dolazak'}</label>
                             <input
                                 type="date"
                                 value={startDate}
                                 onChange={e => setStartDate(e.target.value)}
                                 className="w-full text-sm p-1 border border-slate-300 rounded"
                                 required
+                                title={t.arrival || "Arrival date"}
                             />
                         </div>
                         <div>
-                            <label className="text-xs text-slate-500 block mb-1">Odlazak</label>
+                            <label className="text-xs text-slate-500 block mb-1">{t.departure || 'Odlazak'}</label>
                             <input
                                 type="date"
                                 value={endDate}
                                 onChange={e => setEndDate(e.target.value)}
                                 className="w-full text-sm p-1 border border-slate-300 rounded"
                                 required
+                                title={t.departure || "Departure date"}
                             />
                         </div>
                     </div>
@@ -186,14 +189,14 @@ export default function TravelWidget() {
                             onClick={() => setIsAdding(false)}
                             className="flex-1 py-1 text-xs text-slate-600 hover:bg-slate-200 rounded"
                         >
-                            Odustani
+                            {t.cancelAction || 'Odustani'}
                         </button>
                         <button
                             type="submit"
                             disabled={submitting}
                             className="flex-1 py-1 bg-green-600 text-white text-xs font-bold rounded hover:bg-green-700 disabled:opacity-50"
                         >
-                            {submitting ? '...' : 'Spremi'}
+                            {submitting ? '...' : (t.save || 'Spremi')}
                         </button>
                     </div>
                 </form>

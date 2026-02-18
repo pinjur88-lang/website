@@ -50,7 +50,7 @@ export default function VotingHallPage() {
     };
 
     if (loading) {
-        return <div className="p-8 text-center animate-pulse text-slate-500">Učitavanje glasovanja...</div>;
+        return <div className="p-8 text-center animate-pulse text-slate-500">{t.loadingVoting || 'Učitavanje glasovanja...'}</div>;
     }
 
     return (
@@ -61,9 +61,7 @@ export default function VotingHallPage() {
                     {t.votingHall || 'Dvorana za Glasovanje'}
                 </h1>
                 <p className="text-slate-500 text-lg">
-                    {t.title === "Association Baljci"
-                        ? "Shape the future of our village. Every vote counts towards communal decisions."
-                        : "Sudjelujte u odlučivanju o budućnosti sela. Vaš glas je bitan za zajedničke projekte."}
+                    {t.votingHallDesc || 'Sudjelujte u odlučivanju o budućnosti sela. Vaš glas je bitan za zajedničke projekte.'}
                 </p>
             </div>
 
@@ -75,12 +73,12 @@ export default function VotingHallPage() {
                             <Lock size={24} />
                         </div>
                         <div>
-                            <p className="font-bold">Nadogradite na SILVER Status</p>
-                            <p className="text-xs opacity-90">Pravo glasa imaju samo Silver i Gold članovi udruge.</p>
+                            <p className="font-bold">{t.upsellUpgradeToSilver || 'Nadogradite na SILVER Status'}</p>
+                            <p className="text-xs opacity-90">{t.upsellRightToVote || 'Pravo glasa imaju samo Silver i Gold članovi udruge.'}</p>
                         </div>
                     </div>
                     <button className="bg-white text-orange-600 px-4 py-2 rounded-lg text-sm font-bold hover:bg-orange-50 transition-colors shadow-sm whitespace-nowrap">
-                        Saznaj Više
+                        {t.learnMore || 'Saznaj Više'}
                     </button>
                 </div>
             )}
@@ -89,9 +87,9 @@ export default function VotingHallPage() {
                 {polls.length === 0 ? (
                     <div className="text-center py-20 bg-white rounded-2xl border border-dashed border-slate-200">
                         <Vote className="mx-auto text-slate-200 mb-4" size={64} />
-                        <h3 className="text-xl font-bold text-slate-800 mb-2">Trenutno nema aktivnih glasovanja</h3>
+                        <h3 className="text-xl font-bold text-slate-800 mb-2">{t.noActivePolls || 'Trenutno nema aktivnih glasovanja'}</h3>
                         <p className="text-slate-500 max-w-sm mx-auto">
-                            Ovdje će se pojaviti važna pitanja o kojima će članovi udruge moći odlučivati.
+                            {t.noActivePollsDesc || 'Ovdje će se pojaviti važna pitanja o kojima će članovi udruge moći odlučivati.'}
                         </p>
                     </div>
                 ) : polls.map((poll) => {
@@ -104,11 +102,11 @@ export default function VotingHallPage() {
                             <div className="p-8 md:w-1/2 border-b md:border-b-0 md:border-r border-sky-50">
                                 <div className="flex items-center gap-2 mb-4">
                                     <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest ${poll.is_active ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-500'}`}>
-                                        {poll.is_active ? 'Aktivno' : 'Završeno'}
+                                        {poll.is_active ? (t.active || 'Aktivno') : (t.finished || 'Završeno')}
                                     </span>
                                     {hasVoted && (
                                         <span className="flex items-center gap-1 text-[10px] font-bold text-sky-600 bg-sky-50 px-2 py-1 rounded-full">
-                                            <CheckCircle2 size={12} /> GLASALI STE
+                                            <CheckCircle2 size={12} /> {t.youVoted || 'GLASALI STE'}
                                         </span>
                                     )}
                                 </div>
@@ -142,7 +140,7 @@ export default function VotingHallPage() {
                                                 </div>
                                                 {!isSilverOrAbove && !hasVoted && (
                                                     <div className="absolute inset-0 bg-slate-50/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-[1px]">
-                                                        <span className="text-[10px] bg-slate-800 text-white px-2 py-1 rounded">Nadogradite za glasanje</span>
+                                                        <span className="text-[10px] bg-slate-800 text-white px-2 py-1 rounded">{t.upgradeToVoteBtn || 'Nadogradite za glasanje'}</span>
                                                     </div>
                                                 )}
                                             </button>
@@ -158,7 +156,7 @@ export default function VotingHallPage() {
                                         <ChartBar size={20} className="text-sky-600" />
                                         {t.liveResults || 'Rezultati Uživo'}
                                     </h3>
-                                    <span className="text-xs font-bold text-slate-400">UKUPNO: {poll.totalVotes}</span>
+                                    <span className="text-xs font-bold text-slate-400">{(t.totalLabel || 'UKUPNO').toUpperCase()}: {poll.totalVotes}</span>
                                 </div>
 
                                 <div className="space-y-6">
@@ -172,14 +170,13 @@ export default function VotingHallPage() {
                                                     <span className="text-slate-600 uppercase tracking-tight">{option}</span>
                                                     <span className="text-sky-600">{percentage}%</span>
                                                 </div>
-                                                <div className="h-4 bg-white rounded-full border border-slate-100 overflow-hidden shadow-inner">
-                                                    <div
-                                                        className="h-full bg-gradient-to-r from-sky-400 to-sky-600 rounded-full transition-all duration-1000 ease-out"
-                                                        style={{ width: `${percentage}%` }}
-                                                    ></div>
+                                                <div
+                                                    className="h-full bg-gradient-to-r from-sky-400 to-sky-600 rounded-full transition-all duration-1000 ease-out"
+                                                    style={{ width: `${percentage}%` }}
+                                                >
                                                 </div>
                                                 <div className="text-[10px] text-slate-400 text-right uppercase">
-                                                    {count} {count === 1 ? 'glas' : count < 5 ? 'glasa' : 'glasova'}
+                                                    {count} {t.votesLabel || (count === 1 ? 'glas' : count < 5 ? 'glasa' : 'glasova')}
                                                 </div>
                                             </div>
                                         );
@@ -190,9 +187,7 @@ export default function VotingHallPage() {
                                     <div className="flex items-start gap-3 bg-white p-4 rounded-xl border border-sky-100">
                                         <Info className="text-sky-600 flex-shrink-0" size={18} />
                                         <p className="text-[11px] text-slate-500 leading-relaxed">
-                                            {t.title === "Association Baljci"
-                                                ? "Votes are anonymized. One member per household is encouraged to participate in project-specific voting."
-                                                : "Glasanje je anonimno. Potiču se svi članovi obitelji na sudjelovanje, no pravno glasa jedan registrirani Silver član."}
+                                            {t.votingPrivacyNotice || 'Glasanje je anonimno. Potiču se svi članovi obitelji na sudjelovanje, no pravno glasa jedan registrirani Silver član.'}
                                         </p>
                                     </div>
                                 </div>

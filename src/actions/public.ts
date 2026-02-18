@@ -1,6 +1,7 @@
 'use server';
 
 import { supabaseAdmin } from '@/lib/supabase-admin';
+import { sendAdminNotification } from '@/lib/mail';
 
 interface AccessRequestData {
     name: string;
@@ -27,7 +28,7 @@ export async function submitAccessRequest(data: AccessRequestData) {
             return { error: "Morate prihvatiti statut." };
         }
 
-        // Check if email already exists in requests (optional, to prevent duplicates)
+        // Check if email already exists in requests
         const { data: existing } = await supabaseAdmin
             .from('requests')
             .select('id, status')
@@ -41,10 +42,9 @@ export async function submitAccessRequest(data: AccessRequestData) {
             if (existing.status === 'approved') {
                 return { error: "Već ste registrirani član." };
             }
-            // If rejected, maybe allow re-submission? Let's allow insert for now.
         }
 
-        // Insert using Admin Client (Bypasses RLS)
+        // Insert using Admin Client
         const { error } = await supabaseAdmin
             .from('requests')
             .insert([{
@@ -53,7 +53,7 @@ export async function submitAccessRequest(data: AccessRequestData) {
                 phone: data.phone,
                 contact_method: data.contact_method,
                 oib: data.oib,
-                dob: data.dob, // Ensure format is YYYY-MM-DD
+                dob: data.dob,
                 address: data.address,
                 accepted_statute: data.accepted_statute,
                 reason: data.reason,
@@ -63,6 +63,14 @@ export async function submitAccessRequest(data: AccessRequestData) {
         if (error) {
             console.error("Supabase Write Error:", error);
             return { error: "Greška prilikom spremanja u bazu. Pokušajte ponovno." };
+        }
+
+        // Send Email Notification to Admin
+        try {
+            await sendAdminNotification(data);
+            console.log("Admin notification email sent.");
+        } catch (mailErr) {
+            console.error("Failed to send admin notification email:", mailErr);
         }
 
         return { success: true };

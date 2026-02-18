@@ -53,7 +53,7 @@ export default function DashboardHome() {
             <div className="flex justify-between items-end border-b border-sky-200/60 pb-4">
                 <div>
                     <h1 className="text-2xl font-bold text-slate-900">{t.dashboard}</h1>
-                    <p className="text-slate-600">{t.title} - Member Area</p>
+                    <p className="text-slate-600">{t.title} - {t.dashboardMemberArea || "Member Area"}</p>
                 </div>
             </div>
 
@@ -62,11 +62,11 @@ export default function DashboardHome() {
                 <div className="lg:col-span-2 space-y-8">
                     <section>
                         <h2 className="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2">
-                            📢 {t.community || "Novosti"}
+                            📢 {t.newsFeed || "Novosti"}
                         </h2>
                         {news.length === 0 ? (
                             <div className="bg-white p-6 rounded-lg shadow-sm border border-sky-100 text-center text-slate-500 italic">
-                                Nema novih obavijesti.
+                                {t.noAnnouncements || "Nema novih obavijesti."}
                             </div>
                         ) : (
                             <div className="space-y-6">
@@ -83,7 +83,7 @@ export default function DashboardHome() {
                                             <p className="text-slate-600 leading-relaxed whitespace-pre-wrap">{item.content}</p>
 
                                             <div className="flex items-center gap-2 pt-2 text-xs text-slate-400 border-t border-slate-50 mt-2">
-                                                <span>Objavio: {item.author?.display_name || 'Admin'}</span>
+                                                <span>{t.publishedBy || "Objavio"}: {item.author?.display_name || 'Admin'}</span>
                                             </div>
                                         </div>
                                     </article>
@@ -97,7 +97,7 @@ export default function DashboardHome() {
                             <ImageIcon size={20} /> {t.gallery || "Galerija"}
                         </h2>
                         {images.length === 0 ? (
-                            <p className="text-slate-500 italic">Nema slika u galeriji.</p>
+                            <p className="text-slate-500 italic">{t.noImagesInGallery || "Nema slika u galeriji."}</p>
                         ) : (
                             <GalleryCarousel images={images.slice(0, 5)} />
                         )}
@@ -109,9 +109,9 @@ export default function DashboardHome() {
 
                     {/* Support the Vision Box */}
                     <div className="p-6 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-lg">
-                        <h3 className="text-lg font-bold mb-2">Support the Vision</h3>
+                        <h3 className="text-lg font-bold mb-2">{t.supportVision || "Support the Vision"}</h3>
                         <p className="text-indigo-100 mb-6 text-sm">
-                            Your contributions help build the future of Baljci. Every stone counts.
+                            {t.supportVisionDesc || "Your contributions help build the future of Baljci. Every stone counts."}
                         </p>
                         <a
                             href="https://buy.stripe.com/5kQbJ160x3l6g8Q6FK4ZG00"
@@ -119,7 +119,7 @@ export default function DashboardHome() {
                             rel="noopener noreferrer"
                             className="inline-block px-6 py-2 rounded-lg bg-white text-indigo-600 font-bold hover:bg-indigo-50 transition-colors shadow-sm w-full text-center"
                         >
-                            Donate Now
+                            {t.donateButton || "Donate Now"}
                         </a>
                     </div>
 
@@ -138,9 +138,7 @@ export default function DashboardHome() {
                             <h3 className="font-bold">{t.votingHall || 'Dvorana za Glasovanje'}</h3>
                         </div>
                         <p className="text-sky-100 text-xs mb-4 leading-relaxed">
-                            {t.title === "Association Baljci"
-                                ? "Your decision matters! Participate in the latest poll on communal spending."
-                                : "Vaša odluka je važna! Sudjelujte u novom glasovanju o utrošku sredstava."}
+                            {t.votingHallWidgetDesc || "Vaša odluka je važna! Sudjelujte u novom glasovanju o utrošku sredstava."}
                         </p>
                         <a href="/dashboard/voting" className="text-white text-xs font-bold hover:underline flex items-center gap-1">
                             {t.voteNow || 'Glasaj Sada'}
@@ -158,16 +156,16 @@ export default function DashboardHome() {
                                 <div className="p-2 bg-white/20 rounded-lg">
                                     <ImageIcon size={20} />
                                 </div>
-                                <h3 className="font-bold">Digitalni Spomenar</h3>
+                                <h3 className="font-bold">{t.digitalSpomenar || "Digitalni Spomenar"}</h3>
                             </div>
                             <p className="text-orange-50 text-xs mb-4 leading-relaxed font-medium">
-                                Imate stare fotografije u kutiji cipela? Gradimo trajnu povijest Baljaka.
+                                {t.spomenarDesc || "Imate stare fotografije u kutiji cipela? Gradimo trajnu povijest Baljaka."}
                             </p>
                             <p className="text-orange-100/80 text-[10px] mb-4 italic border-l-2 border-orange-400 pl-2">
-                                "Nagrada: Za svaku sliku, Admin će vam besplatno restaurirati jednu!"
+                                {t.spomenarNote || '"Nagrada: Za svaku sliku, Admin će vam besplatno restaurirati jednu!"'}
                             </p>
                             <a href="/dashboard/spomenar" className="text-white text-xs font-bold hover:underline flex items-center gap-1">
-                                Učitaj Fotografije <span className="text-lg">→</span>
+                                {t.uploadPhotos || "Učitaj Fotografije"} <span className="text-lg">→</span>
                             </a>
                         </div>
                     </div>
@@ -197,20 +195,6 @@ export default function DashboardHome() {
                             </a>
                         </div>
                     </div>
-
-                    {/* Contact Admin Widget (Bottom, Compact) - REMOVED PER USER REQUEST */
-                    /*
-                    <div className="bg-white p-4 rounded-lg shadow-sm border border-sky-100 group hover:border-sky-300 transition-all">
-                        <div className="flex items-center justify-between mb-2">
-                            <h3 className="font-bold text-slate-900 text-sm">{t.contactAdmin || 'Contact Admin'}</h3>
-                            <Mail size={16} className="text-sky-600" />
-                        </div>
-                        <a href="/dashboard/contact" className="text-sky-600 text-xs font-bold hover:underline flex items-center gap-1">
-                            {t.title === "Association Baljci" ? "Send Message" : "Pošalji Poruku"}
-                            <span className="text-lg">→</span>
-                        </a>
-                    </div>
-                    */}
                 </div>
             </div>
         </div>

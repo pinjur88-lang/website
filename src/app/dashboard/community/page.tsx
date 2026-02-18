@@ -7,7 +7,6 @@ import { MessageSquare, User, Send, Shield, Search, PlusCircle } from 'lucide-re
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import { useLanguage } from '@/lib/language-context';
-import { translations } from '@/lib/translations';
 
 // Helper to count comments (Client side fetch for now to avoid complex SQL joins in simplified setup)
 const CommentCounter = ({ postId, suffix }: { postId: string, suffix: string }) => {
@@ -29,8 +28,7 @@ const CommentCounter = ({ postId, suffix }: { postId: string, suffix: string }) 
 
 export default function CommunityPage() {
     const { user } = useAuth();
-    const { language } = useLanguage();
-    const t = translations[language];
+    const { t, language } = useLanguage();
 
     const [topics, setTopics] = useState<Topic[]>([]);
     const [loading, setLoading] = useState(true);
@@ -57,7 +55,7 @@ export default function CommunityPage() {
         if (!content.trim() || !user) return;
 
         if (!user.id) {
-            alert(language === 'en' ? "Error: Unable to identify user. Please refresh or login again." : "Greška: Nije moguće identificirati korisnika. Molimo osvježite stranicu ili se ponovno prijavite.");
+            alert(t.forumErrorIdentifyUser || "Error: Unable to identify user. Please refresh or login again.");
             return;
         }
 
@@ -66,7 +64,7 @@ export default function CommunityPage() {
         const { error } = await createTopic(content, user.id, isAnonymous);
 
         if (error) {
-            alert((language === 'en' ? 'Error: ' : 'Greška: ') + error);
+            alert((t.errorPrefix || 'Error: ') + error);
         } else {
             setContent('');
             setIsAnonymous(false);
@@ -82,10 +80,10 @@ export default function CommunityPage() {
                 <div>
                     <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
                         <MessageSquare className="text-sky-600" />
-                        {t.forumTitle}
+                        {t.forumTitle || 'Forum'}
                     </h1>
                     <p className="text-slate-500 text-sm mt-1">
-                        {t.forumSubtitle}
+                        {t.forumSubtitle || 'Discussions about the village.'}
                     </p>
                 </div>
                 <button
@@ -93,19 +91,19 @@ export default function CommunityPage() {
                     className="bg-sky-600 text-white px-4 py-2 rounded-md font-medium hover:bg-sky-700 transition-colors flex items-center gap-2 shadow-sm"
                 >
                     <PlusCircle size={18} />
-                    {isCreating ? t.closeForum : t.newTopic}
+                    {isCreating ? (t.closeForum || 'Close') : (t.newTopic || 'New Topic')}
                 </button>
             </div>
 
             {/* Create Topic Form */}
             {isCreating && (
                 <div className="bg-white p-6 rounded-xl shadow-lg border border-sky-100 animate-in fade-in slide-in-from-top-4">
-                    <h3 className="font-bold text-slate-800 mb-4">{t.startDiscussion}</h3>
+                    <h3 className="font-bold text-slate-800 mb-4">{t.startDiscussion || 'Start a discussion'}</h3>
                     <form onSubmit={handleCreateTopic} className="space-y-4">
                         <textarea
                             value={content}
                             onChange={(e) => setContent(e.target.value)}
-                            placeholder={t.topicPlaceholder}
+                            placeholder={t.topicPlaceholder || 'What is on your mind?'}
                             className="w-full p-4 border border-slate-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent min-h-[120px] resize-none"
                             required
                         />
@@ -120,7 +118,7 @@ export default function CommunityPage() {
                                 />
                                 <span className="flex items-center gap-1">
                                     {isAnonymous ? <Shield size={14} className="text-slate-400" /> : <User size={14} className="text-slate-400" />}
-                                    {isAnonymous ? t.anonymous : user?.name}
+                                    {isAnonymous ? (t.anonymous || 'Anonymous') : user?.name}
                                 </span>
                             </label>
 
@@ -129,7 +127,7 @@ export default function CommunityPage() {
                                 disabled={submitting || !content.trim()}
                                 className="px-6 py-2 bg-slate-900 text-white text-sm font-bold rounded-md hover:bg-slate-800 disabled:opacity-50 transition-colors"
                             >
-                                {submitting ? t.posting : t.postTopic}
+                                {submitting ? (t.posting || 'Posting...') : (t.postTopic || 'Post Topic')}
                             </button>
                         </div>
                     </form>
@@ -141,13 +139,13 @@ export default function CommunityPage() {
                 {loading ? (
                     <div className="text-center py-12">
                         <div className="animate-spin w-8 h-8 border-4 border-sky-200 border-t-sky-600 rounded-full mx-auto mb-4"></div>
-                        <p className="text-slate-400">{t.loadingTopics}</p>
+                        <p className="text-slate-400">{t.loadingTopics || 'Loading...'}</p>
                     </div>
                 ) : topics.length === 0 ? (
                     <div className="text-center py-16 bg-white rounded-xl border border-dashed border-slate-200">
                         <MessageSquare className="mx-auto text-slate-200 mb-3" size={48} />
-                        <p className="text-slate-500 font-medium">{t.noTopics}</p>
-                        <p className="text-slate-400 text-sm mt-1">{t.beFirstToSay}</p>
+                        <p className="text-slate-500 font-medium">{t.noTopics || 'No topics yet.'}</p>
+                        <p className="text-slate-400 text-sm mt-1">{t.beFirstToSay || 'Be the first to say something!'}</p>
                     </div>
                 ) : (
                     topics.map((topic) => (
@@ -176,7 +174,7 @@ export default function CommunityPage() {
                                 </div>
 
                                 <div className="flex flex-col items-end gap-2 text-right min-w-[80px]">
-                                    <CommentCounter postId={topic.id} suffix={t.repliesSuffix} />
+                                    <CommentCounter postId={topic.id} suffix={t.repliesSuffix || 'replies'} />
                                 </div>
                             </div>
                         </Link>

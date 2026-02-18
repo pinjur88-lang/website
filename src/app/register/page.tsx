@@ -100,7 +100,7 @@ export default function RegisterPage() {
             });
 
             if (authError) throw authError;
-            if (!authData.user) throw new Error("Greška pri registraciji - korisnik nije kreiran.");
+            if (!authData.user) throw new Error(t.registerUserNotCreated || "Greška pri registraciji - korisnik nije kreiran.");
 
             // 2. Success - Trigger handled everything.
 
@@ -108,7 +108,7 @@ export default function RegisterPage() {
             // If request already exists (duplicate email), we might get error, but that's fine, 
             if (authError) {
                 // @ts-ignore - authError is typed correctly by Supabase but TS inference failing here
-                setError(authError.message || "Greška pri registraciji.");
+                setError(authError.message || t.registerError || "Greška pri registraciji.");
                 setLoading(false);
                 return;
             }
@@ -119,7 +119,7 @@ export default function RegisterPage() {
 
         } catch (err: any) {
             console.error(err);
-            setError(err.message || "Došlo je do greške.");
+            setError(err.message || t.errorOccurred || "Došlo je do greške.");
         } finally {
             setLoading(false);
         }
@@ -132,10 +132,10 @@ export default function RegisterPage() {
                     <div className="w-20 h-20 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-6">
                         <UserPlus size={40} />
                     </div>
-                    <h1 className="text-3xl font-bold text-zinc-900 mb-2">Zahtjev Zaprimljen!</h1>
-                    <p className="text-zinc-600 mb-8 text-lg">Vaš račun je kreiran i čeka odobrenje administratora. Obavijestit ćemo vas emailom kada pristup bude omogućen.</p>
+                    <h1 className="text-3xl font-bold text-zinc-900 mb-2">{t.requestReceived}</h1>
+                    <p className="text-zinc-600 mb-8 text-lg">{t.requestReceivedDesc}</p>
                     <Link href="/login" className="inline-flex items-center gap-2 px-8 py-4 bg-zinc-900 text-white hover:bg-zinc-800 transition-all rounded-xl font-bold text-lg shadow-lg hover:shadow-xl active:scale-95">
-                        {t.login} <ArrowRight size={20} />
+                        {t.loginSubmit} <ArrowRight size={20} />
                     </Link>
                 </div>
             </div>
@@ -149,8 +149,8 @@ export default function RegisterPage() {
             {step === 'select' && (
                 <div className="w-full max-w-5xl space-y-8 animate-in slide-in-from-bottom-8 duration-500">
                     <div className="text-center space-y-4">
-                        <h1 className="text-4xl font-serif font-bold text-zinc-900">Odaberite Tip Članstva</h1>
-                        <p className="text-zinc-500 text-lg max-w-2xl mx-auto">Pridružite se zajednici na način koji vama najbolje odgovara.</p>
+                        <h1 className="text-4xl font-serif font-bold text-zinc-900">{t.selectMembershipType}</h1>
+                        <p className="text-zinc-500 text-lg max-w-2xl mx-auto">{t.joinCommunityDesc}</p>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -162,8 +162,8 @@ export default function RegisterPage() {
                             <div className="w-14 h-14 bg-sky-100 text-sky-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                                 <User size={28} />
                             </div>
-                            <h3 className="text-2xl font-bold text-zinc-900 mb-2">Individualno</h3>
-                            <p className="text-zinc-500 leading-relaxed">Standardno članstvo za pojedince. Uključuje pravo glasa i pristup svim resursima.</p>
+                            <h3 className="text-2xl font-bold text-zinc-900 mb-2">{t.membershipIndividual}</h3>
+                            <p className="text-zinc-500 leading-relaxed">{t.membershipIndividualDesc}</p>
                         </div>
 
                         {/* Family */}
@@ -174,8 +174,8 @@ export default function RegisterPage() {
                             <div className="w-14 h-14 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                                 <Users size={28} />
                             </div>
-                            <h3 className="text-2xl font-bold text-zinc-900 mb-2">Obiteljski Paket</h3>
-                            <p className="text-zinc-500 leading-relaxed">"Glava kuće" registrira sebe i dodaje članove obitelji (djecu/supružnika) u jednom potezu.</p>
+                            <h3 className="text-2xl font-bold text-zinc-900 mb-2">{t.membershipFamily}</h3>
+                            <p className="text-zinc-500 leading-relaxed">{t.membershipFamilyDesc}</p>
                         </div>
 
                         {/* Corporate */}
@@ -186,13 +186,13 @@ export default function RegisterPage() {
                             <div className="w-14 h-14 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                                 <Building2 size={28} />
                             </div>
-                            <h3 className="text-2xl font-bold text-zinc-900 mb-2">Pravna Osoba</h3>
-                            <p className="text-zinc-500 leading-relaxed">Za tvrtke i sponzore. Registrira ovlašteni zastupnik koji glasa u ime tvrtke.</p>
+                            <h3 className="text-2xl font-bold text-zinc-900 mb-2">{t.membershipCorporate}</h3>
+                            <p className="text-zinc-500 leading-relaxed">{t.membershipCorporateDesc}</p>
                         </div>
                     </div>
 
                     <div className="text-center pt-8">
-                        <Link href="/" className="text-zinc-400 hover:text-zinc-600 text-sm">Natrag na naslovnicu</Link>
+                        <Link href="/" className="text-zinc-400 hover:text-zinc-600 text-sm">{t.navHome}</Link>
                     </div>
                 </div>
             )}
@@ -201,7 +201,7 @@ export default function RegisterPage() {
             {step === 'form' && (
                 <div className="w-full max-w-2xl bg-white border border-zinc-200 shadow-xl rounded-2xl p-8 animate-in fade-in slide-in-from-bottom-4">
                     <button onClick={() => setStep('select')} className="text-sm text-zinc-400 hover:text-zinc-600 mb-6 flex items-center gap-1">
-                        ← Promijeni tip članstva
+                        ← {t.changeMembershipType}
                     </button>
 
                     <div className="mb-8 pb-8 border-b border-zinc-100">
@@ -209,25 +209,25 @@ export default function RegisterPage() {
                             {regType === 'individual' && <User className="text-sky-600" size={24} />}
                             {regType === 'family' && <Users className="text-purple-600" size={24} />}
                             {regType === 'corporate' && <Building2 className="text-amber-600" size={24} />}
-                            <h2 className="text-2xl font-bold text-zinc-900 capitalize">
-                                {regType === 'individual' ? 'Individualna Registracija' : regType === 'family' ? 'Obiteljska Registracija' : 'Registracija Pravne Osobe'}
+                            <h2 className="text-2xl font-bold text-zinc-900">
+                                {regType === 'individual' ? t.individualRegistration : regType === 'family' ? t.familyRegistration : t.corporateRegistration}
                             </h2>
                         </div>
-                        <p className="text-zinc-500">Molimo ispunite zakonski obvezne podatke za Registar Članova.</p>
+                        <p className="text-zinc-500">{t.fillLegalData}</p>
                     </div>
 
                     <form onSubmit={handleSubmit} className="space-y-6">
 
                         {/* SECTION A: LOGIN INFO */}
                         <div className="space-y-4">
-                            <h3 className="text-sm font-bold text-zinc-900 uppercase tracking-wider">Moji Podaci za Prijavu</h3>
+                            <h3 className="text-sm font-bold text-zinc-900 uppercase tracking-wider">{t.loginData}</h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-1">
-                                    <label className="text-xs font-semibold text-zinc-500">EMAIL ADRESA (Mora biti odobrena)</label>
-                                    <input type="email" required value={email} onChange={e => setEmail(e.target.value)} className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-lg focus:ring-2 focus:ring-zinc-900 outline-none text-zinc-900" placeholder="ime@primjer.com" />
+                                    <label className="text-xs font-semibold text-zinc-500">{t.emailLabelRequired}</label>
+                                    <input type="email" required value={email} onChange={e => setEmail(e.target.value)} className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-lg focus:ring-2 focus:ring-zinc-900 outline-none text-zinc-900" placeholder={t.emailPlaceholder} />
                                 </div>
                                 <div className="space-y-1">
-                                    <label className="text-xs font-semibold text-zinc-500">LOZINKA</label>
+                                    <label className="text-xs font-semibold text-zinc-500">{t.passwordLabel}</label>
                                     <input type="password" required minLength={6} value={password} onChange={e => setPassword(e.target.value)} className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-lg focus:ring-2 focus:ring-zinc-900 outline-none text-zinc-900" placeholder="******" />
                                 </div>
                             </div>
@@ -236,43 +236,43 @@ export default function RegisterPage() {
                         {/* SECTION B: LEGAL INFO */}
                         <div className="space-y-4 pt-4 border-t border-zinc-100">
                             <h3 className="text-sm font-bold text-zinc-900 uppercase tracking-wider">
-                                {regType === 'corporate' ? 'Podaci o Zastupniku' : 'Osobni Podaci'}
+                                {regType === 'corporate' ? t.representativeData : t.personalData}
                             </h3>
 
                             <div className="space-y-1">
-                                <label className="text-xs font-semibold text-zinc-500">IME I PREZIME (PUNO) *</label>
+                                <label className="text-xs font-semibold text-zinc-500">{t.fullNameLabelRequired}</label>
                                 <input type="text" required value={fullName} onChange={e => setFullName(e.target.value)} className="w-full p-3 bg-white border border-zinc-300 rounded-lg focus:ring-2 focus:ring-zinc-900 outline-none text-zinc-900" placeholder="npr. Ivan Horvat" />
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-1">
-                                    <label className="text-xs font-semibold text-zinc-500">DATUM ROĐENJA *</label>
+                                    <label className="text-xs font-semibold text-zinc-500">{t.dobLabelRequired}</label>
                                     <input type="date" required value={dob} onChange={e => setDob(e.target.value)} className="w-full p-3 bg-white border border-zinc-300 rounded-lg focus:ring-2 focus:ring-zinc-900 outline-none text-zinc-900" />
                                 </div>
                                 <div className="space-y-1">
-                                    <label className="text-xs font-semibold text-zinc-500">OIB (Osobni identifikacijski broj)</label>
-                                    <input type="text" value={oib} onChange={e => setOib(e.target.value)} className="w-full p-3 bg-white border border-zinc-300 rounded-lg focus:ring-2 focus:ring-zinc-900 outline-none text-zinc-900" placeholder="Ostavite prazno ako nemate" />
-                                    <p className="text-[10px] text-zinc-400">Strani državljani bez OIB-a se registriraju kao pridruženi članovi.</p>
+                                    <label className="text-xs font-semibold text-zinc-500">{t.oibLabelLong}</label>
+                                    <input type="text" value={oib} onChange={e => setOib(e.target.value)} className="w-full p-3 bg-white border border-zinc-300 rounded-lg focus:ring-2 focus:ring-zinc-900 outline-none text-zinc-900" placeholder={t.leaveEmptyIfNotHave} />
+                                    <p className="text-[10px] text-zinc-400">{t.oibForeignerNote}</p>
                                 </div>
                             </div>
 
                             <div className="space-y-1">
-                                <label className="text-xs font-semibold text-zinc-500">ADRESA PREBIVALIŠTA *</label>
-                                <input type="text" required value={address} onChange={e => setAddress(e.target.value)} className="w-full p-3 bg-white border border-zinc-300 rounded-lg focus:ring-2 focus:ring-zinc-900 outline-none text-zinc-900" placeholder="Ulica i broj, Grad, Država" />
+                                <label className="text-xs font-semibold text-zinc-500">{t.addressLabelRequired}</label>
+                                <input type="text" required value={address} onChange={e => setAddress(e.target.value)} className="w-full p-3 bg-white border border-zinc-300 rounded-lg focus:ring-2 focus:ring-zinc-900 outline-none text-zinc-900" placeholder={t.addressPlaceholder} />
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-1">
-                                    <label className="text-xs font-semibold text-zinc-500">TELEFON</label>
+                                    <label className="text-xs font-semibold text-zinc-500">{t.phoneLabel}</label>
                                     <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} className="w-full p-3 bg-white border border-zinc-300 rounded-lg focus:ring-2 focus:ring-zinc-900 outline-none text-zinc-900" placeholder="+385..." />
                                 </div>
                                 <div className="space-y-1">
-                                    <label className="text-xs font-semibold text-zinc-500">IME OCA (IDENTITET)</label>
+                                    <label className="text-xs font-semibold text-zinc-500">{t.fathersNameLabel}</label>
                                     <input type="text" value={fathersName} onChange={e => setFathersName(e.target.value)} className="w-full p-3 bg-white border border-zinc-300 rounded-lg focus:ring-2 focus:ring-zinc-900 outline-none text-zinc-900" placeholder="Ime oca" />
                                 </div>
                             </div>
                             <div className="space-y-1">
-                                <label className="text-xs font-semibold text-zinc-500">OBITELJSKI NADIMAK / Pleme</label>
+                                <label className="text-xs font-semibold text-zinc-500">{t.nicknameLabel}</label>
                                 <input type="text" value={nickname} onChange={e => setNickname(e.target.value)} className="w-full p-3 bg-white border border-zinc-300 rounded-lg focus:ring-2 focus:ring-zinc-900 outline-none text-zinc-900" placeholder="npr. Genda, Bibić..." />
                             </div>
                         </div>
@@ -281,9 +281,9 @@ export default function RegisterPage() {
                         {regType === 'family' && (
                             <div className="space-y-4 pt-4 border-t border-zinc-100 bg-purple-50/50 p-4 rounded-xl">
                                 <div className="flex items-center justify-between">
-                                    <h3 className="text-sm font-bold text-purple-900 uppercase tracking-wider">Članovi Obitelji (Djeca/Supružnik)</h3>
+                                    <h3 className="text-sm font-bold text-purple-900 uppercase tracking-wider">{t.familyMembersLabel}</h3>
                                     <button type="button" onClick={addFamilyMember} className="flex items-center gap-1 text-xs font-bold text-purple-700 hover:text-purple-900 bg-white border border-purple-200 px-3 py-1.5 rounded-lg shadow-sm">
-                                        <Plus size={14} /> DODAJ ČLANA
+                                        <Plus size={14} /> {t.addMember}
                                     </button>
                                 </div>
 
@@ -294,39 +294,39 @@ export default function RegisterPage() {
                                         </button>
                                         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                                             <div className="space-y-1">
-                                                <label className="text-[10px] font-bold text-zinc-400">IME I PREZIME</label>
+                                                <label className="text-[10px] font-bold text-zinc-400">{t.fullNameLabelRequired}</label>
                                                 <input type="text" required value={member.name} onChange={e => updateFamilyMember(idx, 'name', e.target.value)} className="w-full p-2 bg-zinc-50 border border-zinc-200 rounded text-sm text-zinc-900" placeholder="Ime" />
                                             </div>
                                             <div className="space-y-1">
-                                                <label className="text-[10px] font-bold text-zinc-400">DATUM ROĐENJA</label>
+                                                <label className="text-[10px] font-bold text-zinc-400">{t.dobLabelRequired}</label>
                                                 <input type="date" required value={member.dob} onChange={e => updateFamilyMember(idx, 'dob', e.target.value)} className="w-full p-2 bg-zinc-50 border border-zinc-200 rounded text-sm text-zinc-900" />
                                             </div>
                                             <div className="space-y-1">
-                                                <label className="text-[10px] font-bold text-zinc-400">ODNOS</label>
+                                                <label className="text-[10px] font-bold text-zinc-400">{t.relationLabel}</label>
                                                 <select value={member.relation} onChange={e => updateFamilyMember(idx, 'relation', e.target.value)} className="w-full p-2 bg-zinc-50 border border-zinc-200 rounded text-sm text-zinc-900">
-                                                    <option value="child">Dijete</option>
-                                                    <option value="spouse">Supružnik</option>
-                                                    <option value="parent">Roditelj</option>
+                                                    <option value="child">{t.relationChild}</option>
+                                                    <option value="spouse">{t.relationSpouse}</option>
+                                                    <option value="parent">{t.relationParent}</option>
                                                 </select>
                                             </div>
                                         </div>
                                     </div>
                                 ))}
-                                {familyMembers.length === 0 && <p className="text-xs text-purple-400 italic text-center py-2">Kliknite "Dodaj člana" za unos djece ili supružnika.</p>}
+                                {familyMembers.length === 0 && <p className="text-xs text-purple-400 italic text-center py-2">{t.addMemberNote}</p>}
                             </div>
                         )}
 
                         {/* SECTION D: CORPORATE */}
                         {regType === 'corporate' && (
                             <div className="space-y-4 pt-4 border-t border-zinc-100 bg-amber-50/50 p-4 rounded-xl">
-                                <h3 className="text-sm font-bold text-amber-900 uppercase tracking-wider">Podaci o Tvrtki</h3>
+                                <h3 className="text-sm font-bold text-amber-900 uppercase tracking-wider">{t.companyData}</h3>
                                 <div className="space-y-3">
                                     <div className="space-y-1">
-                                        <label className="text-xs font-semibold text-zinc-500">IME TVRTKE</label>
+                                        <label className="text-xs font-semibold text-zinc-500">{t.companyNameLabel}</label>
                                         <input type="text" required value={companyName} onChange={e => setCompanyName(e.target.value)} className="w-full p-3 bg-white border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none text-zinc-900" />
                                     </div>
                                     <div className="space-y-1">
-                                        <label className="text-xs font-semibold text-zinc-500">OIB TVRTKE (MBS)</label>
+                                        <label className="text-xs font-semibold text-zinc-500">{t.companyOibLabel}</label>
                                         <input type="text" required value={companyOib} onChange={e => setCompanyOib(e.target.value)} className="w-full p-3 bg-white border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none text-zinc-900" />
                                     </div>
                                 </div>
@@ -338,22 +338,22 @@ export default function RegisterPage() {
                             <div className="flex items-start gap-3 p-4 bg-zinc-50 rounded-xl">
                                 <input type="checkbox" required checked={consents.statute} onChange={e => setConsents({ ...consents, statute: e.target.checked })} className="mt-1 w-5 h-5 text-zinc-900 rounded border-zinc-300 focus:ring-zinc-900" />
                                 <div className="space-y-1">
-                                    <p className="text-sm font-bold text-zinc-900">Prihvaćam Statut Udruge</p>
-                                    <p className="text-xs text-zinc-500">Obavezno po Zakonu o udrugama.</p>
+                                    <p className="text-sm font-bold text-zinc-900">{t.acceptStatute}</p>
+                                    <p className="text-xs text-zinc-500">{t.statuteRequiredByLaw}</p>
                                 </div>
                             </div>
                             <div className="flex items-start gap-3 p-4 bg-zinc-50 rounded-xl">
                                 <input type="checkbox" required checked={consents.data} onChange={e => setConsents({ ...consents, data: e.target.checked })} className="mt-1 w-5 h-5 text-zinc-900 rounded border-zinc-300 focus:ring-zinc-900" />
                                 <div className="space-y-1">
-                                    <p className="text-sm font-bold text-zinc-900">Pristanak na prikupljanje podataka</p>
-                                    <p className="text-xs text-zinc-500">Slažem se da se moji podaci koriste u svrhu vođenja Registra članova (GDPR).</p>
+                                    <p className="text-sm font-bold text-zinc-900">{t.consentDataCollection}</p>
+                                    <p className="text-xs text-zinc-500">{t.consentDataCollectionDesc}</p>
                                 </div>
                             </div>
                             <div className="flex items-start gap-3 p-4 bg-white border border-zinc-200 rounded-xl">
                                 <input type="checkbox" checked={consents.marketing} onChange={e => setConsents({ ...consents, marketing: e.target.checked })} className="mt-1 w-5 h-5 text-zinc-900 rounded border-zinc-300 focus:ring-zinc-900" />
                                 <div className="space-y-1">
-                                    <p className="text-sm font-bold text-zinc-900">Newsletter i Obavijesti</p>
-                                    <p className="text-xs text-zinc-500">Želim primati novosti o akcijama i događanjima.</p>
+                                    <p className="text-sm font-bold text-zinc-900">{t.newsletterConsent}</p>
+                                    <p className="text-xs text-zinc-500">{t.newsletterConsentDesc}</p>
                                 </div>
                             </div>
                         </div>
@@ -370,7 +370,7 @@ export default function RegisterPage() {
                             disabled={loading}
                             className="w-full py-4 bg-zinc-900 hover:bg-zinc-800 text-white font-bold rounded-xl shadow-lg transition-all active:scale-95 disabled:opacity-70 disabled:active:scale-100 flex items-center justify-center gap-2"
                         >
-                            {loading ? 'Obrađivanje...' : 'Završi Registraciju'}
+                            {loading ? t.processing : t.finishRegistration}
                         </button>
                     </form>
                 </div>

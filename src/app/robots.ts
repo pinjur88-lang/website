@@ -4,7 +4,9 @@ export default function robots(): MetadataRoute.Robots {
     return {
         rules: {
             userAgent: '*',
-            disallow: '/',
+            allow: '/',
+            disallow: ['/dashboard', '/admin', '/api'],
         },
+        sitemap: 'https://www.baljci.com/sitemap.xml',
     }
 }
