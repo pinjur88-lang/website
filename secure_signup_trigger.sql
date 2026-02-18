@@ -1,9 +1,9 @@
 -- ==========================================
--- SECURE SIGNUP TRIGGER (DIAGNOSTIC v8)
--- Self-Contained Table/Function/Trigger
+-- SECURE SIGNUP TRIGGER (NUCLEAR RESET v9)
 -- ==========================================
--- 1. FORCE CREATE DEBUG TABLE
-CREATE TABLE IF NOT EXISTS public.registration_debug_log (
+-- 1. FORCE RESET DEBUG TABLE (Clean slate)
+DROP TABLE IF EXISTS public.registration_debug_log;
+CREATE TABLE public.registration_debug_log (
   id SERIAL PRIMARY KEY,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   email TEXT,
@@ -12,9 +12,15 @@ CREATE TABLE IF NOT EXISTS public.registration_debug_log (
   context TEXT,
   metadata JSONB
 );
--- 2. CREATE FUNCTION WITH STEP TRACKING
+-- 2. MANUAL TEST ENTRY (Verify script execution reached here)
+INSERT INTO public.registration_debug_log (email, context)
+VALUES (
+    'system@test.com',
+    'v9 Script Loaded Successfully'
+  );
+-- 3. CREATE HYPER-VIGILANT FUNCTION
 CREATE OR REPLACE FUNCTION public.handle_new_user() RETURNS trigger AS $$
-DECLARE _step text := 'INIT';
+DECLARE _step text := 'BOOT';
 m_full_name text;
 m_display_name text;
 m_oib text;
@@ -24,23 +30,31 @@ m_reg_type text;
 m_fathers_name text;
 m_nickname text;
 m_dob text;
-BEGIN _step := 'EXTRACT_METADATA';
+BEGIN BEGIN _step := 'METADATA_EXTRACTION';
 m_full_name := COALESCE(
   new.raw_user_meta_data->>'full_name',
-  new.raw_user_meta_data->>'display_name'
+  new.raw_user_meta_data->>'display_name',
+  'Unknown User'
 );
 m_display_name := COALESCE(
   new.raw_user_meta_data->>'display_name',
-  new.raw_user_meta_data->>'full_name'
+  new.raw_user_meta_data->>'full_name',
+  'No Name'
 );
 m_oib := new.raw_user_meta_data->>'oib';
-m_address := new.raw_user_meta_data->>'address';
+m_address := COALESCE(
+  new.raw_user_meta_data->>'address',
+  'No Address Provided'
+);
 m_phone := new.raw_user_meta_data->>'phone';
-m_reg_type := new.raw_user_meta_data->>'request_type';
+m_reg_type := COALESCE(
+  new.raw_user_meta_data->>'request_type',
+  'individual'
+);
 m_fathers_name := new.raw_user_meta_data->>'fathers_name';
 m_nickname := new.raw_user_meta_data->>'nickname';
 m_dob := new.raw_user_meta_data->>'date_of_birth';
-BEGIN -- PROFILES STEP
+-- STEP: PROFILES
 _step := 'INSERT_PROFILES';
 INSERT INTO public.profiles (
     id,
@@ -68,9 +82,8 @@ VALUES (
   ) ON CONFLICT (id) DO
 UPDATE
 SET full_name = EXCLUDED.full_name,
-  display_name = EXCLUDED.display_name,
-  role = 'pending';
--- REQUESTS STEP
+  display_name = EXCLUDED.display_name;
+-- STEP: REQUESTS
 _step := 'INSERT_REQUESTS';
 IF NOT EXISTS (
   SELECT 1
@@ -80,14 +93,14 @@ IF NOT EXISTS (
 INSERT INTO public.requests (email, name, status, request_type, created_at)
 VALUES (
     new.email,
-    COALESCE(m_full_name, new.email),
+    m_full_name,
     'pending',
-    COALESCE(m_reg_type, 'individual'),
+    m_reg_type,
     now()
   );
 END IF;
--- FAMILY STEP
-_step := 'INSERT_FAMILY';
+-- STEP: FAMILY
+_step := 'INSERT_FAMILY_LOOP';
 IF jsonb_typeof(new.raw_user_meta_data->'family_members') = 'array' THEN
 INSERT INTO public.family_members (
     head_of_household,
@@ -100,13 +113,13 @@ SELECT new.id,
   NULLIF(TRIM(fm->>'date_of_birth'), '')::date,
   COALESCE(fm->>'relationship', 'child')
 FROM jsonb_array_elements(new.raw_user_meta_data->'family_members') as fm
-WHERE (fm->>'full_name') IS NOT NULL
-  AND (fm->>'full_name') != ''
-  AND (fm->>'date_of_birth') IS NOT NULL
-  AND (fm->>'date_of_birth') != '';
+WHERE fm->>'full_name' IS NOT NULL
+  AND fm->>'full_name' != ''
+  AND fm->>'date_of_birth' IS NOT NULL
+  AND fm->>'date_of_birth' != '';
 END IF;
--- COMPANY STEP
-_step := 'INSERT_COMPANY';
+-- STEP: COMPANY
+_step := 'INSERT_COMPANY_OBJ';
 IF jsonb_typeof(new.raw_user_meta_data->'company') = 'object' THEN
 INSERT INTO public.companies (
     representative_id,
@@ -125,7 +138,7 @@ WHERE (new.raw_user_meta_data->'company'->>'name') IS NOT NULL
   AND (new.raw_user_meta_data->'company'->>'oib') IS NOT NULL;
 END IF;
 EXCEPTION
-WHEN OTHERS THEN -- Try to log to debug table, but handle case where table creation failed
+WHEN OTHERS THEN -- Fallback logging
 BEGIN
 INSERT INTO public.registration_debug_log (
     email,
@@ -138,22 +151,20 @@ VALUES (
     new.email,
     SQLERRM,
     SQLSTATE,
-    'v8 failed at step: ' || _step,
+    'v9 FAIL at: ' || _step,
     new.raw_user_meta_data
   );
 EXCEPTION
 WHEN OTHERS THEN NULL;
--- Cannot log if table is missing, proceed to RAISE
 END;
-RAISE EXCEPTION 'Registration Failed at %: % (SQLSTATE: %)',
+RAISE EXCEPTION 'CRITICAL REG ERROR at %: %',
 _step,
-SQLERRM,
-SQLSTATE;
+SQLERRM;
 END;
 RETURN new;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
--- 3. FORCE RE-ALIGNE TRIGGER
+-- 4. RE-ATTACH TRIGGER
 DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created
 AFTER
