@@ -4,7 +4,7 @@ import { Suspense, useState, useEffect } from 'react';
 import { useAuth } from '@/lib/auth-context';
 import { useLanguage } from '@/lib/language-context';
 import { Lock, AlertCircle, ArrowRight } from 'lucide-react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 function LoginContent() {
@@ -15,9 +15,20 @@ function LoginContent() {
     const [loading, setLoading] = useState(false);
     const [isApprovalPending, setIsApprovalPending] = useState(false);
     const [authCodeError, setAuthCodeError] = useState(false);
-    const { login, isLoading: isAuthLoading } = useAuth();
+    const { login, isLoading: isAuthLoading, user } = useAuth();
 
     const searchParams = useSearchParams();
+    const router = useRouter();
+
+    useEffect(() => {
+        if (user && !isAuthLoading) {
+            if (user.role === 'admin') {
+                router.push('/admin');
+            } else {
+                router.push('/dashboard');
+            }
+        }
+    }, [user, isAuthLoading, router]);
 
     useEffect(() => {
         const errorParam = searchParams.get('error');
@@ -127,11 +138,11 @@ function LoginContent() {
 
                             <button
                                 type="submit"
-                                disabled={loading}
+                                disabled={loading || isAuthLoading || !!user}
                                 className="w-full py-4 bg-zinc-900 hover:bg-zinc-800 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all active:scale-95 disabled:opacity-70 disabled:active:scale-100 flex items-center justify-center gap-2"
                             >
-                                {loading ? t.loading : t.loginSubmit}
-                                {!loading && <ArrowRight size={20} />}
+                                {loading || isAuthLoading || user ? t.loading : t.loginSubmit}
+                                {!(loading || isAuthLoading || user) && <ArrowRight size={20} />}
                             </button>
                         </form>
 

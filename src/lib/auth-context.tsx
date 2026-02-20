@@ -94,18 +94,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 }
 
                 if (data.user) {
-                    // Check if Admin to redirect properly
-                    const { data: profile } = await supabase
-                        .from('profiles')
-                        .select('role')
-                        .eq('id', data.user.id)
-                        .maybeSingle();
-
-                    if (profile?.role === 'admin') {
-                        router.push('/admin');
-                    } else {
-                        router.push('/dashboard');
-                    }
+                    // We no longer push to router here. 
+                    // login/page.tsx's useEffect will natively catch the populated user and redirect.
                     return { error: null };
                 }
             }
