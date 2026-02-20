@@ -138,22 +138,18 @@ function LoginContent() {
 
                             <button
                                 type="submit"
-                                disabled={loading || isAuthLoading || !!user}
+                                disabled={loading || !!user}
                                 className="w-full py-4 bg-zinc-900 hover:bg-zinc-800 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all active:scale-95 disabled:opacity-70 disabled:active:scale-100 flex items-center justify-center gap-2"
                             >
-                                {loading || isAuthLoading || user ? t.loading : t.loginSubmit}
-                                {!(loading || isAuthLoading || user) && <ArrowRight size={20} />}
+                                {loading || user ? t.loading : t.loginSubmit}
+                                {!(loading || user) && <ArrowRight size={20} />}
                             </button>
                         </form>
 
                         <div className="pt-6 border-t border-zinc-100 text-center space-y-4">
                             <p className="text-zinc-500 text-sm">
-                                {t.noAccount} <Link href="/" className="text-zinc-900 font-bold hover:underline">{t.requestHere}</Link>
+                                {t.noAccount || 'Nemate račun?'} <Link href="/register" className="text-zinc-900 font-bold hover:underline">{t.registerHere || 'Registrirajte se ovdje'}</Link>
                             </p>
-                            <div className="flex items-center justify-center gap-2 text-sm text-zinc-400">
-                                <span>{t.haveApproval}</span>
-                                <Link href="/register" className="text-zinc-900 font-semibold hover:underline">{t.registerHere}</Link>
-                            </div>
                         </div>
                     </div>
                 </div>
