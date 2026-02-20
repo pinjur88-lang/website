@@ -10,6 +10,7 @@ interface User {
     email: string;
     role: 'admin' | 'member';
     membership_tier: 'free' | 'silver' | 'gold';
+    status: 'pending' | 'approved' | 'rejected' | 'registered' | string;
 }
 
 interface AuthContextType {
@@ -38,11 +39,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                         .eq('email', session.user.email!)
                         .maybeSingle(); // Use maybeSingle to avoid 406 if not found
 
-                    if (reqData && reqData.status !== 'approved') {
-                        console.warn('User logged in but not approved (or revoked). Logging out.');
-                        await supabase.auth.signOut();
-                        setUser(null);
-                        return; // Finally will handle isLoading
+                    if (reqData) {
+                        // We no longer forcefully log out unapproved users.
+                        // We will handle their access visually in the dashboard layout.
                     }
 
                     // Check if user is the admin email
@@ -60,7 +59,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                         name: session.user.user_metadata?.display_name || 'Član',
                         email: session.user.email!,
                         role: isAdmin ? 'admin' : 'member',
-                        membership_tier: profileData?.membership_tier || 'free'
+                        membership_tier: profileData?.membership_tier || 'free',
+                        status: reqData?.status || 'pending'
                     };
                     setUser(memberUser);
                 } else {

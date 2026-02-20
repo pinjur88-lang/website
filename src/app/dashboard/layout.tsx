@@ -6,6 +6,8 @@ import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { LayoutDashboard, Users, FileText, Settings, LogOut, Menu, X, Hammer, BookOpen, Map, Trash2, Lightbulb, AlertTriangle, MessageSquare, ImageIcon, Scale, Mail, Vote } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
+import PendingApproval from '@/components/dashboard/PendingApproval';
+import PromptPayment from '@/components/dashboard/PromptPayment';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
     const { user, isLoading, logout } = useAuth();
@@ -57,6 +59,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             ]
         }
     ];
+
+    // Intercept based on Status and Tier (unless Admin)
+    if (user.role !== 'admin') {
+        if (user.status === 'pending') {
+            return <PendingApproval />;
+        }
+
+        // Use 'free' as the unpaid indicator. Admins or users who bypass this should have 'silver' or 'gold'
+        if (user.status === 'approved' && user.membership_tier === 'free') {
+            return <PromptPayment />;
+        }
+    }
 
     // Add Admin Panel if user is admin
     if (user.role === 'admin') {
