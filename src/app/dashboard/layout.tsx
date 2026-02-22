@@ -60,13 +60,21 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         }
     ];
 
+    // Add Voting for voting members and admins
+    if (user?.membership_tier === 'voting' || user?.role === 'admin') {
+        const communityGroup = navGroups.find(g => g.title === (t.navCommunity || "Zajednica"));
+        if (communityGroup) {
+            communityGroup.items.splice(1, 0, { name: t.votingHall || 'Glasanje', href: '/dashboard/voting', icon: Vote });
+        }
+    }
+
     // Intercept based on Status and Tier (unless Admin)
     if (user.role !== 'admin') {
         if (user.status === 'pending') {
             return <PendingApproval />;
         }
 
-        // Use 'free' as the unpaid indicator. Admins or users who bypass this should have 'silver' or 'gold'
+        // Use 'free' as the unpaid indicator. Admins or users who bypass this should have 'supporter' or 'voting'
         if (user.status === 'approved' && user.membership_tier === 'free') {
             return <PromptPayment />;
         }

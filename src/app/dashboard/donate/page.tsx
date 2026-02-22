@@ -37,7 +37,7 @@ export default function DashboardDonatePage() {
                 {/* Option 1: Fast (Small Donors) */}
                 <div className="relative group w-full">
                     <div className="absolute -inset-0.5 bg-gradient-to-br from-sky-400 to-blue-600 rounded-3xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
-                    <div className="relative bg-white dark:bg-zinc-900/90 backdrop-blur-xl border border-zinc-200 dark:border-zinc-800 rounded-2xl p-8 flex flex-col md:flex-row gap-8 items-start">
+                    <div className="relative bg-blue-50/80 dark:bg-blue-900/40 backdrop-blur-xl border border-blue-200 dark:border-blue-800/60 rounded-2xl p-8 flex flex-col md:flex-row gap-8 items-start">
 
                         <div className="flex-1">
                             <div className="inline-flex items-center px-3 py-1 rounded-full bg-sky-100 dark:bg-sky-500/10 text-sky-700 dark:text-sky-300 text-xs font-semibold mb-4">
@@ -101,7 +101,7 @@ export default function DashboardDonatePage() {
                 {/* Option 2: Efficient (Large Donors) */}
                 <div className="relative group w-full">
                     <div className="absolute -inset-0.5 bg-gradient-to-br from-blue-500 to-sky-600 rounded-3xl blur opacity-10 group-hover:opacity-30 transition duration-500"></div>
-                    <div className="relative h-full bg-white dark:bg-zinc-900/90 backdrop-blur-xl border border-zinc-200 dark:border-zinc-800 rounded-2xl p-8 flex flex-col">
+                    <div className="relative h-full bg-blue-50/80 dark:bg-blue-900/40 backdrop-blur-xl border border-blue-200 dark:border-blue-800/60 rounded-2xl p-8 flex flex-col">
 
                         <div className="inline-flex items-center px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300 text-xs font-semibold mb-6 w-fit">
                             {t.donateOpt2Badge}

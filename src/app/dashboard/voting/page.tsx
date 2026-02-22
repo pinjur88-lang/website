@@ -14,7 +14,7 @@ export default function VotingHallPage() {
     const [userVotes, setUserVotes] = useState<Record<string, number | null>>({});
     const [votingInProgress, setVotingInProgress] = useState<string | null>(null);
 
-    const isSilverOrAbove = user?.membership_tier === 'silver' || user?.membership_tier === 'gold' || user?.role === 'admin';
+    const isVotingOrAdmin = user?.membership_tier === 'voting' || user?.role === 'admin';
 
     useEffect(() => {
         loadData();
@@ -37,7 +37,7 @@ export default function VotingHallPage() {
     };
 
     const handleVote = async (pollId: string, optionIndex: number) => {
-        if (!isSilverOrAbove) return;
+        if (!isVotingOrAdmin) return;
 
         setVotingInProgress(pollId);
         const res = await castVote(pollId, optionIndex);
@@ -66,15 +66,15 @@ export default function VotingHallPage() {
             </div>
 
             {/* UPSELL BANNER */}
-            {!isSilverOrAbove && (
+            {!isVotingOrAdmin && (
                 <div className="bg-gradient-to-r from-amber-500 to-orange-600 p-4 rounded-xl text-white shadow-lg flex items-center justify-between gap-4">
                     <div className="flex items-center gap-3">
                         <div className="bg-white/20 p-2 rounded-lg">
                             <Lock size={24} />
                         </div>
                         <div>
-                            <p className="font-bold">{t.upsellUpgradeToSilver || 'Nadogradite na SILVER Status'}</p>
-                            <p className="text-xs opacity-90">{t.upsellRightToVote || 'Pravo glasa imaju samo Silver i Gold članovi udruge.'}</p>
+                            <p className="font-bold">{t.upsellUpgradeToVoting || 'Nadogradite na status Glasača'}</p>
+                            <p className="text-xs opacity-90">{t.upsellRightToVote || 'Pravo glasa imaju članovi s Voting statusom.'}</p>
                         </div>
                     </div>
                     <button className="bg-white text-orange-600 px-4 py-2 rounded-lg text-sm font-bold hover:bg-orange-50 transition-colors shadow-sm whitespace-nowrap">
@@ -121,13 +121,13 @@ export default function VotingHallPage() {
                                         return (
                                             <button
                                                 key={index}
-                                                disabled={hasVoted || !isSilverOrAbove || votingInProgress === poll.id}
+                                                disabled={hasVoted || !isVotingOrAdmin || votingInProgress === poll.id}
                                                 onClick={() => handleVote(poll.id, index)}
                                                 className={`w-full p-4 rounded-xl border-2 text-left transition-all relative group overflow-hidden ${isSelected
                                                     ? 'border-sky-500 bg-sky-50'
                                                     : hasVoted
                                                         ? 'border-slate-100 cursor-default'
-                                                        : !isSilverOrAbove
+                                                        : !isVotingOrAdmin
                                                             ? 'border-slate-100 opacity-60 cursor-not-allowed'
                                                             : 'border-slate-100 hover:border-sky-200 hover:bg-slate-50'
                                                     }`}
@@ -138,7 +138,7 @@ export default function VotingHallPage() {
                                                     </span>
                                                     {isSelected && <CheckCircle2 className="text-sky-600" size={18} />}
                                                 </div>
-                                                {!isSilverOrAbove && !hasVoted && (
+                                                {!isVotingOrAdmin && !hasVoted && (
                                                     <div className="absolute inset-0 bg-slate-50/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-[1px]">
                                                         <span className="text-[10px] bg-slate-800 text-white px-2 py-1 rounded">{t.upgradeToVoteBtn || 'Nadogradite za glasanje'}</span>
                                                     </div>
@@ -187,7 +187,7 @@ export default function VotingHallPage() {
                                     <div className="flex items-start gap-3 bg-white p-4 rounded-xl border border-sky-100">
                                         <Info className="text-sky-600 flex-shrink-0" size={18} />
                                         <p className="text-[11px] text-slate-500 leading-relaxed">
-                                            {t.votingPrivacyNotice || 'Glasanje je anonimno. Potiču se svi članovi obitelji na sudjelovanje, no pravno glasa jedan registrirani Silver član.'}
+                                            {t.votingPrivacyNotice || 'Glasanje je anonimno. Potiču se svi članovi obitelji na sudjelovanje, no pravno glasa jedan registrirani član s Voting statusom.'}
                                         </p>
                                     </div>
                                 </div>

@@ -2,6 +2,7 @@
 
 import { supabaseAdmin as supabase } from '@/lib/supabase-admin';
 import { revalidatePath } from 'next/cache';
+import { verifyUser } from '@/lib/auth-admin';
 
 export async function getPolls() {
     // Get polls and their vote counts
@@ -42,8 +43,8 @@ export async function castVote(pollId: string, optionIndex: number) {
     // Actually, we can use the regular supabase client if the policies are set up correctly.
     // But for simplicity in server actions, let's stick to supabaseAdmin for write operations.
 
-    const { data: { user }, error: authError } = await (await supabase.auth.getUser());
-    if (authError || !user) return { error: 'Unauthorized' };
+    const user = await verifyUser();
+    if (!user) return { error: 'Unauthorized' };
 
     // Check membership tier via profiles
     const { data: profile } = await supabase
@@ -52,10 +53,10 @@ export async function castVote(pollId: string, optionIndex: number) {
         .eq('id', user.id)
         .single();
 
-    const isSilverOrBetter = profile?.membership_tier === 'silver' || profile?.membership_tier === 'gold' || profile?.role === 'admin';
+    const isVotingOrBetter = profile?.membership_tier === 'voting' || profile?.role === 'admin';
 
-    if (!isSilverOrBetter) {
-        return { error: 'Upgrade to Silver to vote' };
+    if (!isVotingOrBetter) {
+        return { error: 'Upgrade to Voting to vote' };
     }
 
     // Insert vote
@@ -77,7 +78,7 @@ export async function castVote(pollId: string, optionIndex: number) {
 }
 
 export async function getUserVote(pollId: string) {
-    const { data: { user } } = await supabase.auth.getUser();
+    const user = await verifyUser();
     if (!user) return { data: null };
 
     const { data, error } = await supabase

@@ -41,6 +41,7 @@ export interface MembershipRequest {
     // CRM Fields
     admin_notes?: string;
     donations?: Donation[];
+    payment_notification?: string; // Admin sees this when member confirms payment
 }
 
 export interface CommunityPost {

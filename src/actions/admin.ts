@@ -5,6 +5,47 @@ import { revalidatePath } from 'next/cache';
 
 import { verifyAdmin } from '@/lib/auth-admin';
 
+// Helper to reliably find a user by email, even if they aren't in the first 50 results
+async function getAuthUserByEmail(email: string) {
+    let page = 1;
+    let hasMore = true;
+
+    while (hasMore) {
+        const { data: userData, error } = await supabaseAdmin.auth.admin.listUsers({
+            page,
+            perPage: 1000
+        });
+
+        if (error) throw error;
+
+        const user = userData.users.find(u => u.email === email);
+        if (user) return user;
+
+        if (userData.users.length < 1000) {
+            hasMore = false;
+        } else {
+            page++;
+        }
+    }
+
+    return null;
+}
+
+export async function getUserStatus(email: string) {
+    if (!email) return null;
+    try {
+        const { data, error } = await supabaseAdmin
+            .from('requests')
+            .select('status')
+            .eq('email', email)
+            .maybeSingle();
+        if (error) throw error;
+        return data?.status || 'pending';
+    } catch {
+        return 'pending';
+    }
+}
+
 // MEMBERSHIP REQUESTS
 export async function getAdminRequests() {
     if (!await verifyAdmin()) return { error: "Unauthorized" };
@@ -27,7 +68,6 @@ export async function getAdminRequests() {
         return { error: error.message };
     }
 }
-
 export async function approveRequest(requestId: string, email: string, name: string) {
     if (!await verifyAdmin()) return { error: "Unauthorized" };
     try {
@@ -42,14 +82,20 @@ export async function approveRequest(requestId: string, email: string, name: str
         // 2. [NEW] Promote the actual User Profile if it exists
         // In the new Standard Flow, the user likely already created an account with 'pending' role.
         if (email) {
-            const { error: profileError } = await supabaseAdmin
-                .from('profiles')
-                .update({ role: 'member' })
-                .eq('email', email);
+            // Find the user using our reliable paginated helper
+            const user = await getAuthUserByEmail(email);
 
-            if (profileError) {
-                console.error("Failed to promote user profile:", profileError);
-                // We don't fail the request approval, but we log it.
+            if (user) {
+                const { error: profileError } = await supabaseAdmin
+                    .from('profiles')
+                    .update({ role: 'member' })
+                    .eq('id', user.id);
+
+                if (profileError) {
+                    console.error("Failed to promote user profile:", profileError);
+                }
+            } else {
+                console.error("User not found in Auth Admin for email:", email);
             }
         }
 
@@ -123,13 +169,7 @@ export async function updateComment(commentId: string, content: string) {
 export async function updateMemberTier(email: string, tier: string) {
     if (!await verifyAdmin()) return { error: "Unauthorized" };
     try {
-        // Find user/profile by email
-        // Note: profiles table usually has 'id' which is user.id. 
-        // But we might need to find the user first to get their ID.
-        const { data: userData, error: userError } = await supabaseAdmin.auth.admin.listUsers();
-        if (userError) throw userError;
-
-        const user = userData.users.find(u => u.email === email);
+        const user = await getAuthUserByEmail(email);
         if (!user) return { error: "User not found (has not registered yet)" };
 
         const { error: profileError } = await supabaseAdmin
@@ -139,13 +179,37 @@ export async function updateMemberTier(email: string, tier: string) {
 
         if (profileError) throw profileError;
 
+        // Optionally clear the payment notification now that we assigned a tier
+        await supabaseAdmin
+            .from('requests')
+            .update({ payment_notification: null })
+            .eq('email', email);
+
         revalidatePath('/admin');
         return { success: true };
     } catch (error: any) {
         return { error: error.message };
     }
 }
-// ADMIN NOTES & DONATIONS
+// ADMIN NOTES, DONATIONS & PAYMENTS
+export async function notifyAdminPayment(email: string, tier: string, note: string) {
+    // A regular user calls this to notify admin they paid
+    try {
+        const timestamp = new Date().toLocaleString('hr-HR');
+        const notification = `[${timestamp}] User declared payment for ${tier.toUpperCase()}: ${note || 'No additional notes'}`;
+
+        const { error } = await supabaseAdmin
+            .from('requests')
+            .update({ payment_notification: notification })
+            .eq('email', email);
+
+        if (error) throw error;
+        return { success: true };
+    } catch (error: any) {
+        return { error: error.message };
+    }
+}
+
 export async function saveAdminNotes(requestId: string, notes: string) {
     if (!await verifyAdmin()) return { error: "Unauthorized" };
     try {
@@ -201,19 +265,33 @@ export async function addAdminDonation(requestId: string, amount: number, descri
 export async function getAllMembersForRegistry() {
     if (!await verifyAdmin()) return { error: "Unauthorized" };
     try {
-        const [profilesRes, familyRes, companiesRes] = await Promise.all([
+        const [profilesRes, familyRes, companiesRes, authUsersRes] = await Promise.all([
             supabaseAdmin.from('profiles').select('*'),
             supabaseAdmin.from('family_members').select('*'),
-            supabaseAdmin.from('companies').select('*')
+            supabaseAdmin.from('companies').select('*'),
+            supabaseAdmin.auth.admin.listUsers()
         ]);
 
         if (profilesRes.error) throw profilesRes.error;
         if (familyRes.error) throw familyRes.error;
         if (companiesRes.error) throw companiesRes.error;
+        if (authUsersRes.error) throw authUsersRes.error;
+
+        // Create a fast lookup for Auth emails
+        const authMap = new Map();
+        authUsersRes.data.users.forEach(u => {
+            authMap.set(u.id, u.email);
+        });
+
+        // Merge emails into profiles
+        const enrichedProfiles = profilesRes.data.map(p => ({
+            ...p,
+            email: authMap.get(p.id) || 'unknown'
+        }));
 
         return {
             data: {
-                profiles: profilesRes.data,
+                profiles: enrichedProfiles,
                 family: familyRes.data,
                 companies: companiesRes.data
             }

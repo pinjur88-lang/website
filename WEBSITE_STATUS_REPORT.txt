@@ -1,0 +1,66 @@
+========================================================================
+WEBSITE STATUS REPORT - February 13, 2026
+========================================================================
+
+PROJECT: Baljci Ancestry Map (Next.js + Supabase)
+LOCATION: c:\Users\Tito\baljci-ancestry-map
+
+------------------------------------------------------------------------
+1. [DONE] AUTHENTICATION & LOGIN REFINEMENT
+------------------------------------------------------------------------
+* PREVENTED AUTO-SUBMIT: Removed <form> elements from Login, Forgot 
+  Password, and Update Password pages. Browsers and password managers 
+  can no longer automatically log you in. Manual button click is REQUIRED.
+* MANUAL VALIDATION: Added custom validation to ensure fields are filled 
+  before submission.
+* LOGIN PAGE: Added "Zaboravljena lozinka?" (Forgot Password) link.
+
+------------------------------------------------------------------------
+2. [DONE] PASSWORD RESET FLOW
+------------------------------------------------------------------------
+* IMPLEMENTED: Created dedicated /forgot-password and /update-password 
+  pages.
+* FIXED "STUCK ON SEND": Rewrote the authentication callback logic 
+  (src/app/auth/callback/route.ts) using @supabase/ssr to correctly 
+  handle session exchange and cookie storage.
+* ADMIN PASSWORD: udrugabaljci@gmail.com / Jojlolomoj2026!
+
+------------------------------------------------------------------------
+3. [DONE] FORUM (COMMUNITY) FIXES
+------------------------------------------------------------------------
+* FIXED TOPIC CREATION: Identified a schema mismatch where the code used 
+  'author_id' instead of the correct 'user_id'. Topics now post successfully.
+* UI REFINEMENT: Ensured form clears correctly on success.
+
+------------------------------------------------------------------------
+4. [DONE] CONTACT ADMINISTRATOR EMAIL DELIVERY
+------------------------------------------------------------------------
+* EMAIL INTEGRATION: Integrated 'nodemailer' to send form submissions 
+  directly to udrugabaljci@gmail.com.
+* BACKUP: Messages still save to the 'contact_messages' database table.
+* SETUP: Configured local development with the provided Gmail App Password.
+* PRODUCTION: Guidance provided for adding GMAIL_USER and 
+  GMAIL_APP_PASSWORD to Vercel settings (Already confirmed by user).
+
+------------------------------------------------------------------------
+5. [DONE] GALLERY IMPROVEMENTS
+------------------------------------------------------------------------
+* MULTI-FILE UPLOAD: Can now select and upload multiple photos at once.
+* CLIENT COMPRESSION: Added 'browser-image-compression' to automatically 
+  shrink photos before they hit the server (saves space/bandwidth).
+* ACCESSIBILITY: Added labels and titles to all gallery buttons.
+
+------------------------------------------------------------------------
+6. [DONE] INFRASTRUCTURE & DEPLOYMENT
+------------------------------------------------------------------------
+* FIXED BUILD ERRORS: Patched several type and syntax errors in 
+  /admin/register-print and /map routes to allow successful production 
+  builds.
+* PUSHED TO GITHUB: All changes are pushed to the 'main' branch and 
+  ready for deployment.
+
+========================================================================
+NEXT STEPS:
+- Verify live site behavior (especially Contact and Password Reset).
+- Investigate SEC_ERROR_UNKNOWN_ISSUER on baljci.com site.
+========================================================================

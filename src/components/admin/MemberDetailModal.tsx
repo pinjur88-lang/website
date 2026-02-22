@@ -23,7 +23,7 @@ export default function MemberDetailModal({ request, onClose, onUpdate }: Member
     const [localDonations, setLocalDonations] = useState<Donation[]>(request.donations || []);
 
     // Tier state
-    const [tier, setTier] = useState<'free' | 'silver' | 'gold'>('free');
+    const [tier, setTier] = useState<'free' | 'supporter' | 'voting'>('free');
     const [updatingTier, setUpdatingTier] = useState(false);
 
     useEffect(() => {
@@ -79,7 +79,7 @@ export default function MemberDetailModal({ request, onClose, onUpdate }: Member
         setAddingDonation(false);
     };
 
-    const handleUpdateTier = async (newTier: 'free' | 'silver' | 'gold') => {
+    const handleUpdateTier = async (newTier: 'free' | 'supporter' | 'voting') => {
         setUpdatingTier(true);
         const res = await updateMemberTier(request.email, newTier);
         if (res.success) {
@@ -142,20 +142,32 @@ export default function MemberDetailModal({ request, onClose, onUpdate }: Member
                                 <h3 className="font-bold text-zinc-900 mb-4 flex items-center gap-2 text-sm uppercase tracking-wider">
                                     <Award size={18} className="text-sky-600" /> Članski Status (Tier)
                                 </h3>
+
+                                {request.payment_notification && (
+                                    <div className="mb-4 bg-emerald-100 border border-emerald-300 rounded-lg p-3">
+                                        <p className="text-xs font-bold text-emerald-900 mb-1 flex items-center gap-1 uppercase tracking-wider">
+                                            <ShieldCheck size={14} /> Prijavljena Uplata
+                                        </p>
+                                        <p className="text-sm text-emerald-800 break-words font-medium">
+                                            {request.payment_notification}
+                                        </p>
+                                    </div>
+                                )}
+
                                 <div className="grid grid-cols-3 gap-3">
-                                    {(['free', 'silver', 'gold'] as const).map((t) => (
+                                    {(['free', 'supporter', 'voting'] as const).map((t) => (
                                         <button
                                             key={t}
                                             onClick={() => handleUpdateTier(t)}
                                             disabled={updatingTier}
                                             className={`flex flex-col items-center gap-2 p-3 rounded-lg border transition-all ${tier === t
-                                                    ? 'bg-sky-600 border-sky-600 text-white shadow-md'
-                                                    : 'bg-white border-sky-200 text-zinc-600 hover:border-sky-400'
+                                                ? 'bg-sky-600 border-sky-600 text-white shadow-md'
+                                                : 'bg-white border-sky-200 text-zinc-600 hover:border-sky-400'
                                                 }`}
                                         >
                                             {t === 'free' && <ShieldCheck size={18} />}
-                                            {t === 'silver' && <Star size={18} />}
-                                            {t === 'gold' && <Award size={18} />}
+                                            {t === 'supporter' && <Star size={18} />}
+                                            {t === 'voting' && <Award size={18} />}
                                             <span className="text-[10px] uppercase font-bold tracking-widest">{t}</span>
                                         </button>
                                     ))}
@@ -163,7 +175,7 @@ export default function MemberDetailModal({ request, onClose, onUpdate }: Member
                                 <div className="mt-4 p-3 bg-white/50 rounded-lg border border-sky-100/50">
                                     <p className="text-[10px] text-sky-800 leading-tight flex items-start gap-2">
                                         <CircleInfo size={12} className="mt-0.5 flex-shrink-0" />
-                                        <span>Silver i Gold članovi imaju pravo glasa u Dvorani za Glasovanje te pristup ekskluzivnim izvještajima.</span>
+                                        <span>Članovi sa statusom 'Voting' imaju pravo glasa u Dvorani za Glasovanje te pristup ekskluzivnim izvještajima. Odabirom statusa brisana prijavljena uplata (ako postoji).</span>
                                     </p>
                                 </div>
                             </div>

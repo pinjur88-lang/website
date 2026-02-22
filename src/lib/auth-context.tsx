@@ -3,13 +3,14 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from './supabase';
+import { getUserStatus } from '@/actions/admin';
 
 interface User {
     id: string;
     name: string;
     email: string;
     role: 'admin' | 'member';
-    membership_tier: 'free' | 'silver' | 'gold';
+    membership_tier: 'free' | 'supporter' | 'voting';
     status: 'pending' | 'approved' | 'rejected' | 'registered' | string;
 }
 
@@ -32,17 +33,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
             try {
                 if (session?.user) {
-                    // SECURITY: Double check approval status in requests table
-                    const { data: reqData, error: reqError } = await supabase
-                        .from('requests')
-                        .select('status')
-                        .eq('email', session.user.email!)
-                        .maybeSingle(); // Use maybeSingle to avoid 406 if not found
-
-                    if (reqData) {
-                        // We no longer forcefully log out unapproved users.
-                        // We will handle their access visually in the dashboard layout.
-                    }
+                    // Fetch status securely via Server Action bypassing RLS
+                    const userStatus = await getUserStatus(session.user.email!);
 
                     // Check if user is the admin email
                     const isAdmin = session.user.email === 'udrugabaljci@gmail.com';
@@ -60,7 +52,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                         email: session.user.email!,
                         role: isAdmin ? 'admin' : 'member',
                         membership_tier: profileData?.membership_tier || 'free',
-                        status: reqData?.status || 'pending'
+                        status: userStatus || 'pending'
                     };
                     setUser(memberUser);
                 } else {
@@ -69,9 +61,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             } catch (err) {
                 console.error("Auth State Check Error:", err);
                 setUser(null);
-            } finally {
-                setIsLoading(false);
             }
+            setIsLoading(false); // ALWAYS set loading to false after checking auth state
         });
 
         return () => subscription.unsubscribe();

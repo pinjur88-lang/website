@@ -98,8 +98,8 @@ export async function createDonation(donationData: {
 
 // 4. GET DONATION REPORTS (Legacy/Admin)
 export async function getDonationReports() {
-    // Only Admin should see reports? Or public transparency?
-    // Assuming transparency for now, but let's be careful.
+    if (!await verifyAdmin()) return { error: "Unauthorized" };
+
     try {
         const { data, error } = await supabaseAdmin
             .from('donation_reports')

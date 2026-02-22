@@ -13,8 +13,6 @@ function LoginContent() {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
-    const [isApprovalPending, setIsApprovalPending] = useState(false);
-    const [authCodeError, setAuthCodeError] = useState(false);
     const { login, isLoading: isAuthLoading, user } = useAuth();
 
     const searchParams = useSearchParams();
@@ -23,28 +21,21 @@ function LoginContent() {
     useEffect(() => {
         if (user && !isAuthLoading) {
             if (user.role === 'admin') {
-                router.push('/admin');
+                window.location.href = '/admin';
             } else {
-                router.push('/dashboard');
+                window.location.href = '/dashboard';
             }
         }
     }, [user, isAuthLoading, router]);
 
-    useEffect(() => {
-        const errorParam = searchParams.get('error');
-        if (errorParam === 'PendingApproval') {
-            setIsApprovalPending(true);
-        } else if (errorParam === 'AuthCodeError') {
-            setAuthCodeError(true);
-        }
-    }, [searchParams]);
+    const errorParam = searchParams.get('error');
+    const isApprovalPending = errorParam === 'PendingApproval';
+    const authCodeError = errorParam === 'AuthCodeError';
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
         setError("");
-        setIsApprovalPending(false);
-        setAuthCodeError(false);
 
         if (!email || !password) {
             setError(t.loginRequiredFields);
@@ -63,10 +54,11 @@ function LoginContent() {
                 } else {
                     setError(loginError);
                 }
+                setLoading(false);
             }
+            // If success, keep loading=true so the button disabled state holds until the redirect occurs
         } catch (err) {
             setError(t.loginError);
-        } finally {
             setLoading(false);
         }
     };
@@ -138,11 +130,11 @@ function LoginContent() {
 
                             <button
                                 type="submit"
-                                disabled={loading || !!user}
+                                disabled={loading}
                                 className="w-full py-4 bg-zinc-900 hover:bg-zinc-800 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all active:scale-95 disabled:opacity-70 disabled:active:scale-100 flex items-center justify-center gap-2"
                             >
-                                {loading || user ? t.loading : t.loginSubmit}
-                                {!(loading || user) && <ArrowRight size={20} />}
+                                {loading ? t.loading : t.loginSubmit}
+                                {!loading && <ArrowRight size={20} />}
                             </button>
                         </form>
 

@@ -1,19 +1,14 @@
 "use client";
 
-import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import AccessRequestModal from './AccessRequestModal';
 import { useLanguage } from '@/lib/language-context';
 
 export default function Hero() {
-    const [isModalOpen, setIsModalOpen] = useState(false);
     const { t, setLanguage, language } = useLanguage();
 
     return (
         <section className="relative min-h-screen flex flex-col justify-between bg-zinc-50 text-zinc-800 font-serif">
-            <AccessRequestModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
-
             {/* Top Bar */}
             <div className="w-full p-6 flex flex-wrap justify-between items-center gap-4 border-b border-zinc-200 bg-white">
                 <div className="flex gap-2 text-xs font-sans tracking-widest text-zinc-400 overflow-x-auto">
@@ -59,12 +54,13 @@ export default function Hero() {
 
                 <div className="mt-8 p-6 border border-zinc-200 bg-white rounded-sm shadow-sm max-w-md w-full">
                     <p className="text-sm text-zinc-500 mb-4 italic">{t.accessRestricted}</p>
-                    <button
-                        onClick={() => setIsModalOpen(true)}
-                        className="w-full py-3 px-4 bg-zinc-900 text-white text-sm hover:bg-zinc-700 transition-all uppercase tracking-widest"
-                    >
-                        {t.requestAccess}
-                    </button>
+                    <Link href="/register">
+                        <button
+                            className="w-full py-3 px-4 bg-zinc-900 text-white text-sm hover:bg-zinc-700 transition-all uppercase tracking-widest"
+                        >
+                            {t.requestAccess}
+                        </button>
+                    </Link>
                 </div>
             </div>
 

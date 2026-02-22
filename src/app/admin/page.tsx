@@ -257,9 +257,9 @@ export default function AdminMembersPage() {
                                         </td>
                                         <td className="px-6 py-4 text-zinc-600">{member.email}</td>
                                         <td className="px-6 py-4">
-                                            <span className={`text-[10px] px-2 py-0.5 rounded-full border font-bold uppercase tracking-wider ${member.membership_tier === 'gold' ? 'bg-amber-100 text-amber-800 border-amber-200' :
-                                                member.membership_tier === 'silver' ? 'bg-zinc-100 text-zinc-800 border-zinc-200' :
-                                                    'bg-sky-100 text-sky-800 border-sky-200'
+                                            <span className={`text-[10px] px-2 py-0.5 rounded-full border font-bold uppercase tracking-wider ${member.membership_tier === 'voting' ? 'bg-amber-100 text-amber-800 border-amber-200' :
+                                                member.membership_tier === 'supporter' ? 'bg-sky-100 text-sky-800 border-sky-200' :
+                                                    'bg-zinc-100 text-zinc-800 border-zinc-200'
                                                 }`}>
                                                 {member.membership_tier || 'FREE'}
                                             </span>
