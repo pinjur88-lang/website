@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { MembershipRequest, Donation } from '@/lib/db';
-import { X, Save, Plus, Trash2, Calendar, MapPin, Mail, Phone, FileText, Award, ShieldCheck, Star } from 'lucide-react';
+import { X, Save, Plus, Trash2, Calendar, MapPin, Mail, Phone, FileText, Award, ShieldCheck, Star, BadgeCheck } from 'lucide-react';
 import { saveAdminNotes, addAdminDonation, updateMemberTier, deleteMember } from '@/actions/admin';
 import { supabaseAdmin as supabase } from '@/lib/supabase-admin';
 
@@ -23,7 +23,7 @@ export default function MemberDetailModal({ request, onClose, onUpdate }: Member
     const [localDonations, setLocalDonations] = useState<Donation[]>(request.donations || []);
 
     // Tier state
-    const [tier, setTier] = useState<'free' | 'supporter' | 'voting'>('free');
+    const [tier, setTier] = useState<'free' | 'silver' | 'gold'>('free');
     const [updatingTier, setUpdatingTier] = useState(false);
 
     // Delete state
@@ -82,7 +82,7 @@ export default function MemberDetailModal({ request, onClose, onUpdate }: Member
         setAddingDonation(false);
     };
 
-    const handleUpdateTier = async (newTier: 'free' | 'supporter' | 'voting') => {
+    const handleUpdateTier = async (newTier: 'free' | 'silver' | 'gold') => {
         setUpdatingTier(true);
         const res = await updateMemberTier(request.email, newTier);
         if (res.success) {
@@ -155,37 +155,42 @@ export default function MemberDetailModal({ request, onClose, onUpdate }: Member
                                 </div>
                             </div>
 
-                            {/* Membership Tier */}
-                            <div className="bg-sky-50 p-5 rounded-xl border border-sky-100 shadow-sm">
-                                <h3 className="font-bold text-zinc-900 mb-4 flex items-center gap-2 text-sm uppercase tracking-wider">
-                                    <Award size={18} className="text-sky-600" /> Članski Status (Tier)
-                                </h3>
+                            {/* TIER CONTROLS */}
+                            <div className="bg-zinc-50 rounded-xl p-4 border border-zinc-100">
+                                <h4 className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-zinc-500 mb-3">
+                                    <Award size={14} />
+                                    Članski Status (Tier)
+                                </h4>
 
                                 {request.payment_notification && (
-                                    <div className="mb-4 bg-emerald-100 border border-emerald-300 rounded-lg p-3">
-                                        <p className="text-xs font-bold text-emerald-900 mb-1 flex items-center gap-1 uppercase tracking-wider">
-                                            <ShieldCheck size={14} /> Prijavljena Uplata
-                                        </p>
-                                        <p className="text-sm text-emerald-800 break-words font-medium">
+                                    <div className="mb-4 bg-emerald-50 border border-emerald-200 rounded-lg p-3 relative">
+                                        <div className="flex items-center gap-2 text-emerald-800 font-bold text-xs uppercase tracking-wider mb-1">
+                                            <BadgeCheck size={14} className="text-emerald-600" />
+                                            Prijavljena Uplata
+                                        </div>
+                                        <p className="text-emerald-700 text-xs font-medium pr-6 leading-relaxed">
                                             {request.payment_notification}
                                         </p>
                                     </div>
                                 )}
 
                                 <div className="grid grid-cols-3 gap-3">
-                                    {(['free', 'supporter', 'voting'] as const).map((t) => (
+                                    {(['free', 'silver', 'gold'] as const).map((t) => (
                                         <button
                                             key={t}
                                             onClick={() => handleUpdateTier(t)}
                                             disabled={updatingTier}
-                                            className={`flex flex-col items-center gap-2 p-3 rounded-lg border transition-all ${tier === t
-                                                ? 'bg-sky-600 border-sky-600 text-white shadow-md'
-                                                : 'bg-white border-sky-200 text-zinc-600 hover:border-sky-400'
-                                                }`}
+                                            className={`flex flex-col items-center gap-2 py-3 px-2 rounded-lg border-2 transition-all
+                                                    ${tier === t
+                                                    ? 'border-blue-600 bg-blue-50 text-blue-700'
+                                                    : 'border-zinc-200 hover:border-blue-300 hover:bg-zinc-100/50 text-zinc-500'
+                                                }
+                                                    ${updatingTier ? 'opacity-50 cursor-not-allowed' : ''}
+                                                `}
                                         >
                                             {t === 'free' && <ShieldCheck size={18} />}
-                                            {t === 'supporter' && <Star size={18} />}
-                                            {t === 'voting' && <Award size={18} />}
+                                            {t === 'silver' && <Star size={18} />}
+                                            {t === 'gold' && <Award size={18} />}
                                             <span className="text-[10px] uppercase font-bold tracking-widest">{t}</span>
                                         </button>
                                     ))}

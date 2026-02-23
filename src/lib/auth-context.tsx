@@ -113,10 +113,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
     };
 
-    const logout = () => {
-        setUser(null);
-        localStorage.removeItem('mock_session');
-        router.push('/');
+    const logout = async () => {
+        try {
+            await supabase.auth.signOut();
+        } catch (err) {
+            console.error("Logout Error:", err);
+        } finally {
+            setUser(null);
+            router.push('/');
+        }
     };
 
     return (

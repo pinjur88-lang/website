@@ -244,12 +244,12 @@ export default function AdminMembersPage() {
                             <span className="text-3xl font-serif text-zinc-900">{registeredMembers.length}</span>
                         </div>
                         <div className="bg-white p-4 rounded-lg shadow-sm border border-amber-200 bg-amber-50/30 flex flex-col items-center justify-center text-center">
-                            <span className="text-amber-700 text-[10px] md:text-xs font-bold uppercase tracking-wider mb-1 flex items-center justify-center gap-1"><Award size={14} className="hidden md:block" /> Zlatni (Voting)</span>
-                            <span className="text-3xl font-serif text-amber-800">{registeredMembers.filter(m => m.membership_tier === 'voting').length}</span>
+                            <span className="text-amber-700 text-[10px] md:text-xs font-bold uppercase tracking-wider mb-1 flex items-center justify-center gap-1"><Award size={14} className="hidden md:block" /> Zlatni (Gold)</span>
+                            <span className="text-3xl font-serif text-amber-800">{registeredMembers.filter(m => m.membership_tier === 'voting' || m.membership_tier === 'gold').length}</span>
                         </div>
                         <div className="bg-white p-4 rounded-lg shadow-sm border border-sky-200 bg-sky-50/30 flex flex-col items-center justify-center text-center">
-                            <span className="text-sky-700 text-[10px] md:text-xs font-bold uppercase tracking-wider mb-1 flex items-center justify-center gap-1"><Star size={14} className="hidden md:block" /> Srebrni (Supporter)</span>
-                            <span className="text-3xl font-serif text-sky-800">{registeredMembers.filter(m => m.membership_tier === 'supporter').length}</span>
+                            <span className="text-sky-700 text-[10px] md:text-xs font-bold uppercase tracking-wider mb-1 flex items-center justify-center gap-1"><Star size={14} className="hidden md:block" /> Srebrni (Silver)</span>
+                            <span className="text-3xl font-serif text-sky-800">{registeredMembers.filter(m => m.membership_tier === 'silver').length}</span>
                         </div>
                         <div className="bg-white p-4 rounded-lg shadow-sm border border-zinc-200 flex flex-col items-center justify-center text-center">
                             <span className="text-zinc-600 text-[10px] md:text-xs font-bold uppercase tracking-wider mb-1 flex items-center justify-center gap-1"><ShieldCheck size={14} className="hidden md:block" /> Besplatni (Neplaćeno)</span>
@@ -278,8 +278,8 @@ export default function AdminMembersPage() {
                                             </td>
                                             <td className="px-6 py-4 text-zinc-600">{member.email}</td>
                                             <td className="px-6 py-4">
-                                                <span className={`text-[10px] px-2 py-0.5 rounded-full border font-bold uppercase tracking-wider ${member.membership_tier === 'voting' ? 'bg-amber-100 text-amber-800 border-amber-200' :
-                                                    member.membership_tier === 'supporter' ? 'bg-sky-100 text-sky-800 border-sky-200' :
+                                                <span className={`text-[10px] px-2 py-0.5 rounded-full border font-bold uppercase tracking-wider ${member.membership_tier === 'voting' || member.membership_tier === 'gold' ? 'bg-amber-100 text-amber-800 border-amber-200' :
+                                                    member.membership_tier === 'silver' ? 'bg-sky-100 text-sky-800 border-sky-200' :
                                                         'bg-zinc-100 text-zinc-800 border-zinc-200'
                                                     }`}>
                                                     {member.membership_tier || 'FREE'}
