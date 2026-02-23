@@ -35,7 +35,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 if (session?.user) {
                     const userStatus = await getUserStatus(session.user.email!);
                     const isAdmin = session.user.email === 'udrugabaljci@gmail.com';
-                    
+
                     const { data: profileData, error: profileError } = await supabase
                         .from('profiles')
                         .select('membership_tier')
@@ -120,7 +120,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             console.error("Logout Error:", err);
         } finally {
             setUser(null);
-            router.push('/');
+            window.location.href = '/login';
         }
     };
 

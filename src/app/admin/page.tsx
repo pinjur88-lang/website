@@ -201,7 +201,9 @@ export default function AdminMembersPage() {
                                                                 <FileText size={14} /> <span className="hidden md:inline">Detalji</span>
                                                             </button>
                                                             <a
-                                                                href={`mailto:${req.email}?subject=Vaš zahtjev za članstvo je odobren!&body=Poštovani ${req.name},%0D%0A%0D%0AVaš zahtjev za članstvom u Udruzi Građana Baljci je odobren!%0D%0A%0D%0AMolimo vas da završite registraciju svog računa klikom na sljedeći link:%0D%0A${window.location.origin}/register%0D%0A%0D%0ALijep pozdrav,%0D%0AAdministrator`}
+                                                                href={`https://mail.google.com/mail/?view=cm&fs=1&to=${req.email}&su=Vaš zahtjev za članstvo je odobren!&body=Poštovani ${req.name},%0D%0A%0D%0AVaš zahtjev za članstvom u Udruzi Građana Baljci je odobren!%0D%0A%0D%0AMolimo vas da završite registraciju svog računa klikom na sljedeći link:%0D%0A${window.location.origin}/register%0D%0A%0D%0ALijep pozdrav,%0D%0AAdministrator`}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
                                                                 className="md:px-3 px-2 py-1.5 bg-green-100 text-green-700 hover:bg-green-200 transition-colors rounded-sm text-xs font-bold uppercase tracking-wider flex items-center gap-2 border border-green-200"
                                                                 title="Pošalji Email Obavijest"
                                                             >
