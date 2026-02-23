@@ -294,19 +294,20 @@ export default function AdminMembersPage() {
                             </table>
                         </div>
                     </div>
+                </div>
             )}
 
-                    {/* Member Details Modal */}
-                    {selectedRequest && (
-                        <MemberDetailModal
-                            request={selectedRequest}
-                            onClose={() => setSelectedRequest(null)}
-                            onUpdate={(updatedReq) => {
-                                setRequests(prev => prev.map(r => r.id === updatedReq.id ? updatedReq : r));
-                                setSelectedRequest(updatedReq);
-                            }}
-                        />
-                    )}
-                </div>
-            );
+            {/* Member Details Modal */}
+            {selectedRequest && (
+                <MemberDetailModal
+                    request={selectedRequest}
+                    onClose={() => setSelectedRequest(null)}
+                    onUpdate={(updatedReq) => {
+                        setRequests(prev => prev.map(r => r.id === updatedReq.id ? updatedReq : r));
+                        setSelectedRequest(updatedReq);
+                    }}
+                />
+            )}
+        </div>
+    );
 }

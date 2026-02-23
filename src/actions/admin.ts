@@ -199,6 +199,8 @@ export async function updateMemberTier(email: string, tier: string) {
         return { error: error.message };
     }
 }
+import { sendPaymentNotificationEmail } from '@/lib/mail';
+
 // ADMIN NOTES, DONATIONS & PAYMENTS
 export async function notifyAdminPayment(email: string, tier: string, note: string) {
     // A regular user calls this to notify admin they paid
@@ -212,6 +214,10 @@ export async function notifyAdminPayment(email: string, tier: string, note: stri
             .eq('email', email);
 
         if (error) throw error;
+        
+        // SEND EMAIL NOTIFICATION TO ADMIN
+        await sendPaymentNotificationEmail({ email, tier, note });
+
         return { success: true };
     } catch (error: any) {
         return { error: error.message };

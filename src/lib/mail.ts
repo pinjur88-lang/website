@@ -53,3 +53,30 @@ export async function sendContactEmail(data: { email: string, category: string, 
         return { success: false, error: err.message };
     }
 }
+
+export async function sendPaymentNotificationEmail(data: { email: string, tier: string, note: string }) {
+    if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
+        console.warn("Mail environment variables missing.");
+        return { success: false, error: "Missing environment variables" };
+    }
+
+    try {
+        const mailOptions = {
+            from: process.env.GMAIL_USER,
+            to: 'udrugabaljci@gmail.com',
+            subject: `[Članarina Uplata] Od: ${data.email}`,
+            text: `Korisnik je prijavio uplatu za članarinu!\n\n` +
+                `Email korisnika: ${data.email}\n` +
+                `Odabrani Sloj (Tier): ${data.tier.toUpperCase()}\n` +
+                `Napomena: ${data.note || 'Nema napomene'}\n\n` +
+                `Prijavite se na admin panel (https://www.baljci.com/admin) i provjerite bankovni račun kako biste odobrili pristup (ažurirali Tier).`,
+            replyTo: data.email
+        };
+
+        const info = await transporter.sendMail(mailOptions);
+        return { success: true, messageId: info.messageId };
+    } catch (err: any) {
+        console.error("Payment notification email failed:", err);
+        return { success: false, error: err.message };
+    }
+}
