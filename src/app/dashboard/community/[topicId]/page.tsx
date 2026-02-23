@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { getTopicDetail, Topic, Comment } from '@/actions/forum';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth-context';
-import { ArrowLeft, MessageSquare, Send, User, Calendar } from 'lucide-react';
+import { ArrowLeft, MessageSquare, Send, User, Calendar, Shield } from 'lucide-react';
 import Link from 'next/link';
 import { useLanguage } from '@/lib/language-context';
 
@@ -151,12 +151,19 @@ export default function TopicPage() {
             {/* Original View (The "Topic") */}
             <div className="bg-white p-8 rounded-xl shadow-sm border border-sky-100">
                 <div className="flex items-center gap-3 mb-6 border-b border-slate-50 pb-4">
-                    <div className="w-10 h-10 rounded-full bg-sky-100 flex items-center justify-center text-sky-700 font-bold text-lg">
-                        {topic.author_name.charAt(0)}
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg shadow-sm border ${topic.author_role === 'admin' ? 'bg-amber-100 text-amber-700 border-amber-200' : 'bg-sky-100 text-sky-700 border-sky-200'}`}>
+                        {topic.author_role === 'admin' ? <Shield size={20} /> : topic.author_name.charAt(0)}
                     </div>
                     <div>
-                        <h1 className="text-xl font-bold text-slate-900">{topic.author_name}</h1>
-                        <p className="text-xs text-slate-400 flex items-center gap-1">
+                        <h1 className={`text-xl font-bold flex items-center gap-2 ${topic.author_role === 'admin' ? 'text-amber-700' : 'text-slate-900'}`}>
+                            {topic.author_name}
+                            {topic.author_role === 'admin' && (
+                                <span className="text-[10px] bg-amber-500 text-white px-2 py-0.5 rounded uppercase tracking-wide shadow-sm">
+                                    Admin
+                                </span>
+                            )}
+                        </h1>
+                        <p className="text-xs text-slate-400 flex items-center gap-1 mt-0.5">
                             <Calendar size={12} />
                             {new Date(topic.created_at).toLocaleString(language === 'en' ? 'en-US' : 'hr-HR')}
                         </p>
@@ -218,13 +225,16 @@ export default function TopicPage() {
                         )}
 
                         <div className="flex-shrink-0">
-                            <div className="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-500 font-bold text-xs">
-                                {comment.author_name.charAt(0)}
+                            <div className={`w-8 h-8 rounded-full border shadow-sm flex items-center justify-center font-bold text-xs ${comment.author_role === 'admin' ? 'bg-amber-50 text-amber-600 border-amber-200' : 'bg-white text-slate-500 border-slate-200'}`}>
+                                {comment.author_role === 'admin' ? <Shield size={14} /> : comment.author_name.charAt(0)}
                             </div>
                         </div>
                         <div className="flex-1">
                             <div className="flex justify-between items-baseline mb-2">
-                                <span className="font-bold text-slate-700 text-sm">{comment.author_name}</span>
+                                <span className={`font-bold text-sm flex items-center gap-1.5 ${comment.author_role === 'admin' ? 'text-amber-700' : 'text-slate-700'}`}>
+                                    {comment.author_name}
+                                    {comment.author_role === 'admin' && <Shield size={12} className="text-amber-500" />}
+                                </span>
                                 <span className="text-xs text-slate-400">{new Date(comment.created_at).toLocaleString(language === 'en' ? 'en-US' : 'hr-HR')}</span>
                             </div>
 

@@ -164,9 +164,16 @@ export default function CommunityPage() {
                                     </p>
 
                                     <div className="flex items-center gap-3 text-xs text-slate-400">
-                                        <div className="flex items-center gap-1 bg-slate-50 px-2 py-1 rounded-full">
-                                            <User size={12} />
-                                            <span className="font-medium text-slate-600">{topic.author_name}</span>
+                                        <div className="flex items-center gap-1 bg-slate-50 px-2 py-1 rounded-full border border-slate-100 shadow-sm">
+                                            {topic.author_role === 'admin' ? (
+                                                <Shield size={12} className="text-amber-500" />
+                                            ) : (
+                                                <User size={12} />
+                                            )}
+                                            <span className={`font-medium ${topic.author_role === 'admin' ? 'text-amber-600' : 'text-slate-600'}`}>
+                                                {topic.author_name}
+                                                {topic.author_role === 'admin' && ' [Admin]'}
+                                            </span>
                                         </div>
                                         <span>•</span>
                                         <span>{new Date(topic.created_at).toLocaleDateString(language === 'en' ? 'en-US' : 'hr-HR')}</span>

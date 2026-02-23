@@ -48,25 +48,25 @@ export default function DashboardDonatePage() {
                                     <CreditCard className="w-8 h-8" />
                                 </div>
                                 <div>
-                                    <h2 className="text-2xl font-bold mb-2">{t.donateOpt1Title}</h2>
-                                    <p className="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">
+                                    <h2 className="text-2xl font-bold mb-2 text-zinc-900 dark:text-zinc-100">{t.donateOpt1Title}</h2>
+                                    <p className="text-zinc-800 dark:text-zinc-200 text-sm leading-relaxed font-medium">
                                         {t.donateOpt1Desc}
                                     </p>
                                 </div>
                             </div>
 
-                            <div className="space-y-2 mb-6">
+                            <div className="space-y-3 mb-6">
                                 <div className="flex items-center gap-3">
                                     <div className="w-2 h-2 rounded-full bg-sky-500 animate-pulse"></div>
-                                    <span className="font-medium text-zinc-900 dark:text-white text-sm">{t.donateOpt1Speed}</span>
+                                    <span className="font-semibold text-zinc-900 dark:text-zinc-100 text-sm">{t.donateOpt1Speed}</span>
                                 </div>
                                 <div className="flex items-center gap-3">
-                                    <Check className="w-4 h-4 text-sky-500" />
-                                    <span className="text-sm text-zinc-600 dark:text-zinc-400">{t.donateOpt1Method}</span>
+                                    <Check className="w-4 h-4 text-sky-600 dark:text-sky-400 font-bold" />
+                                    <span className="text-sm font-medium text-zinc-800 dark:text-zinc-200">{t.donateOpt1Method}</span>
                                 </div>
                                 <div className="flex items-center gap-3">
-                                    <Check className="w-4 h-4 text-sky-500" />
-                                    <span className="text-sm text-zinc-600 dark:text-zinc-400">{t.donateOpt1Impact}</span>
+                                    <Check className="w-4 h-4 text-sky-600 dark:text-sky-400 font-bold" />
+                                    <span className="text-sm font-medium text-zinc-800 dark:text-zinc-200">{t.donateOpt1Impact}</span>
                                 </div>
                             </div>
                         </div>
@@ -112,8 +112,8 @@ export default function DashboardDonatePage() {
                                 <Landmark className="w-8 h-8" />
                             </div>
                             <div>
-                                <h2 className="text-2xl font-bold mb-2">{t.donateOpt2Title}</h2>
-                                <p className="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">
+                                <h2 className="text-2xl font-bold mb-2 text-zinc-900 dark:text-zinc-100">{t.donateOpt2Title}</h2>
+                                <p className="text-zinc-800 dark:text-zinc-200 text-sm leading-relaxed font-medium">
                                     {t.donateOpt2Desc}
                                 </p>
                             </div>
@@ -170,45 +170,45 @@ export default function DashboardDonatePage() {
                                 <div className="space-y-6">
                                     {/* Europe */}
                                     <div className="space-y-1">
-                                        <h4 className="font-medium text-zinc-800 dark:text-zinc-200 text-xs uppercase tracking-wider bg-zinc-200/50 dark:bg-zinc-800/50 px-2 py-1 rounded w-fit">{t.donateEuropeTitle}</h4>
-                                        <div className="text-xs space-y-0.5 text-zinc-600 dark:text-zinc-400 font-mono pl-2">
-                                            <p>{t.donateBeneficiary}</p>
-                                            <p className="select-all font-bold text-zinc-900 dark:text-zinc-200">{t.donateIban}</p>
-                                            <p>{t.donateBic}</p>
+                                        <h4 className="font-bold text-zinc-900 dark:text-white text-xs uppercase tracking-wider bg-zinc-200/50 dark:bg-zinc-800/50 px-2 py-1 rounded w-fit">{t.donateEuropeTitle}</h4>
+                                        <div className="text-xs space-y-1 mt-2 text-zinc-800 dark:text-zinc-300 font-mono pl-2">
+                                            <p className="font-medium">{t.donateBeneficiary}</p>
+                                            <p className="select-all font-bold text-black dark:text-white text-sm bg-white/50 dark:bg-black/30 w-fit px-1 rounded">{t.donateIban}</p>
+                                            <p className="font-medium">{t.donateBic}</p>
                                         </div>
                                     </div>
 
                                     {/* UK */}
                                     <div className="space-y-1">
-                                        <h4 className="font-medium text-zinc-800 dark:text-zinc-200 text-xs uppercase tracking-wider bg-zinc-200/50 dark:bg-zinc-800/50 px-2 py-1 rounded w-fit">{t.donateUkTitle}</h4>
-                                        <div className="text-xs space-y-0.5 text-zinc-600 dark:text-zinc-400 font-mono pl-2">
-                                            <p>{t.donateBeneficiary}</p>
-                                            <p className="font-bold text-zinc-900 dark:text-zinc-200">{t.donateAccount}</p>
-                                            <p className="font-bold text-zinc-900 dark:text-zinc-200">{t.donateSortCode}</p>
-                                            <p>{t.donateUkIban}</p>
-                                            <p>{t.donateUkBic}</p>
+                                        <h4 className="font-bold text-zinc-900 dark:text-white text-xs uppercase tracking-wider bg-zinc-200/50 dark:bg-zinc-800/50 px-2 py-1 rounded w-fit">{t.donateUkTitle}</h4>
+                                        <div className="text-xs space-y-1 mt-2 text-zinc-800 dark:text-zinc-300 font-mono pl-2">
+                                            <p className="font-medium">{t.donateBeneficiary}</p>
+                                            <p className="font-bold text-black dark:text-white bg-white/50 dark:bg-black/30 w-fit px-1 rounded">{t.donateAccount}</p>
+                                            <p className="font-bold text-black dark:text-white bg-white/50 dark:bg-black/30 w-fit px-1 rounded">{t.donateSortCode}</p>
+                                            <p className="select-all font-medium">{t.donateUkIban}</p>
+                                            <p className="font-medium">{t.donateUkBic}</p>
                                         </div>
                                     </div>
 
                                     {/* USA */}
                                     <div className="space-y-1">
-                                        <h4 className="font-medium text-zinc-800 dark:text-zinc-200 text-xs uppercase tracking-wider bg-zinc-200/50 dark:bg-zinc-800/50 px-2 py-1 rounded w-fit">{t.donateUsaTitle}</h4>
-                                        <div className="text-xs space-y-0.5 text-zinc-600 dark:text-zinc-400 font-mono pl-2">
-                                            <p>{t.donateBeneficiary}</p>
-                                            <p className="font-bold text-zinc-900 dark:text-zinc-200">{t.donateUsaAccount}</p>
-                                            <p className="font-bold text-zinc-900 dark:text-zinc-200">{t.donateRouting}</p>
-                                            <p>{t.donateUsaBic}</p>
+                                        <h4 className="font-bold text-zinc-900 dark:text-white text-xs uppercase tracking-wider bg-zinc-200/50 dark:bg-zinc-800/50 px-2 py-1 rounded w-fit">{t.donateUsaTitle}</h4>
+                                        <div className="text-xs space-y-1 mt-2 text-zinc-800 dark:text-zinc-300 font-mono pl-2">
+                                            <p className="font-medium">{t.donateBeneficiary}</p>
+                                            <p className="font-bold text-black dark:text-white bg-white/50 dark:bg-black/30 w-fit px-1 rounded">{t.donateUsaAccount}</p>
+                                            <p className="font-bold text-black dark:text-white bg-white/50 dark:bg-black/30 w-fit px-1 rounded">{t.donateRouting}</p>
+                                            <p className="font-medium">{t.donateUsaBic}</p>
                                         </div>
                                     </div>
 
                                     {/* Australia */}
                                     <div className="space-y-1">
-                                        <h4 className="font-medium text-zinc-800 dark:text-zinc-200 text-xs uppercase tracking-wider bg-zinc-200/50 dark:bg-zinc-800/50 px-2 py-1 rounded w-fit">{t.donateAustraliaTitle}</h4>
-                                        <div className="text-xs space-y-0.5 text-zinc-600 dark:text-zinc-400 font-mono pl-2">
-                                            <p>{t.donateBeneficiary}</p>
-                                            <p className="font-bold text-zinc-900 dark:text-zinc-200">{t.donateAusAccount}</p>
-                                            <p className="font-bold text-zinc-900 dark:text-zinc-200">{t.donateBsb}</p>
-                                            <p>{t.donateAusBic}</p>
+                                        <h4 className="font-bold text-zinc-900 dark:text-white text-xs uppercase tracking-wider bg-zinc-200/50 dark:bg-zinc-800/50 px-2 py-1 rounded w-fit">{t.donateAustraliaTitle}</h4>
+                                        <div className="text-xs space-y-1 mt-2 text-zinc-800 dark:text-zinc-300 font-mono pl-2">
+                                            <p className="font-medium">{t.donateBeneficiary}</p>
+                                            <p className="font-bold text-black dark:text-white bg-white/50 dark:bg-black/30 w-fit px-1 rounded">{t.donateAusAccount}</p>
+                                            <p className="font-bold text-black dark:text-white bg-white/50 dark:bg-black/30 w-fit px-1 rounded">{t.donateBsb}</p>
+                                            <p className="font-medium">{t.donateAusBic}</p>
                                         </div>
                                     </div>
                                 </div>

@@ -1,66 +1,78 @@
 ========================================================================
-WEBSITE STATUS REPORT - February 13, 2026
+WEBSITE STATUS REPORT - February 22, 2026
 ========================================================================
 
 PROJECT: Baljci Ancestry Map (Next.js + Supabase)
 LOCATION: c:\Users\Tito\baljci-ancestry-map
 
 ------------------------------------------------------------------------
-1. [DONE] AUTHENTICATION & LOGIN REFINEMENT
+1. [DONE] ADMIN REGISTRY SYNC
 ------------------------------------------------------------------------
+* SECURE EMAILS: Updated 'getAllMembersForRegistry' in admin.ts to fetch 
+  user emails directly from Supabase Auth and merge them with profile data.
+* APPROVAL STATUS: Created secure 'getUserStatus' action to fetch user 
+  approval status safely, fixing bugs where approved users saw "pending" screens.
+
+------------------------------------------------------------------------
+2. [DONE] FORGOT PASSWORD FLOW
+------------------------------------------------------------------------
+* IMPLEMENTED: Created dedicated /login/forgot-password, /reset-password, 
+  and /update-password pages.
+* SECURITY: Enforced strict 8-character, 1 uppercase, 1 number password 
+  requirements natively across all recovery forms.
+
+------------------------------------------------------------------------
+3. [DONE] MEMBERSHIP TIERS & PAYMENT NOTIFICATIONS
+------------------------------------------------------------------------
+* STREAMLINED TIERS: Reduced PromptPayment choices to 'Voting Member' 
+  (€100) and 'Supporter' (€50).
+* PAYMENT CONFIRMATION: Added a text box on the payment screen where users 
+  can type a note (e.g., "Paid via Wise") and click to notify the admin.
+* ADMIN VISIBILITY: Admins now see "Prijavljena Uplata" and the user's 
+  note inside the MemberDetailModal.
+* BUG FIX: Fixed the "User Not Found" error in the Admin panel. Supabase 
+  previously only loaded the first 50 users. Built a custom paginated loop 
+  to reliably scan and find any user by email.
+
+------------------------------------------------------------------------
+4. [DONE] SPAM REQUESTS & USER BYPASS FIX
+------------------------------------------------------------------------
+* BUG: Duplicate spam requests on the admin panel.
+* ROOT CAUSE: The main homepage contained a legacy 'AccessRequestModal' 
+  that pushed raw rows to the DB without creating real Supabase accounts.
+* FIX: Deleted the modal, erased the vulnerable server action, and 
+  replaced the homepage button with a strict Next.js Link pointing to the 
+  secure `/register` flow. Loophole closed.
+
+========================================================================
+WEBSITE STATUS REPORT - February 13, 2026
+========================================================================
+
+1. [DONE] AUTHENTICATION & LOGIN REFINEMENT
 * PREVENTED AUTO-SUBMIT: Removed <form> elements from Login, Forgot 
-  Password, and Update Password pages. Browsers and password managers 
-  can no longer automatically log you in. Manual button click is REQUIRED.
-* MANUAL VALIDATION: Added custom validation to ensure fields are filled 
-  before submission.
+  Password, and Update Password pages. Manual button click is REQUIRED.
+* MANUAL VALIDATION: Added custom validation to ensure fields are filled.
 * LOGIN PAGE: Added "Zaboravljena lozinka?" (Forgot Password) link.
 
-------------------------------------------------------------------------
 2. [DONE] PASSWORD RESET FLOW
-------------------------------------------------------------------------
-* IMPLEMENTED: Created dedicated /forgot-password and /update-password 
-  pages.
-* FIXED "STUCK ON SEND": Rewrote the authentication callback logic 
-  (src/app/auth/callback/route.ts) using @supabase/ssr to correctly 
-  handle session exchange and cookie storage.
-* ADMIN PASSWORD: udrugabaljci@gmail.com / Jojlolomoj2026!
+* FIXED "STUCK ON SEND": Rewrote auth callback logic 
+  (src/app/auth/callback/route.ts) using @supabase/ssr.
 
-------------------------------------------------------------------------
 3. [DONE] FORUM (COMMUNITY) FIXES
-------------------------------------------------------------------------
-* FIXED TOPIC CREATION: Identified a schema mismatch where the code used 
-  'author_id' instead of the correct 'user_id'. Topics now post successfully.
-* UI REFINEMENT: Ensured form clears correctly on success.
+* FIXED TOPIC CREATION: Identified a schema mismatch ('author_id' -> 'user_id').
 
-------------------------------------------------------------------------
 4. [DONE] CONTACT ADMINISTRATOR EMAIL DELIVERY
-------------------------------------------------------------------------
 * EMAIL INTEGRATION: Integrated 'nodemailer' to send form submissions 
   directly to udrugabaljci@gmail.com.
-* BACKUP: Messages still save to the 'contact_messages' database table.
-* SETUP: Configured local development with the provided Gmail App Password.
-* PRODUCTION: Guidance provided for adding GMAIL_USER and 
-  GMAIL_APP_PASSWORD to Vercel settings (Already confirmed by user).
 
-------------------------------------------------------------------------
 5. [DONE] GALLERY IMPROVEMENTS
-------------------------------------------------------------------------
-* MULTI-FILE UPLOAD: Can now select and upload multiple photos at once.
-* CLIENT COMPRESSION: Added 'browser-image-compression' to automatically 
-  shrink photos before they hit the server (saves space/bandwidth).
-* ACCESSIBILITY: Added labels and titles to all gallery buttons.
+* MULTI-FILE UPLOAD: Added multi-photo upload with 'browser-image-compression'.
 
-------------------------------------------------------------------------
 6. [DONE] INFRASTRUCTURE & DEPLOYMENT
-------------------------------------------------------------------------
-* FIXED BUILD ERRORS: Patched several type and syntax errors in 
-  /admin/register-print and /map routes to allow successful production 
-  builds.
-* PUSHED TO GITHUB: All changes are pushed to the 'main' branch and 
-  ready for deployment.
+* FIXED BUILD ERRORS: Patched several type and syntax errors.
+* PUSHED TO GITHUB: All changes are pushed to 'main' branch.
 
 ========================================================================
 NEXT STEPS:
-- Verify live site behavior (especially Contact and Password Reset).
-- Investigate SEC_ERROR_UNKNOWN_ISSUER on baljci.com site.
+- Wait for the Vercel (GitHub) deployment to finish.
 ========================================================================

@@ -12,6 +12,7 @@ export type Topic = {
     title: string;
     content: string;
     author_name: string;
+    author_role?: string;
     created_at: string;
     created_by: string;
     comment_count?: number;
@@ -21,6 +22,7 @@ export type Comment = {
     id: string;
     content: string;
     author_name: string;
+    author_role?: string;
     created_at: string;
     created_by: string;
 };
@@ -43,31 +45,34 @@ export async function getTopics() {
         // Get unique user IDs, excluding anonymous posts if needed (but currently we show them just don't map name)
         const userIds = Array.from(new Set(posts.map(p => p.user_id).filter(Boolean)));
 
-        let profilesMap: Record<string, string> = {};
+        let profilesMap: Record<string, { name: string, role: string }> = {};
         if (userIds.length > 0) {
             const { data: profiles, error: profilesError } = await supabaseAdmin
                 .from('profiles')
-                .select('id, display_name')
+                .select('id, display_name, role')
                 .in('id', userIds);
 
             if (!profilesError && profiles) {
                 profilesMap = profiles.reduce((acc, profile) => {
-                    acc[profile.id] = profile.display_name;
+                    acc[profile.id] = { name: profile.display_name, role: profile.role };
                     return acc;
-                }, {} as Record<string, string>);
+                }, {} as Record<string, { name: string, role: string }>);
             }
         }
 
         // 3. Map together
         const topics: Topic[] = posts.map((post: any) => {
             const isAnon = post.is_anonymous === true;
-            const displayName = isAnon ? 'Anonymous' : (profilesMap[post.user_id] || 'Član Udruge');
+            const profile = profilesMap[post.user_id];
+            const displayName = isAnon ? 'Anonymous' : (profile?.name || 'Član Udruge');
+            const role = isAnon ? 'user' : (profile?.role || 'user');
 
             return {
                 id: post.id,
                 title: post.content.length > 50 ? post.content.substring(0, 50) + '...' : post.content,
                 content: post.content,
                 author_name: displayName,
+                author_role: role,
                 created_at: post.created_at,
                 created_by: post.user_id
             };
@@ -109,39 +114,43 @@ export async function getTopicDetail(topicId: string) {
             });
         }
 
-        let profilesMap: Record<string, string> = {};
+        let profilesMap: Record<string, { name: string, role: string }> = {};
         if (userIds.size > 0) {
             const { data: profiles, error: profilesError } = await supabaseAdmin
                 .from('profiles')
-                .select('id, display_name')
+                .select('id, display_name, role')
                 .in('id', Array.from(userIds));
 
             if (!profilesError && profiles) {
                 profilesMap = profiles.reduce((acc, profile) => {
-                    acc[profile.id] = profile.display_name;
+                    acc[profile.id] = { name: profile.display_name, role: profile.role };
                     return acc;
-                }, {} as Record<string, string>);
+                }, {} as Record<string, { name: string, role: string }>);
             }
         }
 
         // 4. Format Output
         const isTopicAnon = topic.is_anonymous === true;
-        const topicDisplayName = isTopicAnon ? 'Anonymous' : (profilesMap[topic.user_id] || 'Član Udruge');
+        const topicProfile = profilesMap[topic.user_id];
+        const topicDisplayName = isTopicAnon ? 'Anonymous' : (topicProfile?.name || 'Član Udruge');
 
         const formattedTopic: Topic = {
             id: topic.id,
             title: topic.content,
             content: topic.content,
             author_name: topicDisplayName,
+            author_role: isTopicAnon ? 'user' : (topicProfile?.role || 'user'),
             created_at: topic.created_at,
             created_by: topic.user_id
         };
 
         const formattedComments: Comment[] = (comments || []).map((c: any) => {
+            const commentProfile = profilesMap[c.user_id];
             return {
                 id: c.id,
                 content: c.content,
-                author_name: profilesMap[c.user_id] || 'Član Udruge',
+                author_name: commentProfile?.name || 'Član Udruge',
+                author_role: commentProfile?.role || 'user',
                 created_at: c.created_at,
                 created_by: c.user_id
             };

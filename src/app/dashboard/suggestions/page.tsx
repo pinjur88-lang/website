@@ -9,12 +9,34 @@ export default function SuggestionsPage() {
     const [text, setText] = useState('');
     const [submitted, setSubmitted] = useState(false);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [submitError, setSubmitError] = useState('');
+
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        // Here you would send to backend
-        setSubmitted(true);
-        setText('');
-        setTimeout(() => setSubmitted(false), 3000);
+        if (!text.trim()) return;
+
+        setIsSubmitting(true);
+        setSubmitError('');
+
+        try {
+            const { submitReport } = await import('@/actions/submissions');
+            const res = await submitReport('suggestion', text);
+
+            if (res.error) {
+                setSubmitError(res.error);
+                setIsSubmitting(false);
+                return;
+            }
+
+            setSubmitted(true);
+            setText('');
+            setTimeout(() => setSubmitted(false), 3000);
+        } catch (err: any) {
+            setSubmitError(err.message || 'Unknown error');
+        }
+
+        setIsSubmitting(false);
     };
 
     return (
@@ -29,6 +51,12 @@ export default function SuggestionsPage() {
                     </div>
                 ) : null}
 
+                {submitError ? (
+                    <div className="p-4 bg-red-50 text-red-700 rounded-md mb-4">
+                        Greška pri slanju: {submitError}
+                    </div>
+                ) : null}
+
                 <form onSubmit={handleSubmit}>
                     <textarea
                         className="w-full h-32 p-3 border border-stone-300 rounded-md focus:outline-none focus:ring-2 focus:ring-stone-400 mb-4 text-stone-800"
@@ -39,9 +67,10 @@ export default function SuggestionsPage() {
                     />
                     <button
                         type="submit"
-                        className="px-4 py-2 bg-stone-900 text-white rounded-md hover:bg-stone-800 transition-colors"
+                        disabled={isSubmitting || !text.trim()}
+                        className="px-4 py-2 bg-stone-900 text-white rounded-md hover:bg-stone-800 transition-colors disabled:opacity-50 flex items-center gap-2"
                     >
-                        {t.submitSuggestion}
+                        {isSubmitting ? 'Slanje...' : t.submitSuggestion}
                     </button>
                 </form>
             </div>

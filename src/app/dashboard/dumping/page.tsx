@@ -16,25 +16,56 @@ export default function DumpingPage() {
     const [location, setLocation] = useState('');
     const [reportMode, setReportMode] = useState<'direct' | 'udruga'>('udruga'); // Default to "Watchdog" mode
 
-    const handleReport = () => {
-        const subject = `Prijava nepropisno odbačenog otpada - Baljci`;
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [submitSuccess, setSubmitSuccess] = useState(false);
+    const [submitError, setSubmitError] = useState('');
 
-        let recipient = '';
-        let body = '';
-        let cc = '';
+    const handleReport = async () => {
+        setIsSubmitting(true);
+        setSubmitError('');
 
-        if (reportMode === 'direct') {
-            recipient = 'opcina-ruzic@si.t-com.hr';
-            cc = 'procelnik@opcina-ruzic.hr';
-            body = `Poštovani,\n\nPrijavljujem nelegalno odlagalište otpada na području naselja Baljci.\n\nLOKACIJA:\nKoordinate/Opis: ${location}\n\nOPIS OTPADA: ${wasteType}\n\nU privitku dostavljam fotografije zatečenog stanja.\n\nSukladno Zakonu o gospodarenju otpadom, molim Vas da izdate nalog za uklanjanje otpada te da me povratno obavijestite o poduzetim radnjama.\n\nS poštovanjem,\n${user?.email || '[Ime i Prezime]'}`;
-        } else {
-            // Watchdog Mode
-            recipient = 'info@baljci.com'; // Placeholder for Udruga admin
-            body = `[ZAHTJEV ZA ANONIMNU PRIJAVU]\n\nMolim Udrugu da u moje ime prijavi sljedeće odlagalište:\n\nLokacija: ${location}\nOtpad: ${wasteType}\n\nU privitku su slike.\n\nČlan: ${user?.email}`;
+        // Regardless of mode, we want to log it to DB for Udruga to track.
+        try {
+            const { submitReport } = await import('@/actions/submissions');
+            const res = await submitReport('dumping', wasteType, location);
+
+            if (res.error) {
+                setSubmitError(res.error);
+                setIsSubmitting(false);
+                return;
+            }
+
+            setSubmitSuccess(true);
+            const subject = `Prijava nepropisno odbačenog otpada - Baljci`;
+
+            let recipient = '';
+            let body = '';
+            let cc = '';
+
+            if (reportMode === 'direct') {
+                recipient = 'opcina-ruzic@si.t-com.hr';
+                cc = 'procelnik@opcina-ruzic.hr';
+                body = `Poštovani,\n\nPrijavljujem nelegalno odlagalište otpada na području naselja Baljci.\n\nLOKACIJA:\nKoordinate/Opis: ${location}\n\nOPIS OTPADA: ${wasteType}\n\nU privitku dostavljam fotografije zatečenog stanja.\n\nSukladno Zakonu o gospodarenju otpadom, molim Vas da izdate nalog za uklanjanje otpada te da me povratno obavijestite o poduzetim radnjama.\n\nS poštovanjem,\n${user?.email || '[Ime i Prezime]'}`;
+            } else {
+                // Watchdog Mode
+                recipient = 'info@baljci.com'; // Placeholder for Udruga admin
+                body = `[ZAHTJEV ZA ANONIMNU PRIJAVU]\n\nMolim Udrugu da u moje ime prijavi sljedeće odlagalište:\n\nLokacija: ${location}\nOtpad: ${wasteType}\n\nU privitku su slike.\n\nČlan: ${user?.email}`;
+            }
+
+            const mailtoLink = `mailto:${recipient}?cc=${cc}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            window.open(mailtoLink, '_blank');
+
+        } catch (err: any) {
+            setSubmitError(err.message || 'Unknown error');
         }
 
-        const mailtoLink = `mailto:${recipient}?cc=${cc}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-        window.open(mailtoLink, '_blank');
+        setIsSubmitting(false);
+        // Clear form after a short delay
+        setTimeout(() => {
+            setSubmitSuccess(false);
+            setWasteType('');
+            setLocation('');
+        }, 3000);
     };
 
     return (
@@ -122,6 +153,18 @@ export default function DumpingPage() {
                         )}
 
                         <div className="space-y-4">
+                            {submitSuccess && (
+                                <div className="p-3 bg-green-50 text-green-700 text-sm border border-green-200 rounded-lg">
+                                    Prijava je uspješno poslana i zabilježena. Email klijent bi se trebao otvoriti.
+                                </div>
+                            )}
+
+                            {submitError && (
+                                <div className="p-3 bg-red-50 text-red-700 text-sm border border-red-200 rounded-lg">
+                                    Greška pri spremanju prijave: {submitError}
+                                </div>
+                            )}
+
                             <div>
                                 <label className="block text-xs font-bold text-slate-500 uppercase mb-1">{t.dumpLabelType}</label>
                                 <input
@@ -145,10 +188,10 @@ export default function DumpingPage() {
 
                             <button
                                 onClick={handleReport}
-                                disabled={!wasteType || !location}
+                                disabled={!wasteType || !location || isSubmitting}
                                 className={`w-full text-white font-bold py-3 rounded-lg flex items-center justify-center gap-2 transition disabled:opacity-50 disabled:cursor-not-allowed ${reportMode === 'udruga' ? 'bg-blue-600 hover:bg-blue-700' : 'bg-red-600 hover:bg-red-700'}`}
                             >
-                                <Send size={18} /> {reportMode === 'udruga' ? t.dumpBtnUdruga : t.dumpBtnDirect}
+                                <Send size={18} /> {isSubmitting ? 'Slanje...' : (reportMode === 'udruga' ? t.dumpBtnUdruga : t.dumpBtnDirect)}
                             </button>
                             <p className="text-xs text-center text-slate-400">Attach photos in the email app.</p>
                         </div>

@@ -9,6 +9,7 @@ import { getAdminRequests, approveRequest } from '@/actions/admin';
 
 import GalleryManager from '@/components/admin/GalleryManager';
 import MemberDetailModal from '@/components/admin/MemberDetailModal';
+import AdminInboxManager from '@/components/admin/AdminInboxManager';
 import { getAllMembersForRegistry } from '@/actions/admin';
 
 export default function AdminMembersPage() {
@@ -17,7 +18,7 @@ export default function AdminMembersPage() {
     const { user } = useAuth();
 
     // Tabs state
-    const [activeTab, setActiveTab] = useState<'members' | 'announcements' | 'gallery' | 'registry'>('members');
+    const [activeTab, setActiveTab] = useState<'members' | 'announcements' | 'gallery' | 'registry' | 'inbox'>('members');
 
     // Registry state
     const [registeredMembers, setRegisteredMembers] = useState<any[]>([]);
@@ -102,6 +103,12 @@ export default function AdminMembersPage() {
                         className={`flex items-center gap-2 pb-2 px-1 text-sm font-medium transition-colors ${activeTab === 'announcements' ? 'text-zinc-900 border-b-2 border-zinc-900' : 'text-zinc-400 hover:text-zinc-600'}`}
                     >
                         <MessageSquare size={16} /> Obavijesti
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('inbox')}
+                        className={`flex items-center gap-2 pb-2 px-1 text-sm font-medium transition-colors ${activeTab === 'inbox' ? 'text-zinc-900 border-b-2 border-zinc-900' : 'text-zinc-400 hover:text-zinc-600'}`}
+                    >
+                        <MessageSquare size={16} /> Pretinac
                     </button>
                     <button
                         onClick={() => setActiveTab('gallery')}

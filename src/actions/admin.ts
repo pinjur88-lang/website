@@ -214,7 +214,7 @@ export async function notifyAdminPayment(email: string, tier: string, note: stri
             .eq('email', email);
 
         if (error) throw error;
-        
+
         // SEND EMAIL NOTIFICATION TO ADMIN
         await sendPaymentNotificationEmail({ email, tier, note });
 
@@ -341,3 +341,4 @@ export async function getAllMembersForRegistry() {
         return { error: error.message };
     }
 }
+
