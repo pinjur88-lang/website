@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { db, MembershipRequest } from '@/lib/db';
-import { Mail, Phone, MapPin, Calendar, FileText, Check, X, Users, MessageSquare, Image as ImageIcon } from 'lucide-react';
+import { Mail, Phone, MapPin, Calendar, FileText, Check, X, Users, MessageSquare, Image as ImageIcon, Award, Star, ShieldCheck } from 'lucide-react';
 import { useAuth } from '@/lib/auth-context';
 import AnnouncementManager from '@/components/admin/AnnouncementManager';
 import { getAdminRequests, approveRequest } from '@/actions/admin';
@@ -236,59 +236,77 @@ export default function AdminMembersPage() {
 
             {/* REGISTRY TAB */}
             {activeTab === 'registry' && (
-                <div className="bg-white rounded-lg shadow-sm border border-zinc-200 overflow-hidden">
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-sm text-left">
-                            <thead className="bg-zinc-50 text-zinc-700 uppercase text-xs font-semibold">
-                                <tr>
-                                    <th className="px-6 py-4 w-16 text-center">#</th>
-                                    <th className="px-6 py-4">Ime i Prezime</th>
-                                    <th className="px-6 py-4">E-mail</th>
-                                    <th className="px-6 py-4">Status / Tier</th>
-                                    <th className="px-6 py-4 text-right">Datum Registracije</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-zinc-100">
-                                {registeredMembers.map((member, index) => (
-                                    <tr key={member.id} className="hover:bg-zinc-50 transition-colors">
-                                        <td className="px-6 py-4 text-center font-mono text-zinc-400">{index + 1}</td>
-                                        <td className="px-6 py-4 font-medium text-zinc-900">
-                                            {member.full_name || member.display_name || 'Korisnik bez imena'}
-                                        </td>
-                                        <td className="px-6 py-4 text-zinc-600">{member.email}</td>
-                                        <td className="px-6 py-4">
-                                            <span className={`text-[10px] px-2 py-0.5 rounded-full border font-bold uppercase tracking-wider ${member.membership_tier === 'voting' ? 'bg-amber-100 text-amber-800 border-amber-200' :
-                                                member.membership_tier === 'supporter' ? 'bg-sky-100 text-sky-800 border-sky-200' :
-                                                    'bg-zinc-100 text-zinc-800 border-zinc-200'
-                                                }`}>
-                                                {member.membership_tier || 'FREE'}
-                                            </span>
-                                        </td>
-                                        <td className="px-6 py-4 text-right text-zinc-500 font-mono">
-                                            {new Date(member.created_at).toLocaleDateString('hr-HR')}
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                <div className="space-y-6">
+                    {/* Summary Cards */}
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div className="bg-white p-4 rounded-lg shadow-sm border border-zinc-200 flex flex-col items-center justify-center text-center">
+                            <span className="text-zinc-500 text-[10px] md:text-xs font-bold uppercase tracking-wider mb-1">Ukupno Članova</span>
+                            <span className="text-3xl font-serif text-zinc-900">{registeredMembers.length}</span>
+                        </div>
+                        <div className="bg-white p-4 rounded-lg shadow-sm border border-amber-200 bg-amber-50/30 flex flex-col items-center justify-center text-center">
+                            <span className="text-amber-700 text-[10px] md:text-xs font-bold uppercase tracking-wider mb-1 flex items-center justify-center gap-1"><Award size={14} className="hidden md:block" /> Zlatni (Voting)</span>
+                            <span className="text-3xl font-serif text-amber-800">{registeredMembers.filter(m => m.membership_tier === 'voting').length}</span>
+                        </div>
+                        <div className="bg-white p-4 rounded-lg shadow-sm border border-sky-200 bg-sky-50/30 flex flex-col items-center justify-center text-center">
+                            <span className="text-sky-700 text-[10px] md:text-xs font-bold uppercase tracking-wider mb-1 flex items-center justify-center gap-1"><Star size={14} className="hidden md:block" /> Srebrni (Supporter)</span>
+                            <span className="text-3xl font-serif text-sky-800">{registeredMembers.filter(m => m.membership_tier === 'supporter').length}</span>
+                        </div>
+                        <div className="bg-white p-4 rounded-lg shadow-sm border border-zinc-200 flex flex-col items-center justify-center text-center">
+                            <span className="text-zinc-600 text-[10px] md:text-xs font-bold uppercase tracking-wider mb-1 flex items-center justify-center gap-1"><ShieldCheck size={14} className="hidden md:block" /> Besplatni (Neplaćeno)</span>
+                            <span className="text-3xl font-serif text-zinc-800">{registeredMembers.filter(m => !m.membership_tier || m.membership_tier === 'free').length}</span>
+                        </div>
                     </div>
-                </div>
+
+                    <div className="bg-white rounded-lg shadow-sm border border-zinc-200 overflow-hidden">
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-sm text-left">
+                                <thead className="bg-zinc-50 text-zinc-700 uppercase text-xs font-semibold">
+                                    <tr>
+                                        <th className="px-6 py-4 w-16 text-center">#</th>
+                                        <th className="px-6 py-4">Ime i Prezime</th>
+                                        <th className="px-6 py-4">E-mail</th>
+                                        <th className="px-6 py-4">Status / Tier</th>
+                                        <th className="px-6 py-4 text-right">Datum Registracije</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-zinc-100">
+                                    {registeredMembers.map((member, index) => (
+                                        <tr key={member.id} className="hover:bg-zinc-50 transition-colors">
+                                            <td className="px-6 py-4 text-center font-mono text-zinc-400">{index + 1}</td>
+                                            <td className="px-6 py-4 font-medium text-zinc-900">
+                                                {member.full_name || member.display_name || 'Korisnik bez imena'}
+                                            </td>
+                                            <td className="px-6 py-4 text-zinc-600">{member.email}</td>
+                                            <td className="px-6 py-4">
+                                                <span className={`text-[10px] px-2 py-0.5 rounded-full border font-bold uppercase tracking-wider ${member.membership_tier === 'voting' ? 'bg-amber-100 text-amber-800 border-amber-200' :
+                                                    member.membership_tier === 'supporter' ? 'bg-sky-100 text-sky-800 border-sky-200' :
+                                                        'bg-zinc-100 text-zinc-800 border-zinc-200'
+                                                    }`}>
+                                                    {member.membership_tier || 'FREE'}
+                                                </span>
+                                            </td>
+                                            <td className="px-6 py-4 text-right text-zinc-500 font-mono">
+                                                {new Date(member.created_at).toLocaleDateString('hr-HR')}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
             )}
 
-
-            {/* Member Details Modal */}
-            {
-                selectedRequest && (
-                    <MemberDetailModal
-                        request={selectedRequest}
-                        onClose={() => setSelectedRequest(null)}
-                        onUpdate={(updatedReq) => {
-                            setRequests(prev => prev.map(r => r.id === updatedReq.id ? updatedReq : r));
-                            setSelectedRequest(updatedReq);
-                        }}
-                    />
-                )
-            }
-        </div>
-    );
+                    {/* Member Details Modal */}
+                    {selectedRequest && (
+                        <MemberDetailModal
+                            request={selectedRequest}
+                            onClose={() => setSelectedRequest(null)}
+                            onUpdate={(updatedReq) => {
+                                setRequests(prev => prev.map(r => r.id === updatedReq.id ? updatedReq : r));
+                                setSelectedRequest(updatedReq);
+                            }}
+                        />
+                    )}
+                </div>
+            );
 }

@@ -68,7 +68,11 @@ export default function RegisterPage() {
 
         } catch (err: any) {
             console.error(err);
-            setError(err.message || t.errorOccurred || "Došlo je do greške.");
+            if (err.message === "Error sending confirmation email") {
+                setError(t.registerEmailLimitError || "Sustav ne može poslati potvrdni email. Molimo kontaktirajte administratora. Vaš račun je kreiran.");
+            } else {
+                setError(err.message || t.errorOccurred || "Došlo je do greške.");
+            }
         } finally {
             setLoading(false);
         }
@@ -96,7 +100,7 @@ export default function RegisterPage() {
 
     return (
         <div className="min-h-screen bg-zinc-50 py-12 px-4 flex justify-center items-start">
-            
+
             {/* STEP 2: FORM */}
             {step === 'form' && (
                 <div className="w-full max-w-2xl bg-white border border-zinc-200 shadow-xl rounded-2xl p-8 animate-in fade-in slide-in-from-bottom-4">

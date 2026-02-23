@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { MembershipRequest, Donation } from '@/lib/db';
 import { X, Save, Plus, Trash2, Calendar, MapPin, Mail, Phone, FileText, Award, ShieldCheck, Star } from 'lucide-react';
-import { saveAdminNotes, addAdminDonation, updateMemberTier } from '@/actions/admin';
+import { saveAdminNotes, addAdminDonation, updateMemberTier, deleteMember } from '@/actions/admin';
 import { supabaseAdmin as supabase } from '@/lib/supabase-admin';
 
 interface MemberDetailModalProps {
@@ -25,6 +25,9 @@ export default function MemberDetailModal({ request, onClose, onUpdate }: Member
     // Tier state
     const [tier, setTier] = useState<'free' | 'supporter' | 'voting'>('free');
     const [updatingTier, setUpdatingTier] = useState(false);
+
+    // Delete state
+    const [deleting, setDeleting] = useState(false);
 
     useEffect(() => {
         const fetchTier = async () => {
@@ -88,6 +91,21 @@ export default function MemberDetailModal({ request, onClose, onUpdate }: Member
             alert(res.error);
         }
         setUpdatingTier(false);
+    };
+
+    const handleDeleteUser = async () => {
+        if (!confirm('Jeste li sigurni da želite TRAJNO obrisati ovog korisnika? Ovo će obrisati njihov račun i omogućiti im ponovnu registraciju.')) return;
+
+        setDeleting(true);
+        const res = await deleteMember(request.email);
+        if (res.success) {
+            alert('Korisnik uspješno obrisan.');
+            onClose();
+            window.location.reload(); // Hard reload to refresh all tabs
+        } else {
+            alert('Greška pri brisanju: ' + res.error);
+        }
+        setDeleting(false);
     };
 
     return (
@@ -178,6 +196,23 @@ export default function MemberDetailModal({ request, onClose, onUpdate }: Member
                                         <span>Članovi sa statusom 'Voting' imaju pravo glasa u Dvorani za Glasovanje te pristup ekskluzivnim izvještajima. Odabirom statusa brisana prijavljena uplata (ako postoji).</span>
                                     </p>
                                 </div>
+                            </div>
+
+                            {/* Danger Zone */}
+                            <div className="bg-red-50 p-5 rounded-xl border border-red-100 shadow-sm mt-6">
+                                <h3 className="font-bold text-red-900 mb-2 flex items-center gap-2 text-sm uppercase tracking-wider">
+                                    <Trash2 size={18} className="text-red-600" /> Opasna Zona
+                                </h3>
+                                <p className="text-xs text-red-700 mb-4">
+                                    Ako je korisnik zapeo pri registraciji (npr. greška s emailom), možete potpuno obrisati njegov profil kako bi se mogao ponovno registrirati.
+                                </p>
+                                <button
+                                    onClick={handleDeleteUser}
+                                    disabled={deleting}
+                                    className="w-full py-2 bg-red-600 text-white text-xs font-bold rounded uppercase tracking-wider hover:bg-red-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                                >
+                                    <Trash2 size={14} /> {deleting ? 'Brisanje...' : 'Obriši Korisnika'}
+                                </button>
                             </div>
                         </div>
 

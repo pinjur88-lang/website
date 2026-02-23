@@ -18,7 +18,8 @@ async function getAuthUserByEmail(email: string) {
 
         if (error) throw error;
 
-        const user = userData.users.find(u => u.email === email);
+        // Case-insensitive match just in case
+        const user = userData.users.find(u => u.email?.toLowerCase() === email.toLowerCase());
         if (user) return user;
 
         if (userData.users.length < 1000) {
@@ -34,14 +35,21 @@ async function getAuthUserByEmail(email: string) {
 export async function getUserStatus(email: string) {
     if (!email) return null;
     try {
+        // If the user submitted multiple requests before the spam fix, maybeSingle() throws an error.
+        // We order by most recent and take the first one to avoid PGRST116.
         const { data, error } = await supabaseAdmin
             .from('requests')
             .select('status')
             .eq('email', email)
-            .maybeSingle();
+            .order('created_at', { ascending: false })
+            .limit(1);
+
         if (error) throw error;
-        return data?.status || 'pending';
-    } catch {
+
+        // Return the status of the most recent request, or pending if none found
+        return data && data.length > 0 ? data[0].status : 'pending';
+    } catch (e) {
+        console.error("Error fetching user status:", e);
         return 'pending';
     }
 }
@@ -256,6 +264,33 @@ export async function addAdminDonation(requestId: string, amount: number, descri
         if (updateError) throw updateError;
 
         return { success: true, data: newDonation };
+    } catch (error: any) {
+        return { error: error.message };
+    }
+}
+
+export async function deleteMember(email: string) {
+    if (!await verifyAdmin()) return { error: "Unauthorized" };
+    try {
+        // 1. Find user in Auth
+        const user = await getAuthUserByEmail(email);
+
+        if (user) {
+            // Delete from Auth (this cascades to profiles if set up, but we'll manually ensure it)
+            const { error: authDeleteError } = await supabaseAdmin.auth.admin.deleteUser(user.id);
+            if (authDeleteError) throw authDeleteError;
+        }
+
+        // 2. Delete from requests (just in case)
+        await supabaseAdmin.from('requests').delete().eq('email', email);
+
+        // 3. Delete from profiles (fallback if cascade fails)
+        if (user) {
+            await supabaseAdmin.from('profiles').delete().eq('id', user.id);
+        }
+
+        revalidatePath('/admin');
+        return { success: true };
     } catch (error: any) {
         return { error: error.message };
     }

@@ -358,6 +358,7 @@ export const translations = {
 
         // Register Page
         registerUserNotCreated: "Greška pri registraciji - korisnik nije kreiran.",
+        registerEmailLimitError: "Naš sustav trenutno ne može poslati potvrdni email zbog sigurnosnih ograničenja. Vaš račun JE kreiran, ali vas molimo da kontaktirate administratora kako bi vas ručno odobrio. (Error: Rate Limit)",
         errorOccurred: "Došlo je do greške.",
         requestReceived: "Zahtjev Zaprimljen!",
         requestReceivedDesc: "Vaš račun je kreiran i čeka odobrenje administratora. Obavijestit ćemo vas emailom kada pristup bude omogućen.",
@@ -375,7 +376,7 @@ export const translations = {
         corporateRegistration: "Registracija Pravne Osobe",
         fillLegalData: "Molimo ispunite zakonski obvezne podatke za Registar Članova.",
         loginData: "Moji Podaci za Prijavu",
-        emailLabelRequired: "EMAIL ADRESA (Mora biti odobrena)",
+        emailLabelRequired: "EMAIL ADRESA",
         emailPlaceholder: "ime@primjer.com",
         personalData: "Osobni Podaci",
         representativeData: "Podaci o Zastupniku",
@@ -841,6 +842,7 @@ export const translations = {
 
         // Register Page
         registerUserNotCreated: "Greška pri registraciji - korisnik nije kreiran.",
+        registerEmailLimitError: "Naš sistem trenutno ne može poslati potvrdni email zbog sigurnosnih ograničenja. Vaš račun JE kreiran, ali vas molimo da kontaktirate administratora kako bi vas ručno odobrio. (Error: Rate Limit)",
         errorOccurred: "Došlo je do greške.",
         requestReceived: "Zahtev Zaprimljen!",
         requestReceivedDesc: "Vaš račun je kreiran i čeka odobrenje administratora. Obavestićemo vas emailom kada pristup bude omogućen.",
@@ -858,7 +860,7 @@ export const translations = {
         corporateRegistration: "Registracija Pravnog Lica",
         fillLegalData: "Molimo ispunite zakonski obavezne podatke za Registar Članova.",
         loginData: "Moji Podaci za Prijavu",
-        emailLabelRequired: "EMAIL ADRESA (Mora biti odobrena)",
+        emailLabelRequired: "EMAIL ADRESA",
         emailPlaceholder: "ime@primjer.com",
         personalData: "Osobni Podaci",
         representativeData: "Podaci o Zastupniku",
@@ -1306,6 +1308,7 @@ export const translations = {
 
         // Register Page
         registerUserNotCreated: "Registration error - user not created.",
+        registerEmailLimitError: "Our system cannot currently send a confirmation email due to security rate limits. Your account HAS been created, but please reach out to the administrator to manually approve you. (Error: Rate Limit)",
         errorOccurred: "An error occurred.",
         requestReceived: "Request Received!",
         requestReceivedDesc: "Your account has been created and is awaiting administrator approval. We will notify you by email once access is granted.",
@@ -1323,7 +1326,7 @@ export const translations = {
         corporateRegistration: "Corporate Registration",
         fillLegalData: "Please fill in the legally required data for the Membership Registry.",
         loginData: "My Login Details",
-        emailLabelRequired: "EMAIL ADDRESS (Must be approved)",
+        emailLabelRequired: "EMAIL ADDRESS",
         emailPlaceholder: "name@example.com",
         personalData: "Personal Data",
         representativeData: "Representative Details",
@@ -1781,6 +1784,7 @@ export const translations = {
 
         // Register Page
         registerUserNotCreated: "Registrierungsfehler - Benutzer nicht erstellt.",
+        registerEmailLimitError: "Das System kann aufgrund von Sicherheitsbeschränkungen derzeit keine Bestätigungs-E-Mail senden. Ihr Konto WURDE erstellt. Bitte kontaktieren Sie den Administrator zur manuellen Freischaltung. (Fehler: Rate Limit)",
         errorOccurred: "Ein Fehler ist aufgetreten.",
         requestReceived: "Anfrage Erhalten!",
         requestReceivedDesc: "Ihr Konto wurde erstellt und wartet auf die Genehmigung durch den Administrator. Wir benachrichtigen Sie per E-Mail, sobald der Zugang gewährt wurde.",
@@ -1798,7 +1802,7 @@ export const translations = {
         corporateRegistration: "Firmregistrierung",
         fillLegalData: "Bitte füllen Sie die gesetzlich vorgeschriebenen Daten für das Mitgliederregister aus.",
         loginData: "Meine Anmeldedaten",
-        emailLabelRequired: "E-MAIL-ADRESSE (Muss genehmigt werden)",
+        emailLabelRequired: "E-MAIL ADRESSE",
         emailPlaceholder: "name@beispiel.com",
         personalData: "Persönliche Daten",
         representativeData: "Vertreterdetails",
