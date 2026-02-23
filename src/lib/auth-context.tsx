@@ -29,22 +29,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const router = useRouter();
 
     useEffect(() => {
-        // 1. Check Supabase Session
-        const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+        // Create an async helper to handle session logic
+        const handleSession = async (session: any) => {
             try {
                 if (session?.user) {
-                    // Fetch status securely via Server Action bypassing RLS
                     const userStatus = await getUserStatus(session.user.email!);
-
-                    // Check if user is the admin email
                     const isAdmin = session.user.email === 'udrugabaljci@gmail.com';
-
-                    // Get profile details (tier)
-                    const { data: profileData } = await supabase
+                    
+                    const { data: profileData, error: profileError } = await supabase
                         .from('profiles')
                         .select('membership_tier')
                         .eq('id', session.user.id)
                         .maybeSingle();
+
+                    if (profileError) {
+                        console.error("Error fetching profile:", profileError);
+                    }
 
                     const memberUser: User = {
                         id: session.user.id,
@@ -61,8 +61,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             } catch (err) {
                 console.error("Auth State Check Error:", err);
                 setUser(null);
+            } finally {
+                setIsLoading(false); // ALWAYS set loading to false
             }
-            setIsLoading(false); // ALWAYS set loading to false after checking auth state
+        };
+
+        // 1. Check Initial Session explicitly to avoid hanging loading states
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            handleSession(session);
+        });
+
+        // 2. Listen to subsequent Auth changes
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+            if (event === 'INITIAL_SESSION') return; // Handled by getSession above
+            handleSession(session);
         });
 
         return () => subscription.unsubscribe();
