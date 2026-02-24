@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { getTopicDetail, Topic, Comment } from '@/actions/forum';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth-context';
-import { ArrowLeft, MessageSquare, Send, User, Calendar, Shield } from 'lucide-react';
+import { ArrowLeft, MessageSquare, Send, User, Calendar, Shield, Crown, Heart, Star, Award } from 'lucide-react';
 import Link from 'next/link';
 import { useLanguage } from '@/lib/language-context';
 
@@ -22,6 +22,32 @@ export default function TopicPage() {
     const [loading, setLoading] = useState(true);
     const [replyContent, setReplyContent] = useState('');
     const [submitting, setSubmitting] = useState(false);
+
+    const renderDonorBadge = (tier?: string) => {
+        if (!tier || tier === 'none') return null;
+        switch (tier) {
+            case 'donor_plus':
+                return <span className="flex items-center gap-1 bg-gradient-to-r from-blue-100 to-indigo-100 text-indigo-700 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border border-indigo-200" title="Premium Donor"><Heart size={10} className="fill-indigo-500" /> Donator +</span>;
+            case 'vip':
+                return <span className="flex items-center gap-1 bg-gradient-to-r from-purple-100 to-fuchsia-100 text-fuchsia-700 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border border-fuchsia-200" title="VIP Donor"><Star size={10} className="fill-fuchsia-500" /> VIP Donator</span>;
+            case 'gold':
+                return <span className="flex items-center gap-1 bg-gradient-to-r from-yellow-100 to-amber-100 text-amber-700 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border border-amber-200" title="Gold Donor"><Crown size={10} className="text-amber-500" /> Gold Donator</span>;
+            default:
+                return null;
+        }
+    };
+
+    const renderMembershipBadge = (tier?: string) => {
+        if (!tier || tier === 'free') return null;
+        switch (tier) {
+            case 'supporter':
+                return <span className="flex items-center gap-1 bg-slate-100 text-slate-600 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border border-slate-200" title="Supporter Member"><Award size={10} /> Podupiratelj</span>;
+            case 'voting':
+                return <span className="flex items-center gap-1 bg-sky-100 text-sky-700 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border border-sky-200" title="Voting Member"><Shield size={10} /> Punopravni Član</span>;
+            default:
+                return null;
+        }
+    };
 
     const loadData = async () => {
         if (!topicId) return;
@@ -64,6 +90,11 @@ export default function TopicPage() {
         setSubmitting(false);
     };
 
+    const [editingTopic, setEditingTopic] = useState(false);
+    const [editTopicContent, setEditTopicContent] = useState('');
+    const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
+    const [editCommentContent, setEditCommentContent] = useState('');
+
     if (loading) return <div className="p-8 text-center text-slate-400">{t.checking || 'Loading...'}</div>;
     if (!topic) return <div className="p-8 text-center text-red-500">{t.topicNotFound || 'Topic not found.'}</div>;
 
@@ -90,10 +121,6 @@ export default function TopicPage() {
         }
     };
 
-    const [editingTopic, setEditingTopic] = useState(false);
-    const [editTopicContent, setEditTopicContent] = useState('');
-    const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
-    const [editCommentContent, setEditCommentContent] = useState('');
 
     const handleUpdateTopic = async () => {
         if (!editTopicContent.trim()) return;
@@ -152,17 +179,21 @@ export default function TopicPage() {
             <div className="bg-white p-8 rounded-xl shadow-sm border border-sky-100">
                 <div className="flex items-center gap-3 mb-6 border-b border-slate-50 pb-4">
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg shadow-sm border ${topic.author_role === 'admin' ? 'bg-amber-100 text-amber-700 border-amber-200' : 'bg-sky-100 text-sky-700 border-sky-200'}`}>
-                        {topic.author_role === 'admin' ? <Shield size={20} /> : topic.author_name.charAt(0)}
+                        {topic.author_role === 'admin' ? <Shield size={20} /> : String(topic.author_name || '?').charAt(0).toUpperCase()}
                     </div>
                     <div>
-                        <h1 className={`text-xl font-bold flex items-center gap-2 ${topic.author_role === 'admin' ? 'text-amber-700' : 'text-slate-900'}`}>
-                            {topic.author_name}
-                            {topic.author_role === 'admin' && (
-                                <span className="text-[10px] bg-amber-500 text-white px-2 py-0.5 rounded uppercase tracking-wide shadow-sm">
-                                    Admin
-                                </span>
-                            )}
-                        </h1>
+                        <div className="flex flex-wrap items-center gap-2 mb-1">
+                            <h1 className={`text-xl font-bold flex items-center gap-2 ${topic.author_role === 'admin' ? 'text-amber-700' : 'text-slate-900'}`}>
+                                {topic.author_name}
+                                {topic.author_role === 'admin' && (
+                                    <span className="text-[10px] bg-amber-500 text-white px-2 py-0.5 rounded uppercase tracking-wide shadow-sm">
+                                        Admin
+                                    </span>
+                                )}
+                            </h1>
+                            {renderMembershipBadge(topic.author_membership_tier)}
+                            {renderDonorBadge(topic.author_donor_tier)}
+                        </div>
                         <p className="text-xs text-slate-400 flex items-center gap-1 mt-0.5">
                             <Calendar size={12} />
                             {new Date(topic.created_at).toLocaleString(language === 'en' ? 'en-US' : 'hr-HR')}
@@ -226,15 +257,19 @@ export default function TopicPage() {
 
                         <div className="flex-shrink-0">
                             <div className={`w-8 h-8 rounded-full border shadow-sm flex items-center justify-center font-bold text-xs ${comment.author_role === 'admin' ? 'bg-amber-50 text-amber-600 border-amber-200' : 'bg-white text-slate-500 border-slate-200'}`}>
-                                {comment.author_role === 'admin' ? <Shield size={14} /> : comment.author_name.charAt(0)}
+                                {comment.author_role === 'admin' ? <Shield size={14} /> : String(comment.author_name || '?').charAt(0).toUpperCase()}
                             </div>
                         </div>
                         <div className="flex-1">
                             <div className="flex justify-between items-baseline mb-2">
-                                <span className={`font-bold text-sm flex items-center gap-1.5 ${comment.author_role === 'admin' ? 'text-amber-700' : 'text-slate-700'}`}>
-                                    {comment.author_name}
-                                    {comment.author_role === 'admin' && <Shield size={12} className="text-amber-500" />}
-                                </span>
+                                <div className="flex flex-wrap items-center gap-2">
+                                    <span className={`font-bold text-sm flex items-center gap-1.5 ${comment.author_role === 'admin' ? 'text-amber-700' : 'text-slate-700'}`}>
+                                        {comment.author_name}
+                                        {comment.author_role === 'admin' && <Shield size={12} className="text-amber-500" />}
+                                    </span>
+                                    {renderMembershipBadge(comment.author_membership_tier)}
+                                    {renderDonorBadge(comment.author_donor_tier)}
+                                </div>
                                 <span className="text-xs text-slate-400">{new Date(comment.created_at).toLocaleString(language === 'en' ? 'en-US' : 'hr-HR')}</span>
                             </div>
 

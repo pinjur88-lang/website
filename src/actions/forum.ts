@@ -13,6 +13,8 @@ export type Topic = {
     content: string;
     author_name: string;
     author_role?: string;
+    author_membership_tier?: string;
+    author_donor_tier?: string;
     created_at: string;
     created_by: string;
     comment_count?: number;
@@ -23,6 +25,8 @@ export type Comment = {
     content: string;
     author_name: string;
     author_role?: string;
+    author_membership_tier?: string;
+    author_donor_tier?: string;
     created_at: string;
     created_by: string;
 };
@@ -45,18 +49,23 @@ export async function getTopics() {
         // Get unique user IDs, excluding anonymous posts if needed (but currently we show them just don't map name)
         const userIds = Array.from(new Set(posts.map(p => p.user_id).filter(Boolean)));
 
-        let profilesMap: Record<string, { name: string, role: string }> = {};
+        let profilesMap: Record<string, { name: string, role: string, membership_tier?: string, donor_tier?: string }> = {};
         if (userIds.length > 0) {
             const { data: profiles, error: profilesError } = await supabaseAdmin
                 .from('profiles')
-                .select('id, display_name, role')
+                .select('id, display_name, role, membership_tier, donor_tier')
                 .in('id', userIds);
 
             if (!profilesError && profiles) {
                 profilesMap = profiles.reduce((acc, profile) => {
-                    acc[profile.id] = { name: profile.display_name, role: profile.role };
+                    acc[profile.id] = {
+                        name: profile.display_name,
+                        role: profile.role,
+                        membership_tier: profile.membership_tier,
+                        donor_tier: profile.donor_tier
+                    };
                     return acc;
-                }, {} as Record<string, { name: string, role: string }>);
+                }, {} as Record<string, { name: string, role: string, membership_tier?: string, donor_tier?: string }>);
             }
         }
 
@@ -73,6 +82,8 @@ export async function getTopics() {
                 content: post.content,
                 author_name: displayName,
                 author_role: role,
+                author_membership_tier: isAnon ? undefined : profile?.membership_tier,
+                author_donor_tier: isAnon ? undefined : profile?.donor_tier,
                 created_at: post.created_at,
                 created_by: post.user_id
             };
@@ -114,18 +125,23 @@ export async function getTopicDetail(topicId: string) {
             });
         }
 
-        let profilesMap: Record<string, { name: string, role: string }> = {};
+        let profilesMap: Record<string, { name: string, role: string, membership_tier?: string, donor_tier?: string }> = {};
         if (userIds.size > 0) {
             const { data: profiles, error: profilesError } = await supabaseAdmin
                 .from('profiles')
-                .select('id, display_name, role')
+                .select('id, display_name, role, membership_tier, donor_tier')
                 .in('id', Array.from(userIds));
 
             if (!profilesError && profiles) {
                 profilesMap = profiles.reduce((acc, profile) => {
-                    acc[profile.id] = { name: profile.display_name, role: profile.role };
+                    acc[profile.id] = {
+                        name: profile.display_name,
+                        role: profile.role,
+                        membership_tier: profile.membership_tier,
+                        donor_tier: profile.donor_tier
+                    };
                     return acc;
-                }, {} as Record<string, { name: string, role: string }>);
+                }, {} as Record<string, { name: string, role: string, membership_tier?: string, donor_tier?: string }>);
             }
         }
 
@@ -140,6 +156,8 @@ export async function getTopicDetail(topicId: string) {
             content: topic.content,
             author_name: topicDisplayName,
             author_role: isTopicAnon ? 'user' : (topicProfile?.role || 'user'),
+            author_membership_tier: isTopicAnon ? undefined : topicProfile?.membership_tier,
+            author_donor_tier: isTopicAnon ? undefined : topicProfile?.donor_tier,
             created_at: topic.created_at,
             created_by: topic.user_id
         };
@@ -151,6 +169,8 @@ export async function getTopicDetail(topicId: string) {
                 content: c.content,
                 author_name: commentProfile?.name || 'Član Udruge',
                 author_role: commentProfile?.role || 'user',
+                author_membership_tier: commentProfile?.membership_tier,
+                author_donor_tier: commentProfile?.donor_tier,
                 created_at: c.created_at,
                 created_by: c.user_id
             };

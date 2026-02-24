@@ -330,9 +330,23 @@ export async function getAllMembersForRegistry() {
             email: authMap.get(p.id) || 'unknown'
         }));
 
+        // Deduplicate profiles by email
+        const uniqueProfilesMap = new Map();
+        enrichedProfiles.forEach((p) => {
+            if (p.email === 'unknown') {
+                uniqueProfilesMap.set(p.id, p);
+            } else {
+                if (!uniqueProfilesMap.has(p.email) || new Date(p.created_at) > new Date(uniqueProfilesMap.get(p.email).created_at)) {
+                    uniqueProfilesMap.set(p.email, p);
+                }
+            }
+        });
+
+        const uniqueProfiles = Array.from(uniqueProfilesMap.values());
+
         return {
             data: {
-                profiles: enrichedProfiles,
+                profiles: uniqueProfiles,
                 family: familyRes.data,
                 companies: companiesRes.data
             }
@@ -341,4 +355,4 @@ export async function getAllMembersForRegistry() {
         return { error: error.message };
     }
 }
-
+

@@ -146,29 +146,7 @@ export default function DashboardHome() {
                         </a>
                     </div>
 
-                    {/* Digitalni Spomenar Widget */}
-                    <div className="bg-gradient-to-br from-amber-600 to-orange-700 p-6 rounded-lg shadow-md text-white group hover:shadow-lg transition-all relative overflow-hidden">
-                        <div className="absolute top-0 right-0 p-4 opacity-10">
-                            <ImageIcon size={100} />
-                        </div>
-                        <div className="relative z-10">
-                            <div className="flex items-center gap-3 mb-3">
-                                <div className="p-2 bg-white/20 rounded-lg">
-                                    <ImageIcon size={20} />
-                                </div>
-                                <h3 className="font-bold">{t.digitalSpomenar || "Digitalni Spomenar"}</h3>
-                            </div>
-                            <p className="text-orange-50 text-xs mb-4 leading-relaxed font-medium">
-                                {t.spomenarDesc || "Imate stare fotografije u kutiji cipela? Gradimo trajnu povijest Baljaka."}
-                            </p>
-                            <p className="text-orange-100/80 text-[10px] mb-4 italic border-l-2 border-orange-400 pl-2">
-                                {t.spomenarNote || '"Nagrada: Za svaku sliku, Admin će vam besplatno restaurirati jednu!"'}
-                            </p>
-                            <a href="/dashboard/spomenar" className="text-white text-xs font-bold hover:underline flex items-center gap-1">
-                                {t.uploadPhotos || "Učitaj Fotografije"} <span className="text-lg">→</span>
-                            </a>
-                        </div>
-                    </div>
+                    {/* Widget Temporarily Removed */}
 
                     {/* Social Groups Card (Compact) */}
                     <div className="bg-white p-4 rounded-lg shadow-sm border border-sky-100">

@@ -63,6 +63,29 @@ function LoginContent() {
         }
     };
 
+    if (isAuthLoading) {
+        return (
+            <div className="min-h-screen bg-zinc-50 flex flex-col justify-center items-center p-4">
+                <div className="animate-pulse flex flex-col items-center gap-4">
+                    <Lock size={48} className="text-zinc-300" />
+                    <p className="text-zinc-500 text-sm font-medium">{t.loading || 'Učitavanje...'}</p>
+                </div>
+            </div>
+        );
+    }
+
+    // If user is already loaded and we are about to redirect, show a smooth transition state
+    if (user) {
+        return (
+            <div className="min-h-screen bg-zinc-50 flex flex-col justify-center items-center p-4">
+                <div className="animate-pulse flex flex-col items-center gap-4">
+                    <div className="w-8 h-8 md:w-12 md:h-12 border-4 border-zinc-200 border-t-zinc-900 rounded-full animate-spin"></div>
+                    <p className="text-zinc-600 font-medium tracking-wide animate-pulse">Preusmjeravanje...</p>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="min-h-screen bg-zinc-50 flex flex-col justify-center items-center p-4">
             <div className="w-full max-w-md space-y-8 animate-in fade-in zoom-in duration-500">

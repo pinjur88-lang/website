@@ -3,6 +3,8 @@ export type Language = 'hr' | 'sr' | 'en' | 'de';
 export const translations = {
     hr: {
         exploreHeritage: "Istražite Našu Digitalnu Baštinu",
+        documents: "Dokumenti",
+        projects: "Projekti",
         membersOnly: "(Samo za članove)",
         feat1Title: "Interaktivna Karta Sela",
         feat1Desc: "Pronađite kamenu kuću svojih predaka. Kliknite na krov za povijesne zapise i fotografije od 1920-ih do 1990-ih.",
@@ -492,6 +494,8 @@ export const translations = {
     },
     sr: {
         exploreHeritage: "Istražite Našu Digitalnu Baštinu",
+        documents: "Dokumenti",
+        projects: "Projekti",
         membersOnly: "(Samo za članove)",
         feat1Title: "Interaktivna Karta Sela",
         feat1Desc: "Pronađite kamenu kuću svojih predaka. Kliknite na krov za historijske zapise i fotografije od 1920-ih do 1990-ih.",
@@ -976,6 +980,8 @@ export const translations = {
     },
     en: {
         exploreHeritage: "Explore Our Digital Heritage",
+        documents: "Documents",
+        projects: "Projects",
         membersOnly: "(Members Only)",
         feat1Title: "Interactive Village Map",
         feat1Desc: "Find your family's original stone house. Click any roof to see historical records and photos from 1920-1990.",
@@ -1441,6 +1447,8 @@ export const translations = {
     },
     de: {
         exploreHeritage: "Entdecken Sie Unser Digitales Erbe",
+        documents: "Unterlagen",
+        projects: "Projekte",
         membersOnly: "(Nur für Mitglieder)",
         feat1Title: "Interaktive Dorfkarte",
         feat1Desc: "Finden Sie das ursprüngliche Steinhaus Ihrer Familie. Klicken Sie auf ein Dach, um historische Aufzeichnungen und Fotos von 1920-1990 zu sehen.",

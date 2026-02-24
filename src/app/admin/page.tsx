@@ -243,6 +243,13 @@ export default function AdminMembersPage() {
                 </div>
             )}
 
+            {/* INBOX TAB */}
+            {activeTab === 'inbox' && (
+                <div className="bg-white p-6 rounded-lg shadow-sm border border-zinc-200">
+                    <AdminInboxManager />
+                </div>
+            )}
+
             {/* REGISTRY TAB */}
             {activeTab === 'registry' && (
                 <div className="space-y-6">

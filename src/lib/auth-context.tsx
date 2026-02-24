@@ -38,7 +38,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
                     const { data: profileData, error: profileError } = await supabase
                         .from('profiles')
-                        .select('membership_tier')
+                        .select('membership_tier, role')
                         .eq('id', session.user.id)
                         .maybeSingle();
 
@@ -46,11 +46,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                         console.error("Error fetching profile:", profileError);
                     }
 
+                    const isProfileAdmin = profileData?.role === 'admin';
+                    const finalRole = (isAdmin || isProfileAdmin) ? 'admin' : 'member';
+
                     const memberUser: User = {
                         id: session.user.id,
                         name: session.user.user_metadata?.display_name || 'Član',
                         email: session.user.email!,
-                        role: isAdmin ? 'admin' : 'member',
+                        role: finalRole,
                         membership_tier: profileData?.membership_tier || 'free',
                         status: userStatus || 'pending'
                     };

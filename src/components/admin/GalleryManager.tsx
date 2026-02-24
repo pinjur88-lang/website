@@ -34,28 +34,31 @@ export default function GalleryManager() {
         if (!e.target.files || e.target.files.length === 0) return;
 
         setUploading(true);
-        const file = e.target.files[0];
-        const fileExt = file.name.split('.').pop();
-        const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
-        const filePath = `${fileName}`;
+        const files = Array.from(e.target.files);
 
         try {
-            // 1. Upload to Supabase Storage
-            const { error: uploadError } = await supabase.storage
-                .from('gallery')
-                .upload(filePath, file);
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const fileExt = file.name.split('.').pop();
+                const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
+                const filePath = `${fileName}`;
 
-            if (uploadError) throw uploadError;
+                // 1. Upload to Supabase Storage
+                const { error: uploadError } = await supabase.storage
+                    .from('gallery')
+                    .upload(filePath, file);
 
-            // 2. Get Public URL
-            const { data: { publicUrl } } = supabase.storage
-                .from('gallery')
-                .getPublicUrl(filePath);
+                if (uploadError) throw uploadError;
 
-            // 3. Save reference to Database
-            const { error: dbError } = await saveGalleryImageRef(publicUrl, file.name); // Using filename as default caption
-            if (dbError) throw dbError;
+                // 2. Get Public URL
+                const { data: { publicUrl } } = supabase.storage
+                    .from('gallery')
+                    .getPublicUrl(filePath);
 
+                // 3. Save reference to Database
+                const { error: dbError } = await saveGalleryImageRef(publicUrl, file.name);
+                if (dbError) throw dbError;
+            }
             loadImages();
         } catch (error: any) {
             alert('Upload failed: ' + error.message);
@@ -83,6 +86,9 @@ export default function GalleryManager() {
         if (error) {
             alert('Failed to delete image reference.');
             loadImages();
+        } else {
+            // Force reload to sync state
+            loadImages();
         }
 
         // Optional: Try to delete from storage if we can extract path
@@ -98,6 +104,7 @@ export default function GalleryManager() {
                     <input
                         type="file"
                         accept="image/*"
+                        multiple
                         onChange={handleFileUpload}
                         disabled={uploading}
                         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed"
@@ -107,7 +114,7 @@ export default function GalleryManager() {
                         className="flex items-center gap-2 px-4 py-2 bg-zinc-900 text-white rounded-sm text-sm hover:bg-zinc-700 transition-colors disabled:opacity-50"
                     >
                         {uploading ? <Loader2 className="animate-spin" size={16} /> : <Upload size={16} />}
-                        {uploading ? 'Uploading...' : 'Upload Image'}
+                        {uploading ? 'Uploading...' : 'Upload Images'}
                     </button>
                 </div>
             </div>

@@ -2,35 +2,15 @@
 
 import { useLanguage } from "@/lib/language-context";
 import Image from "next/image";
-import { CreditCard, Landmark, Check, Globe } from "lucide-react";
+import { CreditCard, Landmark, Check } from "lucide-react";
 
 export default function DashboardDonatePage() {
-    const { t, language, setLanguage } = useLanguage();
-
-    const toggleLang = () => {
-        if (language === "en") setLanguage("hr");
-        else if (language === "hr") setLanguage("sr");
-        else if (language === "sr") setLanguage("de");
-        else setLanguage("en");
-    };
-
+    const { t } = useLanguage();
     const STRIPE_LINK = "https://buy.stripe.com/5kQbJ160x3l6g8Q6FK4ZG00";
     const WISE_LINK = "https://wise.com/pay/business/udrugagradjanabaljci?utm_source=quick_pay";
 
     return (
         <div className="max-w-4xl mx-auto space-y-8 pb-12">
-            {/* Language Toggle */}
-            <div className="flex justify-end">
-                <button
-                    onClick={toggleLang}
-                    className="flex items-center gap-2 px-4 py-2 rounded-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-700 transition-all shadow-sm w-fit group"
-                >
-                    <Globe className="w-4 h-4 text-zinc-500 group-hover:text-indigo-500 transition-colors" />
-                    <span className="text-sm font-medium">
-                        {t.donateLanguageName}
-                    </span>
-                </button>
-            </div>
 
             <div className="flex flex-col gap-10">
 

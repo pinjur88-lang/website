@@ -47,15 +47,24 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             ]
         },
         {
-            title: t.navHeritageServices || "Baština & Usluge",
+            title: t.navHeritageServices || "Zavičaj & Usluge",
             items: [
+                {
+                    name: t.documents || 'Dokumenti', href: '#', icon: FileText, children: [
+                        { name: t.handbook || 'Priručnik', href: '/dashboard/handbook' },
+                        { name: t.statute || 'Statut', href: '/dashboard/statute' },
+                        { name: t.oib || 'OIB', href: '/dashboard/oib' },
+                    ]
+                },
+                {
+                    name: t.projects || 'Projekti', href: '#', icon: Hammer, children: [
+                        { name: t.renovation || 'Obnova', href: '/dashboard/renovation' },
+                        { name: t.infrastructure || 'Infrastruktura', href: '/dashboard/infrastructure' },
+                        { name: t.dumping || 'Otpad', href: '/dashboard/dumping' },
+                    ]
+                },
+                { name: t.digitalSpomenar || 'Spomenar', href: '/dashboard/spomenar', icon: BookOpen },
                 { name: t.memorial || 'Gedenkarchiv', href: '/dashboard/memorial', icon: BookOpen },
-                { name: t.handbook || 'Priručnik', href: '/dashboard/handbook', icon: BookOpen },
-                { name: t.statute || 'Statut', href: '/dashboard/statute', icon: Scale },
-                { name: t.renovation || 'Obnova', href: '/dashboard/renovation', icon: Hammer },
-                { name: t.infrastructure || 'Infrastruktura', href: '/dashboard/infrastructure', icon: Lightbulb },
-                { name: t.dumping || 'Otpad', href: '/dashboard/dumping', icon: AlertTriangle },
-                { name: t.oib || 'OIB', href: '/dashboard/oib', icon: FileText },
             ]
         }
     ];
