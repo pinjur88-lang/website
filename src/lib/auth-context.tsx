@@ -29,37 +29,40 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const router = useRouter();
 
     useEffect(() => {
-<<<<<<< HEAD
         // Create an async helper to handle session logic
         const handleSession = async (session: any) => {
             try {
                 if (session?.user) {
-                    const userStatus = await getUserStatus(session.user.email!);
-                    const isAdmin = session.user.email === 'udrugabaljci@gmail.com';
+                    // 1. Check if user is the admin email fallback
+                    const isEmailAdmin = session.user.email === 'udrugabaljci@gmail.com';
 
+                    // 2. Fetch profile data (role, tier)
                     const { data: profileData, error: profileError } = await supabase
                         .from('profiles')
                         .select('membership_tier, role')
                         .eq('id', session.user.id)
                         .maybeSingle();
-=======
-        // 2. Check Supabase Session (For Members)
-        const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-            if (session?.user) {
-                // SECURITY: Double check approval status in requests table
-                const { data: reqData } = await supabase
-                    .from('requests')
-                    .select('status')
-                    .eq('email', session.user.email!)
-                    .single();
->>>>>>> d4417a2 (feat: Anonymous posting, DB fixes, UX/Reliability improvements)
 
                     if (profileError) {
                         console.error("Error fetching profile:", profileError);
                     }
 
+                    // 3. Double check approval status in requests table
+                    const { data: reqData } = await supabase
+                        .from('requests')
+                        .select('status')
+                        .eq('email', session.user.email!)
+                        .maybeSingle();
+
+                    if (reqData && reqData.status !== 'approved' && !isEmailAdmin) {
+                        console.warn('User logged in but not approved. Logging out.');
+                        await supabase.auth.signOut();
+                        setUser(null);
+                        return;
+                    }
+
                     const isProfileAdmin = profileData?.role === 'admin';
-                    const finalRole = (isAdmin || isProfileAdmin) ? 'admin' : 'member';
+                    const finalRole = (isEmailAdmin || isProfileAdmin) ? 'admin' : 'member';
 
                     const memberUser: User = {
                         id: session.user.id,
@@ -67,41 +70,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                         email: session.user.email!,
                         role: finalRole,
                         membership_tier: profileData?.membership_tier || 'free',
-                        status: userStatus || 'pending'
+                        status: reqData?.status || 'pending'
                     };
                     setUser(memberUser);
                 } else {
                     setUser(null);
-<<<<<<< HEAD
                 }
             } catch (err) {
                 console.error("Auth State Check Error:", err);
-=======
-                    setIsLoading(false);
-                    return;
-                }
-
-                // Check if user is the admin email
-                const isAdmin = session.user.email === 'udrugabaljci@gmail.com';
-
-                // Get profile details (tier)
-                const { data: profileData } = await supabase
-                    .from('profiles')
-                    .select('membership_tier')
-                    .eq('id', session.user.id)
-                    .single();
-
-                const memberUser: User = {
-                    id: session.user.id,
-                    name: session.user.user_metadata?.display_name || 'Član',
-                    email: session.user.email!,
-                    role: isAdmin ? 'admin' : 'member',
-                    membership_tier: profileData?.membership_tier || 'free'
-                };
-                setUser(memberUser);
-            } else {
->>>>>>> d4417a2 (feat: Anonymous posting, DB fixes, UX/Reliability improvements)
-                setUser(null);
             } finally {
                 setIsLoading(false); // ALWAYS set loading to false
             }
@@ -138,23 +114,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 }
 
                 if (data.user) {
-<<<<<<< HEAD
-                    // We no longer push to router here. 
-                    // login/page.tsx's useEffect will natively catch the populated user and redirect.
-=======
-                    // Check if Admin to redirect properly
-                    const { data: profile } = await supabase
-                        .from('profiles')
-                        .select('role')
-                        .eq('id', data.user.id)
-                        .single();
-
-                    if (profile?.role === 'admin') {
-                        router.push('/admin');
-                    } else {
-                        router.push('/dashboard');
-                    }
->>>>>>> d4417a2 (feat: Anonymous posting, DB fixes, UX/Reliability improvements)
+                    // No redirect here - handleSession will catch state change and login/page.tsx will redirect
                     return { error: null };
                 }
             }

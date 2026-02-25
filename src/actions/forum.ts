@@ -33,21 +33,17 @@ export type Comment = {
 
 export async function getTopics() {
     try {
-        // 1. Fetch posts without joining profiles
+        // 1. Fetch posts with profile join for performance (if possible)
         const { data: posts, error: postsError } = await supabaseAdmin
             .from('community_posts')
-<<<<<<< HEAD
-            .select('id, content, created_at, user_id, author_id, is_anonymous')
-=======
             .select(`
                 id,
                 content,
                 created_at,
                 user_id,
                 is_anonymous,
-                profiles!user_id(full_name)
+                profiles!user_id(full_name, role, membership_tier, donor_tier, display_name)
             `)
->>>>>>> d4417a2 (feat: Anonymous posting, DB fixes, UX/Reliability improvements)
             .order('created_at', { ascending: false });
 
         if (postsError) throw postsError;
@@ -56,36 +52,11 @@ export async function getTopics() {
             return { data: [] };
         }
 
-<<<<<<< HEAD
-        // 2. Fetch profiles for these users
-        // Get unique user IDs, excluding anonymous posts if needed (but currently we show them just don't map name)
-        const userIds = Array.from(new Set(posts.map(p => p.user_id).filter(Boolean)));
-
-        let profilesMap: Record<string, { name: string, role: string, membership_tier?: string, donor_tier?: string }> = {};
-        if (userIds.length > 0) {
-            const { data: profiles, error: profilesError } = await supabaseAdmin
-                .from('profiles')
-                .select('id, display_name, role, membership_tier, donor_tier')
-                .in('id', userIds);
-
-            if (!profilesError && profiles) {
-                profilesMap = profiles.reduce((acc, profile) => {
-                    acc[profile.id] = {
-                        name: profile.display_name,
-                        role: profile.role,
-                        membership_tier: profile.membership_tier,
-                        donor_tier: profile.donor_tier
-                    };
-                    return acc;
-                }, {} as Record<string, { name: string, role: string, membership_tier?: string, donor_tier?: string }>);
-            }
-        }
-
         // 3. Map together
         const topics: Topic[] = posts.map((post: any) => {
             const isAnon = post.is_anonymous === true;
-            const profile = profilesMap[post.user_id];
-            const displayName = isAnon ? 'Anonymous' : (profile?.name || 'Član Udruge');
+            const profile = post.profiles; // From join
+            const displayName = isAnon ? 'Anonimni Član' : (profile?.full_name || profile?.display_name || 'Član Udruge');
             const role = isAnon ? 'user' : (profile?.role || 'user');
 
             return {
@@ -101,16 +72,6 @@ export async function getTopics() {
             };
         });
 =======
-        const topics: Topic[] = data.map((post: any) => ({
-            id: post.id,
-            title: post.content.length > 50 ? post.content.substring(0, 50) + '...' : post.content,
-            content: post.content,
-            author_name: post.is_anonymous ? 'Anonimni Član' : (post.profiles?.full_name || 'Nepoznato'),
-            created_at: post.created_at,
-            created_by: post.user_id
-        }));
->>>>>>> d4417a2 (feat: Anonymous posting, DB fixes, UX/Reliability improvements)
-
         return { data: topics };
     } catch (error: any) {
         return { error: error.message };
@@ -122,18 +83,14 @@ export async function getTopicDetail(topicId: string) {
         // 1. Fetch Topic
         const { data: topic, error: topicError } = await supabaseAdmin
             .from('community_posts')
-<<<<<<< HEAD
-            .select('id, content, created_at, user_id, author_id, is_anonymous')
-=======
             .select(`
                 id,
                 content,
                 created_at,
                 user_id,
                 is_anonymous,
-                profiles!user_id(full_name)
+                profiles!user_id(full_name, role, membership_tier, donor_tier, display_name)
             `)
->>>>>>> d4417a2 (feat: Anonymous posting, DB fixes, UX/Reliability improvements)
             .eq('id', topicId)
             .single();
 
@@ -143,96 +100,50 @@ export async function getTopicDetail(topicId: string) {
         // 2. Fetch Comments
         const { data: comments, error: commentsError } = await supabaseAdmin
             .from('community_comments')
-<<<<<<< HEAD
-            .select('id, content, created_at, user_id, author_id')
-=======
             .select(`
                 id,
                 content,
                 created_at,
                 user_id,
                 is_anonymous,
-                profiles!user_id(full_name)
+                profiles!user_id(full_name, role, membership_tier, donor_tier, display_name)
             `)
->>>>>>> d4417a2 (feat: Anonymous posting, DB fixes, UX/Reliability improvements)
             .eq('post_id', topicId)
             .order('created_at', { ascending: true });
 
         if (commentsError) throw commentsError;
 
-        // 3. Fetch Profiles for both topic and comments
-        const userIds = new Set<string>();
-        if (topic.user_id) userIds.add(topic.user_id);
-        if (comments) {
-            comments.forEach(c => {
-                if (c.user_id) userIds.add(c.user_id);
-            });
-        }
-
-        let profilesMap: Record<string, { name: string, role: string, membership_tier?: string, donor_tier?: string }> = {};
-        if (userIds.size > 0) {
-            const { data: profiles, error: profilesError } = await supabaseAdmin
-                .from('profiles')
-                .select('id, display_name, role, membership_tier, donor_tier')
-                .in('id', Array.from(userIds));
-
-            if (!profilesError && profiles) {
-                profilesMap = profiles.reduce((acc, profile) => {
-                    acc[profile.id] = {
-                        name: profile.display_name,
-                        role: profile.role,
-                        membership_tier: profile.membership_tier,
-                        donor_tier: profile.donor_tier
-                    };
-                    return acc;
-                }, {} as Record<string, { name: string, role: string, membership_tier?: string, donor_tier?: string }>);
-            }
-        }
-
-        // 4. Format Output
+        // 3. Format Output
         const isTopicAnon = topic.is_anonymous === true;
-        const topicProfile = profilesMap[topic.user_id];
-        const topicDisplayName = isTopicAnon ? 'Anonymous' : (topicProfile?.name || 'Član Udruge');
+        const topicProfile = topic.profiles;
+        const topicDisplayName = isTopicAnon ? 'Anonimni Član' : (topicProfile?.full_name || topicProfile?.display_name || 'Član Udruge');
 
         const formattedTopic: Topic = {
             id: topic.id,
             title: topic.content,
             content: topic.content,
-<<<<<<< HEAD
             author_name: topicDisplayName,
             author_role: isTopicAnon ? 'user' : (topicProfile?.role || 'user'),
             author_membership_tier: isTopicAnon ? undefined : topicProfile?.membership_tier,
             author_donor_tier: isTopicAnon ? undefined : topicProfile?.donor_tier,
-=======
-            author_name: topic.is_anonymous ? 'Anonimni Član' : (Array.isArray(topic.profiles) ? (topic.profiles[0] as any)?.full_name : (topic.profiles as any)?.full_name || 'Nepoznato'),
->>>>>>> d4417a2 (feat: Anonymous posting, DB fixes, UX/Reliability improvements)
             created_at: topic.created_at,
             created_by: topic.user_id
         };
 
-<<<<<<< HEAD
         const formattedComments: Comment[] = (comments || []).map((c: any) => {
-            const commentProfile = profilesMap[c.user_id];
+            const isCommentAnon = c.is_anonymous === true;
+            const commentProfile = c.profiles;
             return {
                 id: c.id,
                 content: c.content,
-                author_name: commentProfile?.name || 'Član Udruge',
-                author_role: commentProfile?.role || 'user',
-                author_membership_tier: commentProfile?.membership_tier,
-                author_donor_tier: commentProfile?.donor_tier,
+                author_name: isCommentAnon ? 'Anonimni Član' : (commentProfile?.full_name || commentProfile?.display_name || 'Član Udruge'),
+                author_role: isCommentAnon ? 'user' : (commentProfile?.role || 'user'),
+                author_membership_tier: isCommentAnon ? undefined : commentProfile?.membership_tier,
+                author_donor_tier: isCommentAnon ? undefined : commentProfile?.donor_tier,
                 created_at: c.created_at,
                 created_by: c.user_id
             };
         });
-=======
-        const formattedComments: Comment[] = comments.map((c: any) => ({
-            id: c.id,
-            content: c.content,
-            author_name: c.is_anonymous ? 'Anonimni Član' : (Array.isArray(c.profiles) ? (c.profiles[0] as any)?.full_name : (c.profiles as any)?.full_name || 'Nepoznato'),
-            created_at: c.created_at,
-            created_by: c.user_id
-        }));
->>>>>>> d4417a2 (feat: Anonymous posting, DB fixes, UX/Reliability improvements)
 
         return { topic: formattedTopic, comments: formattedComments };
 

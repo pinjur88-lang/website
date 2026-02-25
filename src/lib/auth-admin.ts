@@ -30,11 +30,7 @@ export async function verifyAdmin() {
         .eq('id', user.id)
         .single();
 
-<<<<<<< HEAD
     if (profile?.role === 'admin' || user.email === 'udrugabaljci@gmail.com') {
-=======
-    if (profile?.role === 'admin') {
->>>>>>> d4417a2 (feat: Anonymous posting, DB fixes, UX/Reliability improvements)
         return true;
     }
 
