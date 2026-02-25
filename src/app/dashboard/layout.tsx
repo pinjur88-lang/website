@@ -124,7 +124,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                         {navGroups.map((group, groupIdx) => (
                             <div key={groupIdx}>
                                 {group.title && (
-                                    <h3 className="px-4 mb-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                                    <h3 className="px-4 mb-2 text-xs font-bold text-slate-500 uppercase tracking-wider">
                                         {group.title}
                                     </h3>
                                 )}
@@ -164,12 +164,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                                             <Link
                                                 key={item.href}
                                                 href={item.href}
-                                                className={`flex items-center gap-3 px-4 py-2.5 rounded-md text-sm font-medium transition-colors ${isActive
+                                                className={`flex items-center gap-3 px-4 py-3 rounded-md text-base font-medium transition-colors ${isActive
                                                     ? 'bg-sky-100 text-sky-900'
-                                                    : 'text-slate-600 hover:bg-sky-50 hover:text-sky-900'
+                                                    : 'text-slate-700 hover:bg-sky-50 hover:text-sky-900'
                                                     }`}
                                             >
-                                                <item.icon size={18} />
+                                                <item.icon size={20} />
                                                 {item.name}
                                             </Link>
                                         );

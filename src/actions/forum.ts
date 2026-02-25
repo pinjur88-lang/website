@@ -36,7 +36,18 @@ export async function getTopics() {
         // 1. Fetch posts without joining profiles
         const { data: posts, error: postsError } = await supabaseAdmin
             .from('community_posts')
+<<<<<<< HEAD
             .select('id, content, created_at, user_id, author_id, is_anonymous')
+=======
+            .select(`
+                id,
+                content,
+                created_at,
+                user_id,
+                is_anonymous,
+                profiles!user_id(full_name)
+            `)
+>>>>>>> d4417a2 (feat: Anonymous posting, DB fixes, UX/Reliability improvements)
             .order('created_at', { ascending: false });
 
         if (postsError) throw postsError;
@@ -45,6 +56,7 @@ export async function getTopics() {
             return { data: [] };
         }
 
+<<<<<<< HEAD
         // 2. Fetch profiles for these users
         // Get unique user IDs, excluding anonymous posts if needed (but currently we show them just don't map name)
         const userIds = Array.from(new Set(posts.map(p => p.user_id).filter(Boolean)));
@@ -88,6 +100,16 @@ export async function getTopics() {
                 created_by: post.user_id
             };
         });
+=======
+        const topics: Topic[] = data.map((post: any) => ({
+            id: post.id,
+            title: post.content.length > 50 ? post.content.substring(0, 50) + '...' : post.content,
+            content: post.content,
+            author_name: post.is_anonymous ? 'Anonimni Član' : (post.profiles?.full_name || 'Nepoznato'),
+            created_at: post.created_at,
+            created_by: post.user_id
+        }));
+>>>>>>> d4417a2 (feat: Anonymous posting, DB fixes, UX/Reliability improvements)
 
         return { data: topics };
     } catch (error: any) {
@@ -100,7 +122,18 @@ export async function getTopicDetail(topicId: string) {
         // 1. Fetch Topic
         const { data: topic, error: topicError } = await supabaseAdmin
             .from('community_posts')
+<<<<<<< HEAD
             .select('id, content, created_at, user_id, author_id, is_anonymous')
+=======
+            .select(`
+                id,
+                content,
+                created_at,
+                user_id,
+                is_anonymous,
+                profiles!user_id(full_name)
+            `)
+>>>>>>> d4417a2 (feat: Anonymous posting, DB fixes, UX/Reliability improvements)
             .eq('id', topicId)
             .single();
 
@@ -110,7 +143,18 @@ export async function getTopicDetail(topicId: string) {
         // 2. Fetch Comments
         const { data: comments, error: commentsError } = await supabaseAdmin
             .from('community_comments')
+<<<<<<< HEAD
             .select('id, content, created_at, user_id, author_id')
+=======
+            .select(`
+                id,
+                content,
+                created_at,
+                user_id,
+                is_anonymous,
+                profiles!user_id(full_name)
+            `)
+>>>>>>> d4417a2 (feat: Anonymous posting, DB fixes, UX/Reliability improvements)
             .eq('post_id', topicId)
             .order('created_at', { ascending: true });
 
@@ -154,14 +198,19 @@ export async function getTopicDetail(topicId: string) {
             id: topic.id,
             title: topic.content,
             content: topic.content,
+<<<<<<< HEAD
             author_name: topicDisplayName,
             author_role: isTopicAnon ? 'user' : (topicProfile?.role || 'user'),
             author_membership_tier: isTopicAnon ? undefined : topicProfile?.membership_tier,
             author_donor_tier: isTopicAnon ? undefined : topicProfile?.donor_tier,
+=======
+            author_name: topic.is_anonymous ? 'Anonimni Član' : (Array.isArray(topic.profiles) ? (topic.profiles[0] as any)?.full_name : (topic.profiles as any)?.full_name || 'Nepoznato'),
+>>>>>>> d4417a2 (feat: Anonymous posting, DB fixes, UX/Reliability improvements)
             created_at: topic.created_at,
             created_by: topic.user_id
         };
 
+<<<<<<< HEAD
         const formattedComments: Comment[] = (comments || []).map((c: any) => {
             const commentProfile = profilesMap[c.user_id];
             return {
@@ -175,6 +224,15 @@ export async function getTopicDetail(topicId: string) {
                 created_by: c.user_id
             };
         });
+=======
+        const formattedComments: Comment[] = comments.map((c: any) => ({
+            id: c.id,
+            content: c.content,
+            author_name: c.is_anonymous ? 'Anonimni Član' : (Array.isArray(c.profiles) ? (c.profiles[0] as any)?.full_name : (c.profiles as any)?.full_name || 'Nepoznato'),
+            created_at: c.created_at,
+            created_by: c.user_id
+        }));
+>>>>>>> d4417a2 (feat: Anonymous posting, DB fixes, UX/Reliability improvements)
 
         return { topic: formattedTopic, comments: formattedComments };
 

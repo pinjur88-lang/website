@@ -13,13 +13,15 @@ export default function ContactPage() {
     const [subject, setSubject] = useState('');
     const [message, setMessage] = useState('');
     const [category, setCategory] = useState('General');
+    const [isAnonymous, setIsAnonymous] = useState(false);
     const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
 
     const handleSend = async () => {
         setStatus('loading');
 
         const formData = new FormData();
-        formData.append('email', user?.email || 'anon@baljci.org');
+        formData.append('email', isAnonymous ? '' : (user?.email || 'anon@baljci.org'));
+        formData.append('is_anonymous', String(isAnonymous));
         formData.append('subject', subject);
         formData.append('category', category);
         formData.append('message', message);
@@ -133,8 +135,9 @@ export default function ContactPage() {
                     {/* Form Fields */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-2">
-                            <label className="text-sm font-semibold text-slate-700">{l.categoryLabel}</label>
+                            <label htmlFor="category" className="text-sm font-semibold text-slate-700">{l.categoryLabel}</label>
                             <select
+                                id="category"
                                 value={category}
                                 onChange={(e) => setCategory(e.target.value)}
                                 className="w-full p-3 bg-slate-50 border border-sky-100 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all"
@@ -147,8 +150,9 @@ export default function ContactPage() {
                             </select>
                         </div>
                         <div className="space-y-2">
-                            <label className="text-sm font-semibold text-slate-700">{l.subjectLabel}</label>
+                            <label htmlFor="subject" className="text-sm font-semibold text-slate-700">{l.subjectLabel}</label>
                             <input
+                                id="subject"
                                 type="text"
                                 value={subject}
                                 onChange={(e) => setSubject(e.target.value)}
@@ -159,8 +163,9 @@ export default function ContactPage() {
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-sm font-semibold text-slate-700">{l.messageLabel}</label>
+                        <label htmlFor="message" className="text-sm font-semibold text-slate-700">{l.messageLabel}</label>
                         <textarea
+                            id="message"
                             rows={8}
                             value={message}
                             onChange={(e) => setMessage(e.target.value)}
@@ -174,6 +179,20 @@ export default function ContactPage() {
                         <p className="text-xs text-blue-800 leading-relaxed">
                             {l.infoText}
                         </p>
+                    </div>
+
+                    <div className="flex items-center gap-3 p-4 bg-slate-50 border border-slate-100 rounded-xl">
+                        <input
+                            type="checkbox"
+                            id="anon-toggle"
+                            checked={isAnonymous}
+                            onChange={(e) => setIsAnonymous(e.target.checked)}
+                            className="w-5 h-5 text-sky-600 rounded focus:ring-sky-500 border-gray-300"
+                        />
+                        <label htmlFor="anon-toggle" className="text-sm text-slate-700 cursor-pointer select-none">
+                            <span className="font-bold block">Želim ostati anoniman</span>
+                            <span className="text-xs text-slate-500">Administratori neće vidjeti vaše ime i email adresu.</span>
+                        </label>
                     </div>
 
                     <button

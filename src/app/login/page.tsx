@@ -169,10 +169,56 @@ function LoginContent() {
                     </div>
                 </div>
 
+<<<<<<< HEAD
                 <div className="text-center">
                     <Link href="/" className="text-zinc-400 hover:text-zinc-600 text-sm transition-colors">
                         ← {t.navHome}
                     </Link>
+=======
+                <form onSubmit={handleSubmit} className="space-y-4">
+                    <div>
+                        <label htmlFor="email" className="block text-sm font-bold text-zinc-600 mb-1 uppercase">{t.emailLabel}</label>
+                        <input
+                            type="email"
+                            id="email"
+                            required
+                            className="w-full px-4 py-3 border border-zinc-300 rounded-sm text-base focus:outline-none focus:ring-2 focus:ring-zinc-800 text-zinc-900 bg-white"
+                            placeholder="ime@primjer.hr"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
+                    </div>
+                    <div>
+                        <label htmlFor="password" className="block text-sm font-bold text-zinc-600 mb-1 uppercase">{t.password}</label>
+                        <input
+                            type="password"
+                            id="password"
+                            required
+                            className="w-full px-4 py-3 border border-zinc-300 rounded-sm text-base focus:outline-none focus:ring-2 focus:ring-zinc-800 text-zinc-900 bg-white"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
+                    </div>
+
+                    {error && <p className="text-xs text-red-600 text-center">{error}</p>}
+
+                    <button
+                        type="submit"
+                        disabled={isLoading || isLocalLoading}
+                        className="w-full py-2 bg-zinc-900 hover:bg-zinc-800 text-white rounded-sm text-sm transition-colors uppercase tracking-wider relative"
+                    >
+                        {(isLoading || isLocalLoading) ? t.checking : t.signIn}
+                    </button>
+                </form>
+
+                <div className="mt-6 pt-6 border-t border-zinc-100 text-center">
+                    <p className="text-xs text-zinc-400">
+                        {t.noAccount} <a href="/" className="underline hover:text-zinc-600">{t.requestHere || "Zatraži pristup"}</a>.
+                    </p>
+                    <p className="text-xs text-zinc-400 mt-2">
+                        Imate odobrenje? <a href="/register" className="underline hover:text-zinc-600 font-bold">Registrirajte se ovdje</a>.
+                    </p>
+>>>>>>> d4417a2 (feat: Anonymous posting, DB fixes, UX/Reliability improvements)
                 </div>
             </div>
         </div>

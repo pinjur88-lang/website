@@ -8,9 +8,10 @@ export async function sendMessage(formData: FormData) {
     const subject = formData.get('subject') as string;
     const category = formData.get('category') as string;
     const message = formData.get('message') as string;
+    const isAnonymous = formData.get('is_anonymous') === 'true';
 
-    if (!message || !email) {
-        return { error: "Email and Message are required" };
+    if (!message || (!email && !isAnonymous)) {
+        return { error: "Message is required, and Email is required unless sending anonymously." };
     }
 
     try {
@@ -18,10 +19,11 @@ export async function sendMessage(formData: FormData) {
         const { error: dbError } = await supabaseAdmin
             .from('contact_messages')
             .insert([{
-                user_email: email,
+                user_email: isAnonymous ? null : email,
                 category,
                 subject,
-                message
+                message,
+                is_anonymous: isAnonymous
             }]);
 
         if (dbError) {
