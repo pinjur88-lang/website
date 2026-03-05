@@ -335,25 +335,23 @@ export default function TopicPage() {
                                         {t.anonymous || 'Anonymous'}
                                     </>
                                 ) : (
-                                </>
-                            ) : (
-                            <>
-                                <User size={14} className="text-slate-400" />
-                                {user?.name || 'Ja'}
-                            </>
-                            )}
-                        </span>
-                    </label>
-                    <button
-                        type="submit"
-                        disabled={submitting || !replyContent.trim()}
-                        className="p-3 bg-sky-600 text-white rounded-full hover:bg-sky-700 disabled:opacity-50 transition-colors shadow-md"
-                    >
-                        <Send size={20} />
-                        <span className="sr-only">{t.sendReply || 'Send Reply'}</span>
-                    </button>
-            </div>
-        </form>
+                                    <>
+                                        <User size={14} className="text-slate-400" />
+                                        {user?.name || 'Ja'}
+                                    </>
+                                )}
+                            </span>
+                        </label>
+                        <button
+                            type="submit"
+                            disabled={submitting || !replyContent.trim()}
+                            className="p-3 bg-sky-600 text-white rounded-full hover:bg-sky-700 disabled:opacity-50 transition-colors shadow-md"
+                        >
+                            <Send size={20} />
+                            <span className="sr-only">{t.sendReply || 'Send Reply'}</span>
+                        </button>
+                    </div>
+                </form>
             </div >
         </div >
     );

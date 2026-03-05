@@ -176,7 +176,6 @@ function LoginContent() {
                 </div>
             </div>
         </div>
-        </div >
     );
 }
 

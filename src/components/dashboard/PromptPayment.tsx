@@ -125,21 +125,7 @@ export default function PromptPayment() {
 
                     {/* Payment Options */}
                     <div className="space-y-4">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            <a
-                                href={selectedTier === 'voting' ? "#TODO-voting-stripe-link" : "#TODO-supporter-stripe-link"} // TODO: Need specific Stripe links
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="w-full flex items-center justify-center gap-2 py-4 bg-zinc-900 text-white rounded-xl font-bold hover:bg-zinc-800 transition-colors shadow-sm hover:shadow-md active:scale-95"
-                                onClick={(e) => {
-                                    if (e.currentTarget.getAttribute('href')?.startsWith('#TODO')) {
-                                        e.preventDefault();
-                                        alert("Stripe links for these new tiers are being generated. Please use Wise or Bank Transfer in the meantime.");
-                                    }
-                                }}
-                            >
-                                <CreditCard size={18} /> Stripe (Card)
-                            </a>
+                        <div className="grid grid-cols-1 gap-3">
                             <a
                                 href="https://wise.com/pay/business/udrugagradjanabaljci?utm_source=quick_pay"
                                 target="_blank"

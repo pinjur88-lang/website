@@ -18,6 +18,7 @@ export type Topic = {
     created_at: string;
     created_by: string;
     comment_count?: number;
+    is_anonymous?: boolean;
 };
 
 export type Comment = {
@@ -29,6 +30,7 @@ export type Comment = {
     author_donor_tier?: string;
     created_at: string;
     created_by: string;
+    is_anonymous?: boolean;
 };
 
 export async function getTopics() {
@@ -68,10 +70,11 @@ export async function getTopics() {
                 author_membership_tier: isAnon ? undefined : profile?.membership_tier,
                 author_donor_tier: isAnon ? undefined : profile?.donor_tier,
                 created_at: post.created_at,
-                created_by: post.user_id
+                created_by: post.user_id,
+                is_anonymous: isAnon
             };
         });
-=======
+
         return { data: topics };
     } catch (error: any) {
         return { error: error.message };
@@ -115,7 +118,7 @@ export async function getTopicDetail(topicId: string) {
 
         // 3. Format Output
         const isTopicAnon = topic.is_anonymous === true;
-        const topicProfile = topic.profiles;
+        const topicProfile: any = Array.isArray(topic.profiles) ? topic.profiles[0] : topic.profiles;
         const topicDisplayName = isTopicAnon ? 'Anonimni Član' : (topicProfile?.full_name || topicProfile?.display_name || 'Član Udruge');
 
         const formattedTopic: Topic = {
@@ -127,12 +130,13 @@ export async function getTopicDetail(topicId: string) {
             author_membership_tier: isTopicAnon ? undefined : topicProfile?.membership_tier,
             author_donor_tier: isTopicAnon ? undefined : topicProfile?.donor_tier,
             created_at: topic.created_at,
-            created_by: topic.user_id
+            created_by: topic.user_id,
+            is_anonymous: isTopicAnon
         };
 
         const formattedComments: Comment[] = (comments || []).map((c: any) => {
             const isCommentAnon = c.is_anonymous === true;
-            const commentProfile = c.profiles;
+            const commentProfile: any = Array.isArray(c.profiles) ? c.profiles[0] : c.profiles;
             return {
                 id: c.id,
                 content: c.content,
@@ -141,7 +145,8 @@ export async function getTopicDetail(topicId: string) {
                 author_membership_tier: isCommentAnon ? undefined : commentProfile?.membership_tier,
                 author_donor_tier: isCommentAnon ? undefined : commentProfile?.donor_tier,
                 created_at: c.created_at,
-                created_by: c.user_id
+                created_by: c.user_id,
+                is_anonymous: isCommentAnon
             };
         });
 
