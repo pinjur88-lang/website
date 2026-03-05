@@ -1,12 +1,9 @@
 'use server';
 
-import { supabaseAdmin } from '@/lib/supabase-admin'; // Using admin to ensure we can join tables easily, RLS checked via user_id matching if needed, but for public read it's fine.
-// Actually, better to use standard supabase client if possible for RLS, but for "Join" queries sometimes admin is easier.
-// Let's stick to supabaseAdmin for consistency with other actions if valid, OR better: use consistent read patterns.
+import { supabaseAdmin } from '@/lib/supabase-admin';
 import { revalidatePath } from 'next/cache';
 import { verifyUser } from '@/lib/auth-admin';
 
-// Re-using simplified types for the frontend
 export type Topic = {
     id: string;
     title: string;
@@ -35,7 +32,6 @@ export type Comment = {
 
 export async function getTopics() {
     try {
-        // 1. Fetch posts with profile join for performance (if possible)
         const { data: posts, error: postsError } = await supabaseAdmin
             .from('community_posts')
             .select(`
@@ -43,8 +39,7 @@ export async function getTopics() {
                 content,
                 created_at,
                 user_id,
-                is_anonymous,
-                profiles!user_id(full_name, role, membership_tier, donor_tier, display_name)
+                is_anonymous
             `)
             .order('created_at', { ascending: false });
 
@@ -54,10 +49,23 @@ export async function getTopics() {
             return { data: [] };
         }
 
-        // 3. Map together
+        const userIds = Array.from(new Set(posts.map((p: any) => p.user_id).filter(Boolean)));
+
+        let profileMap = new Map();
+        if (userIds.length > 0) {
+            const { data: profilesData } = await supabaseAdmin
+                .from('profiles')
+                .select('id, full_name, role, membership_tier, donor_tier, display_name')
+                .in('id', userIds);
+
+            if (profilesData) {
+                profilesData.forEach((p: any) => profileMap.set(p.id, p));
+            }
+        }
+
         const topics: Topic[] = posts.map((post: any) => {
             const isAnon = post.is_anonymous === true;
-            const profile = post.profiles; // From join
+            const profile = profileMap.get(post.user_id);
             const displayName = isAnon ? 'Anonimni Član' : (profile?.full_name || profile?.display_name || 'Član Udruge');
             const role = isAnon ? 'user' : (profile?.role || 'user');
 
@@ -83,7 +91,6 @@ export async function getTopics() {
 
 export async function getTopicDetail(topicId: string) {
     try {
-        // 1. Fetch Topic
         const { data: topic, error: topicError } = await supabaseAdmin
             .from('community_posts')
             .select(`
@@ -91,8 +98,7 @@ export async function getTopicDetail(topicId: string) {
                 content,
                 created_at,
                 user_id,
-                is_anonymous,
-                profiles!user_id(full_name, role, membership_tier, donor_tier, display_name)
+                is_anonymous
             `)
             .eq('id', topicId)
             .single();
@@ -100,7 +106,6 @@ export async function getTopicDetail(topicId: string) {
         if (topicError) throw topicError;
         if (!topic) throw new Error("Topic not found");
 
-        // 2. Fetch Comments
         const { data: comments, error: commentsError } = await supabaseAdmin
             .from('community_comments')
             .select(`
@@ -108,17 +113,32 @@ export async function getTopicDetail(topicId: string) {
                 content,
                 created_at,
                 user_id,
-                is_anonymous,
-                profiles!user_id(full_name, role, membership_tier, donor_tier, display_name)
+                is_anonymous
             `)
             .eq('post_id', topicId)
             .order('created_at', { ascending: true });
 
         if (commentsError) throw commentsError;
 
-        // 3. Format Output
+        const userIds = Array.from(new Set([
+            topic.user_id,
+            ...(comments || []).map((c: any) => c.user_id)
+        ].filter(Boolean)));
+
+        let profileMap = new Map();
+        if (userIds.length > 0) {
+            const { data: profilesData } = await supabaseAdmin
+                .from('profiles')
+                .select('id, full_name, role, membership_tier, donor_tier, display_name')
+                .in('id', userIds);
+
+            if (profilesData) {
+                profilesData.forEach((p: any) => profileMap.set(p.id, p));
+            }
+        }
+
         const isTopicAnon = topic.is_anonymous === true;
-        const topicProfile: any = Array.isArray(topic.profiles) ? topic.profiles[0] : topic.profiles;
+        const topicProfile = profileMap.get(topic.user_id);
         const topicDisplayName = isTopicAnon ? 'Anonimni Član' : (topicProfile?.full_name || topicProfile?.display_name || 'Član Udruge');
 
         const formattedTopic: Topic = {
@@ -136,7 +156,7 @@ export async function getTopicDetail(topicId: string) {
 
         const formattedComments: Comment[] = (comments || []).map((c: any) => {
             const isCommentAnon = c.is_anonymous === true;
-            const commentProfile: any = Array.isArray(c.profiles) ? c.profiles[0] : c.profiles;
+            const commentProfile = profileMap.get(c.user_id);
             return {
                 id: c.id,
                 content: c.content,
@@ -156,9 +176,6 @@ export async function getTopicDetail(topicId: string) {
         return { error: error.message };
     }
 }
-
-// NOTE: addComment is better handled client-side like addVisit to avoid auth issues!
-// We will only use server actions for fetching data here.
 
 export async function createTopic(content: string, authorId: string, isAnonymous: boolean) {
     try {

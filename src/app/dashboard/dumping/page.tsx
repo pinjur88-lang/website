@@ -48,7 +48,7 @@ export default function DumpingPage() {
                 body = `Poštovani,\n\nPrijavljujem nelegalno odlagalište otpada na području naselja Baljci.\n\nLOKACIJA:\nKoordinate/Opis: ${location}\n\nOPIS OTPADA: ${wasteType}\n\nU privitku dostavljam fotografije zatečenog stanja.\n\nSukladno Zakonu o gospodarenju otpadom, molim Vas da izdate nalog za uklanjanje otpada te da me povratno obavijestite o poduzetim radnjama.\n\nS poštovanjem,\n${user?.email || '[Ime i Prezime]'}`;
             } else {
                 // Watchdog Mode
-                recipient = 'info@baljci.com'; // Placeholder for Udruga admin
+                recipient = 'udrugabaljci@gmail.com'; // Placeholder for Udruga admin
                 body = `[ZAHTJEV ZA ANONIMNU PRIJAVU]\n\nMolim Udrugu da u moje ime prijavi sljedeće odlagalište:\n\nLokacija: ${location}\nOtpad: ${wasteType}\n\nU privitku su slike.\n\nČlan: ${user?.email}`;
             }
 
