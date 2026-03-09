@@ -236,7 +236,7 @@ export default function TopicPage() {
                     <div key={comment.id} className="bg-slate-50 p-6 rounded-xl border border-slate-100 flex gap-4 group relative">
                         {/* Admin Comment Controls */}
                         {(isAdmin || user?.id === comment.created_by) && (
-                            <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <div className="absolute top-2 right-2 flex gap-1 opacity-100 transition-opacity">
                                 <button
                                     onClick={() => {
                                         setEditingCommentId(comment.id);

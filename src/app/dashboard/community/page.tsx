@@ -61,11 +61,14 @@ export default function CommunityPage() {
     const [topics, setTopics] = useState<Topic[]>([]);
     const [loading, setLoading] = useState(true);
 
-    // New Topic Form
     const [isCreating, setIsCreating] = useState(false);
     const [content, setContent] = useState('');
     const [isAnonymous, setIsAnonymous] = useState(false);
     const [submitting, setSubmitting] = useState(false);
+
+    // Editing State for Admins
+    const [editingTopicId, setEditingTopicId] = useState<string | null>(null);
+    const [editTopicContent, setEditTopicContent] = useState('');
 
     const loadTopics = async () => {
         setLoading(true);
@@ -87,6 +90,18 @@ export default function CommunityPage() {
         if (res.error) {
             alert((t.forumErrorDeletion || 'Error during deletion: ') + res.error);
         } else {
+            loadTopics();
+        }
+    };
+
+    const handleUpdateTopic = async (topicId: string) => {
+        if (!editTopicContent.trim()) return;
+        const { updateTopic } = await import('@/actions/admin');
+        const res = await updateTopic(topicId, editTopicContent);
+        if (res.error) {
+            alert((t.errorPrefix || 'Error: ') + res.error);
+        } else {
+            setEditingTopicId(null);
             loadTopics();
         }
     };
@@ -190,56 +205,94 @@ export default function CommunityPage() {
                     </div>
                 ) : (
                     topics.map((topic) => (
-                        <Link
-                            href={`/dashboard/community/${topic.id}`}
+                        <div
                             key={topic.id}
-                            className="block bg-white p-6 rounded-xl border border-sky-100 shadow-sm hover:shadow-md hover:border-sky-300 transition-all group"
+                            className="bg-white p-6 rounded-xl border border-sky-100 shadow-sm hover:shadow-md hover:border-sky-300 transition-all group relative"
                         >
-                            <div className="flex justify-between items-start gap-4">
-                                <div className="flex-1">
-                                    <h3 className="text-lg font-bold text-slate-800 group-hover:text-sky-700 transition-colors mb-2 line-clamp-2">
-                                        {topic.title}
-                                    </h3>
-                                    <p className="text-slate-500 text-sm line-clamp-2 mb-4">
-                                        {topic.content}
-                                    </p>
-
-                                    <div className="flex flex-wrap items-center gap-2 mt-4 text-xs text-slate-400">
-                                        <div className="flex items-center gap-1 bg-slate-50 px-2 py-1 rounded-full border border-slate-100 shadow-sm">
-                                            {topic.author_role === 'admin' ? (
-                                                <Shield size={12} className="text-amber-500" />
-                                            ) : (
-                                                <User size={12} />
-                                            )}
-                                            <span className={`font-medium ${topic.author_role === 'admin' ? 'text-amber-600' : 'text-slate-600'}`}>
-                                                {topic.author_name}
-                                                {topic.author_role === 'admin' && ' [Admin]'}
-                                            </span>
-                                        </div>
-                                        {renderMembershipBadge(topic.author_membership_tier)}
-                                        {renderDonorBadge(topic.author_donor_tier)}
-                                        <span>•</span>
-                                        <span>{new Date(topic.created_at).toLocaleDateString(language === 'en' ? 'en-US' : 'hr-HR')}</span>
+                            {editingTopicId === topic.id ? (
+                                <div className="space-y-3 z-10 relative">
+                                    <textarea
+                                        value={editTopicContent}
+                                        onChange={(e) => setEditTopicContent(e.target.value)}
+                                        className="w-full p-3 border border-sky-300 rounded-lg text-slate-800 min-h-[120px]"
+                                    />
+                                    <div className="flex gap-2">
+                                        <button
+                                            onClick={() => handleUpdateTopic(topic.id)}
+                                            className="px-4 py-2 bg-sky-600 text-white rounded-md text-sm font-bold hover:bg-sky-700"
+                                        >
+                                            {t.saveChanges || 'Save Changes'}
+                                        </button>
+                                        <button
+                                            onClick={() => setEditingTopicId(null)}
+                                            className="px-4 py-2 bg-slate-200 text-slate-700 rounded-md text-sm font-bold hover:bg-slate-300"
+                                        >
+                                            {t.cancelAction || 'Cancel'}
+                                        </button>
                                     </div>
                                 </div>
+                            ) : (
+                                <div className="flex justify-between items-start gap-4">
+                                    <Link href={`/dashboard/community/${topic.id}`} className="flex-1 block cursor-pointer">
+                                        <div>
+                                            <h3 className="text-lg font-bold text-slate-800 group-hover:text-sky-700 transition-colors mb-2 line-clamp-2">
+                                                {topic.title}
+                                            </h3>
+                                            <p className="text-slate-500 text-sm line-clamp-2 mb-4">
+                                                {topic.content}
+                                            </p>
 
-                                <div className="flex flex-col items-end gap-2 text-right min-w-[80px]">
-                                    {isAdmin && (
-                                        <button
-                                            onClick={(e) => {
-                                                e.preventDefault(); // Prevent navigating to the topic
-                                                handleDeleteTopic(topic.id);
-                                            }}
-                                            className="p-1.5 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-md transition-colors"
-                                            title={t.deleteAction || 'Delete'}
-                                        >
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
-                                        </button>
-                                    )}
-                                    <CommentCounter postId={topic.id} suffix={t.repliesSuffix || 'replies'} />
+                                            <div className="flex flex-wrap items-center gap-2 mt-4 text-xs text-slate-400">
+                                                <div className="flex items-center gap-1 bg-slate-50 px-2 py-1 rounded-full border border-slate-100 shadow-sm">
+                                                    {topic.author_role === 'admin' ? (
+                                                        <Shield size={12} className="text-amber-500" />
+                                                    ) : (
+                                                        <User size={12} />
+                                                    )}
+                                                    <span className={`font-medium ${topic.author_role === 'admin' ? 'text-amber-600' : 'text-slate-600'}`}>
+                                                        {topic.author_name}
+                                                        {topic.author_role === 'admin' && ' [Admin]'}
+                                                    </span>
+                                                </div>
+                                                {renderMembershipBadge(topic.author_membership_tier)}
+                                                {renderDonorBadge(topic.author_donor_tier)}
+                                                <span>•</span>
+                                                <span>{new Date(topic.created_at).toLocaleDateString(language === 'en' ? 'en-US' : 'hr-HR')}</span>
+                                            </div>
+                                        </div>
+                                    </Link>
+
+                                    <div className="flex flex-col items-end gap-2 text-right min-w-[80px] z-10 relative">
+                                        {isAdmin && (
+                                            <div className="flex gap-1">
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        setEditingTopicId(topic.id);
+                                                        setEditTopicContent(topic.content);
+                                                    }}
+                                                    className="p-1.5 text-slate-300 hover:text-sky-600 hover:bg-sky-50 rounded-md transition-colors"
+                                                    title={t.editAction || 'Edit'}
+                                                >
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" /></svg>
+                                                </button>
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        handleDeleteTopic(topic.id);
+                                                    }}
+                                                    className="p-1.5 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-md transition-colors"
+                                                    title={t.deleteAction || 'Delete'}
+                                                >
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
+                                                </button>
+                                            </div>
+                                        )}
+                                        <CommentCounter postId={topic.id} suffix={t.repliesSuffix || 'replies'} />
+                                    </div>
                                 </div>
-                            </div>
-                        </Link>
+                            )}
+                        </div>
                     ))
                 )}
             </div>
