@@ -29,6 +29,9 @@ export default function MemberDetailModal({ request, onClose, onUpdate }: Member
     // Delete state
     const [deleting, setDeleting] = useState(false);
 
+    // Profile state
+    const [hasProfile, setHasProfile] = useState(true);
+
     useEffect(() => {
         const fetchTier = async () => {
             const { data: userData } = await supabase.auth.admin.listUsers();
@@ -42,6 +45,8 @@ export default function MemberDetailModal({ request, onClose, onUpdate }: Member
                 if (profile?.membership_tier) {
                     setTier(profile.membership_tier);
                 }
+            } else {
+                setHasProfile(false);
             }
         };
         fetchTier();
@@ -150,7 +155,7 @@ export default function MemberDetailModal({ request, onClose, onUpdate }: Member
                                     </div>
                                     <div className="pt-2">
                                         <span className="text-zinc-500 text-xs block mb-1 uppercase tracking-tight">Razlog:</span>
-                                        <p className="text-zinc-700 italic text-xs leading-relaxed">"{request.reason}"</p>
+                                        <p className="text-zinc-700 italic text-xs leading-relaxed">&quot;{request.reason}&quot;</p>
                                     </div>
                                 </div>
                             </div>
@@ -174,18 +179,26 @@ export default function MemberDetailModal({ request, onClose, onUpdate }: Member
                                     </div>
                                 )}
 
+                                {!hasProfile && (
+                                    <div className="mb-4 bg-red-50 border border-red-200 rounded-lg p-3 relative">
+                                        <p className="text-red-700 text-xs font-medium leading-relaxed">
+                                            Korisnik nije završio registraciju (nema korisnički račun). Ne možete mu dodijeliti status. Obrišite zahtjev u Opasnoj Zoni kako bi se korisnik mogao ponovno registrirati.
+                                        </p>
+                                    </div>
+                                )}
+
                                 <div className="grid grid-cols-3 gap-3">
                                     {(['free', 'silver', 'gold'] as const).map((t) => (
                                         <button
                                             key={t}
                                             onClick={() => handleUpdateTier(t)}
-                                            disabled={updatingTier}
+                                            disabled={updatingTier || !hasProfile}
                                             className={`flex flex-col items-center gap-2 py-3 px-2 rounded-lg border-2 transition-all
                                                     ${tier === t
                                                     ? 'border-blue-600 bg-blue-50 text-blue-700'
                                                     : 'border-zinc-200 hover:border-blue-300 hover:bg-zinc-100/50 text-zinc-500'
                                                 }
-                                                    ${updatingTier ? 'opacity-50 cursor-not-allowed' : ''}
+                                                    ${(updatingTier || !hasProfile) ? 'opacity-50 cursor-not-allowed' : ''}
                                                 `}
                                         >
                                             {t === 'free' && <ShieldCheck size={18} />}
@@ -198,7 +211,7 @@ export default function MemberDetailModal({ request, onClose, onUpdate }: Member
                                 <div className="mt-4 p-3 bg-white/50 rounded-lg border border-sky-100/50">
                                     <p className="text-[10px] text-sky-800 leading-tight flex items-start gap-2">
                                         <CircleInfo size={12} className="mt-0.5 flex-shrink-0" />
-                                        <span>Članovi sa statusom 'Voting' imaju pravo glasa u Dvorani za Glasovanje te pristup ekskluzivnim izvještajima. Odabirom statusa brisana prijavljena uplata (ako postoji).</span>
+                                        <span>Članovi sa statusom &apos;Voting&apos; imaju pravo glasa u Dvorani za Glasovanje te pristup ekskluzivnim izvještajima. Odabirom statusa brisana prijavljena uplata (ako postoji).</span>
                                     </p>
                                 </div>
                             </div>

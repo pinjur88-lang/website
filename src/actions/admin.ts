@@ -178,7 +178,7 @@ export async function updateMemberTier(email: string, tier: string) {
     if (!await verifyAdmin()) return { error: "Unauthorized" };
     try {
         const user = await getAuthUserByEmail(email);
-        if (!user) return { error: "User not found (has not registered yet)" };
+        if (!user) return { error: "Korisnik nema registriran profil. Ne možete mu promijeniti status." };
 
         const { error: profileError } = await supabaseAdmin
             .from('profiles')
