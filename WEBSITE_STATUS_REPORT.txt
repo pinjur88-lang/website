@@ -1,4 +1,38 @@
 ========================================================================
+WEBSITE STATUS REPORT - March 9, 2026
+========================================================================
+
+1. [DONE] CANADA BANK TRANSFER INTEGRATION
+* ADDED DETAILS: Added native Wise CAD transfer details to the global 
+  /donate and authenticated /dashboard/donate pages.
+* LOCALIZATION: Added matching translation keys in English/Croatian.
+
+2. [DONE] VOTING HALL TIER SYSTEM MODAL
+* EXPLANATION MODAL: Added a modal when free or silver members click "Saznaj Vise"
+  in the Voting Hall, explaining how to upgrade and support the village.
+* SECURITY AUDIT: Hardened voting server actions, guaranteeing that unauthenticated
+  users cannot poll or vote, and strictly bounding option voting indices.
+
+3. [DONE] SECURITY INCIDENT & VERIFY DEPLOYMENT
+* MALWARE REMOVAL: Identified and deleted a malicious obfuscated script
+  (`preinstall.js`) that had embedded itself via a compromised package and
+  subsequently crashed Vercel builds by trying to fetch Solana endpoints.
+
+4. [DONE] VERCEL WEB ANALYTICS
+* TRAFFIC TRACKING: Installed and injected the `@vercel/analytics` 
+  component into the root layout to automatically monitor website traffic.
+
+5. [DONE] ADMIN DASHBOARD FIXES
+* UNREGISTERED USERS FIX: Fixed the generic "User not found" error that 
+  crashed the Admin Panel when trying to assign a Tier (Free, Silver) to a 
+  pending request that never fully registered a Supabase Profile. The buttons 
+  are now intelligently disabled with a descriptive warning to delete them.
+
+6. [DONE] COMMUNITY MODERATION TOOLS
+* GLOBAL MODERATION: Exposed hidden edit & delete abilities for all Community 
+  Topics and Comments globally for the Admin role, rather than just the author.
+
+========================================================================
 WEBSITE STATUS REPORT - February 25, 2026
 ========================================================================
 
