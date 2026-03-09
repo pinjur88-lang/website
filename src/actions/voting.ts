@@ -5,6 +5,9 @@ import { revalidatePath } from 'next/cache';
 import { verifyUser } from '@/lib/auth-admin';
 
 export async function getPolls() {
+    const user = await verifyUser();
+    if (!user) return { data: null, error: 'Unauthorized' };
+
     // Get polls and their vote counts
     const { data: polls, error } = await supabase
         .from('polls')
@@ -20,8 +23,11 @@ export async function getPolls() {
     }
 
     // Process polls to include result counts
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const processedPolls = (polls as any[]).map(poll => {
-        const results = new Array(poll.options.length).fill(0);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const results = new Array((poll.options as any[]).length).fill(0);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         poll.votes?.forEach((v: any) => {
             if (v.option_index >= 0 && v.option_index < results.length) {
                 results[v.option_index]++;
@@ -57,6 +63,19 @@ export async function castVote(pollId: string, optionIndex: number) {
 
     if (!isVotingOrBetter) {
         return { error: 'Upgrade to Voting to vote' };
+    }
+
+    // Verify poll exists, is active, and optionIndex is strictly within bounds
+    const { data: poll, error: pollError } = await supabase
+        .from('polls')
+        .select('options, is_active')
+        .eq('id', pollId)
+        .single();
+
+    if (pollError || !poll) return { error: 'Anketa ne postoji.' };
+    if (!poll.is_active) return { error: 'Anketa je zatvorena.' };
+    if (optionIndex < 0 || optionIndex >= poll.options.length) {
+        return { error: 'Nevažeća opcija.' };
     }
 
     // Insert vote

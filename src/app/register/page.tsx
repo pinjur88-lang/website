@@ -60,6 +60,12 @@ export default function RegisterPage() {
                 }
             });
 
+            if (authData.user && authData.user.identities && authData.user.identities.length === 0) {
+                setError("Ova email adresa je već registrirana. Ako ste zaboravili lozinku, možete je resetirati na stranici za prijavu.");
+                setLoading(false);
+                return;
+            }
+
             if (authError) throw authError;
             if (!authData.user) throw new Error(t.registerUserNotCreated || "Greška pri registraciji - korisnik nije kreiran.");
 
@@ -139,7 +145,7 @@ export default function RegisterPage() {
 
                             <div className="space-y-1">
                                 <label className="text-xs font-semibold text-zinc-500">{t.fullNameLabelRequired}</label>
-                                <input type="text" required value={fullName} onChange={e => setFullName(e.target.value)} className="w-full p-3 bg-white border border-zinc-300 rounded-lg focus:ring-2 focus:ring-zinc-900 outline-none text-zinc-900" placeholder="npr. Ivan Horvat" />
+                                <input type="text" required value={fullName} onChange={e => setFullName(e.target.value)} className="w-full p-3 bg-white border border-zinc-300 rounded-lg focus:ring-2 focus:ring-zinc-900 outline-none text-zinc-900" placeholder="" />
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -171,7 +177,7 @@ export default function RegisterPage() {
                             </div>
                             <div className="space-y-1">
                                 <label className="text-xs font-semibold text-zinc-500">{t.nicknameLabel}</label>
-                                <input type="text" value={nickname} onChange={e => setNickname(e.target.value)} className="w-full p-3 bg-white border border-zinc-300 rounded-lg focus:ring-2 focus:ring-zinc-900 outline-none text-zinc-900" placeholder="npr. Genda, Bibić..." />
+                                <input type="text" value={nickname} onChange={e => setNickname(e.target.value)} className="w-full p-3 bg-white border border-zinc-300 rounded-lg focus:ring-2 focus:ring-zinc-900 outline-none text-zinc-900" placeholder="" />
                             </div>
                         </div>
 

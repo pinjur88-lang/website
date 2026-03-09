@@ -3,29 +3,26 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/lib/auth-context';
 import { useLanguage } from '@/lib/language-context';
-import { Vote, ChartBar, Lock, CheckCircle2, AlertCircle, Info } from 'lucide-react';
+import { Vote, ChartBar, Lock, CheckCircle2, Info } from 'lucide-react';
 import { getPolls, castVote, getUserVote } from '@/actions/voting';
 
 export default function VotingHallPage() {
     const { user } = useAuth();
     const { t } = useLanguage();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [polls, setPolls] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [userVotes, setUserVotes] = useState<Record<string, number | null>>({});
     const [votingInProgress, setVotingInProgress] = useState<string | null>(null);
+    const [showTierModal, setShowTierModal] = useState(false);
 
     const isVotingOrAdmin = user?.membership_tier === 'voting' || user?.role === 'admin';
 
-    useEffect(() => {
-        loadData();
-    }, []);
-
     const loadData = async () => {
         setLoading(true);
-        const { data, error } = await getPolls();
+        const { data } = await getPolls();
         if (data) {
             setPolls(data);
-            // Load user votes
             const votes: Record<string, number | null> = {};
             for (const poll of data) {
                 const res = await getUserVote(poll.id);
@@ -35,6 +32,34 @@ export default function VotingHallPage() {
         }
         setLoading(false);
     };
+
+    useEffect(() => {
+        let mounted = true;
+
+        const fetchInitialData = async () => {
+            const { data } = await getPolls();
+            if (data && mounted) {
+                setPolls(data);
+                const votes: Record<string, number | null> = {};
+                for (const poll of data) {
+                    const res = await getUserVote(poll.id);
+                    votes[poll.id] = res.data;
+                }
+                if (mounted) {
+                    setUserVotes(votes);
+                }
+            }
+            if (mounted) {
+                setLoading(false);
+            }
+        };
+
+        fetchInitialData();
+
+        return () => {
+            mounted = false;
+        };
+    }, []);
 
     const handleVote = async (pollId: string, optionIndex: number) => {
         if (!isVotingOrAdmin) return;
@@ -77,7 +102,10 @@ export default function VotingHallPage() {
                             <p className="text-xs opacity-90">{t.upsellRightToVote || 'Pravo glasa imaju članovi s Voting statusom.'}</p>
                         </div>
                     </div>
-                    <button className="bg-white text-orange-600 px-4 py-2 rounded-lg text-sm font-bold hover:bg-orange-50 transition-colors shadow-sm whitespace-nowrap">
+                    <button
+                        onClick={() => setShowTierModal(true)}
+                        className="bg-white text-orange-600 px-4 py-2 rounded-lg text-sm font-bold hover:bg-orange-50 transition-colors shadow-sm whitespace-nowrap"
+                    >
                         {t.learnMore || 'Saznaj Više'}
                     </button>
                 </div>
@@ -196,6 +224,66 @@ export default function VotingHallPage() {
                     );
                 })}
             </div>
+
+            {/* TIER SYSTEM MODAL */}
+            {showTierModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div className="bg-white rounded-2xl shadow-xl max-w-md w-full overflow-hidden border border-slate-200">
+                        <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                            <h3 className="font-bold text-lg text-slate-800 flex items-center gap-2">
+                                <Info className="text-sky-500" size={20} />
+                                {t.tierModalTitle || 'Sustav Članstva'}
+                            </h3>
+                            <button
+                                title="Close modal"
+                                onClick={() => setShowTierModal(false)}
+                                className="text-slate-400 hover:text-slate-600 bg-slate-100 hover:bg-slate-200 p-2 rounded-full transition-colors"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                            </button>
+                        </div>
+                        <div className="p-6 space-y-4">
+                            <div className="p-4 rounded-xl border border-slate-100 bg-slate-50">
+                                <h4 className="font-bold text-slate-700 flex items-center gap-2 mb-1">
+                                    <div className="w-2 h-2 rounded-full bg-slate-400"></div>
+                                    {t.tierFreeTitle || 'Free (Pridruženi član)'}
+                                </h4>
+                                <p className="text-sm text-slate-500">{t.tierFreeDesc || 'Korisnici koji još nisu platili članarinu. Pristup platformi bez prava glasa na skupštini.'}</p>
+                            </div>
+                            <div className="p-4 rounded-xl border border-slate-100 bg-slate-50">
+                                <h4 className="font-bold text-slate-700 flex items-center gap-2 mb-1">
+                                    <div className="w-2 h-2 rounded-full bg-slate-300"></div>
+                                    {t.tierSilverTitle || 'Silver (Donator)'}
+                                </h4>
+                                <p className="text-sm text-slate-500">{t.tierSilverDesc || 'Pristup proširenim značajkama za financijske podupiratelje, bez prava glasa.'}</p>
+                            </div>
+                            <div className="p-4 rounded-xl border-2 border-sky-100 bg-sky-50">
+                                <h4 className="font-bold text-sky-800 flex items-center gap-2 mb-1">
+                                    <div className="w-2 h-2 rounded-full bg-sky-500 shadow-[0_0_8px_rgba(14,165,233,0.5)]"></div>
+                                    {t.tierVotingTitle || 'Voting (Punopravni član)'}
+                                </h4>
+                                <p className="text-sm text-sky-600 font-medium">{t.tierVotingDesc || 'Puno pravo glasa. Za punoljetne članove koji redovito uplaćuju godišnju članarinu.'}</p>
+                            </div>
+                        </div>
+                        <div className="p-6 border-t border-slate-100 bg-slate-50/50">
+                            <p className="text-xs text-slate-500 mb-4 text-center">
+                                {t.tierModalFooter || 'Za nadogradnju statusa u Voting, uplatite godišnju članarinu na stranici za donacije ili kontaktirajte administratora.'}
+                            </p>
+                            <div className="flex gap-3">
+                                <a href="/dashboard/donate" className="flex-1 bg-slate-900 hover:bg-slate-800 text-white text-center py-2.5 rounded-xl font-semibold transition-colors text-sm">
+                                    {t.donations || 'Donacije'}
+                                </a>
+                                <button
+                                    onClick={() => setShowTierModal(false)}
+                                    className="flex-1 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-center py-2.5 rounded-xl font-semibold transition-colors text-sm"
+                                >
+                                    {t.closeForum || 'Zatvori'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

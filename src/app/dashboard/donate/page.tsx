@@ -126,6 +126,18 @@ export default function DashboardDonatePage() {
                                             <p className="font-medium">{t.donateAusBic}</p>
                                         </div>
                                     </div>
+
+                                    {/* Canada */}
+                                    <div className="space-y-1">
+                                        <h4 className="font-bold text-zinc-900 dark:text-white text-xs uppercase tracking-wider bg-zinc-200/50 dark:bg-zinc-800/50 px-2 py-1 rounded w-fit">{t.donateCanadaTitle}</h4>
+                                        <div className="text-xs space-y-1 mt-2 text-zinc-800 dark:text-zinc-300 font-mono pl-2">
+                                            <p className="font-medium">{t.donateBeneficiary}</p>
+                                            <p className="font-bold text-black dark:text-white bg-white/50 dark:bg-black/30 w-fit px-1 rounded">{t.donateCadAccount}</p>
+                                            <p className="font-bold text-black dark:text-white bg-white/50 dark:bg-black/30 w-fit px-1 rounded">{t.donateCadInstitution}</p>
+                                            <p className="font-bold text-black dark:text-white bg-white/50 dark:bg-black/30 w-fit px-1 rounded">{t.donateCadTransit}</p>
+                                            <p className="font-medium">{t.donateCadBic}</p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

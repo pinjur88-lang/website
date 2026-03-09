@@ -72,7 +72,7 @@ export default function InfrastructurePage() {
                                     type="text"
                                     value={surname}
                                     onChange={(e) => setSurname(e.target.value)}
-                                    placeholder="e.g. Genda"
+                                    placeholder=""
                                     className="w-full border border-slate-300 rounded-md p-2 focus:ring-2 focus:ring-amber-500 outline-none"
                                 />
                             </div>

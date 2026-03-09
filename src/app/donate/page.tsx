@@ -156,6 +156,18 @@ export default function DonatePage() {
                       </div>
                     </div>
 
+                    {/* Canada */}
+                    <div className="space-y-1">
+                      <h4 className="font-bold text-zinc-800 dark:text-zinc-200 text-[10px] uppercase tracking-wider bg-zinc-200/50 dark:bg-zinc-800/50 px-2 py-1 rounded w-fit">{t.donateCanadaTitle}</h4>
+                      <div className="text-xs space-y-1 text-zinc-600 dark:text-zinc-400 font-mono pl-2 border-l-2 border-emerald-500/30">
+                        <p className="text-[10px] opacity-70">{t.donateBeneficiary}</p>
+                        <p className="font-bold text-zinc-900 dark:text-zinc-200">{t.donateCadAccount}</p>
+                        <p className="font-bold text-zinc-900 dark:text-zinc-200">{t.donateCadInstitution}</p>
+                        <p className="font-bold text-zinc-900 dark:text-zinc-200">{t.donateCadTransit}</p>
+                        <p className="text-[10px]">{t.donateCadBic}</p>
+                      </div>
+                    </div>
+
                     {/* UK */}
                     <div className="space-y-1">
                       <h4 className="font-bold text-zinc-800 dark:text-zinc-200 text-[10px] uppercase tracking-wider bg-zinc-200/50 dark:bg-zinc-800/50 px-2 py-1 rounded w-fit">{t.donateUkTitle}</h4>

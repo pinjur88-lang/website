@@ -189,7 +189,7 @@ export default function InteractiveMap() {
                     <Search className="absolute left-4 text-stone-400 w-5 h-5" />
                     <input
                         type="text"
-                        placeholder="Traži po prezimenu ili broju čestice (npr. Genda ili 1044)..."
+                        placeholder="Traži po prezimenu ili broju čestice (npr. 1044)..."
                         className="w-full pl-12 pr-4 py-3 bg-white border border-stone-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50 transition-all font-medium text-stone-800"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
