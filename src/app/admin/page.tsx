@@ -11,6 +11,7 @@ import GalleryManager from '@/components/admin/GalleryManager';
 import MemberDetailModal from '@/components/admin/MemberDetailModal';
 import AdminInboxManager from '@/components/admin/AdminInboxManager';
 import { getAllMembersForRegistry } from '@/actions/admin';
+import Link from 'next/link';
 
 export default function AdminMembersPage() {
     const [requests, setRequests] = useState<MembershipRequest[]>([]);
@@ -85,9 +86,14 @@ export default function AdminMembersPage() {
                         <h1 className="text-2xl font-bold text-zinc-800 mb-2">Admin Dashboard</h1>
                         <p className="text-zinc-500 text-sm">Upravljanje članstvom i sadržajem stranice.</p>
                     </div>
-                    <a href="/admin/register-print" target="_blank" className="flex items-center gap-2 bg-zinc-900 text-white px-4 py-2 rounded-md text-sm font-bold shadow hover:bg-zinc-700 transition-colors">
-                        <FileText size={16} /> Ispis Registra
-                    </a>
+                    <div className="flex gap-2">
+                        <Link href="/dashboard" className="flex items-center gap-2 bg-sky-600 text-white px-4 py-2 rounded-md text-sm font-bold shadow hover:bg-sky-700 transition-colors">
+                            <MessageSquare size={16} /> Na Dashboard
+                        </Link>
+                        <a href="/admin/register-print" target="_blank" className="flex items-center gap-2 bg-zinc-900 text-white px-4 py-2 rounded-md text-sm font-bold shadow hover:bg-zinc-700 transition-colors">
+                            <FileText size={16} /> Ispis Registra
+                        </a>
+                    </div>
                 </div>
 
                 {/* Tabs */}
