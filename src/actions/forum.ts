@@ -12,6 +12,8 @@ export type Topic = {
     author_role?: string;
     author_membership_tier?: string;
     author_donor_tier?: string;
+    author_avatar_url?: string;
+    author_bio?: string;
     created_at: string;
     created_by: string;
     comment_count?: number;
@@ -25,6 +27,8 @@ export type Comment = {
     author_role?: string;
     author_membership_tier?: string;
     author_donor_tier?: string;
+    author_avatar_url?: string;
+    author_bio?: string;
     created_at: string;
     created_by: string;
     is_anonymous?: boolean;
@@ -55,7 +59,7 @@ export async function getTopics() {
         if (userIds.length > 0) {
             const { data: profilesData } = await supabaseAdmin
                 .from('profiles')
-                .select('id, full_name, role, membership_tier, donor_tier, display_name')
+                .select('id, full_name, role, membership_tier, donor_tier, display_name, avatar_url, bio')
                 .in('id', userIds);
 
             if (profilesData) {
@@ -77,6 +81,8 @@ export async function getTopics() {
                 author_role: role,
                 author_membership_tier: isAnon ? undefined : profile?.membership_tier,
                 author_donor_tier: isAnon ? undefined : profile?.donor_tier,
+                author_avatar_url: isAnon ? undefined : profile?.avatar_url,
+                author_bio: isAnon ? undefined : profile?.bio,
                 created_at: post.created_at,
                 created_by: post.user_id,
                 is_anonymous: isAnon
@@ -129,7 +135,7 @@ export async function getTopicDetail(topicId: string) {
         if (userIds.length > 0) {
             const { data: profilesData } = await supabaseAdmin
                 .from('profiles')
-                .select('id, full_name, role, membership_tier, donor_tier, display_name')
+                .select('id, full_name, role, membership_tier, donor_tier, display_name, avatar_url, bio')
                 .in('id', userIds);
 
             if (profilesData) {
@@ -149,6 +155,8 @@ export async function getTopicDetail(topicId: string) {
             author_role: isTopicAnon ? 'user' : (topicProfile?.role || 'user'),
             author_membership_tier: isTopicAnon ? undefined : topicProfile?.membership_tier,
             author_donor_tier: isTopicAnon ? undefined : topicProfile?.donor_tier,
+            author_avatar_url: isTopicAnon ? undefined : topicProfile?.avatar_url,
+            author_bio: isTopicAnon ? undefined : topicProfile?.bio,
             created_at: topic.created_at,
             created_by: topic.user_id,
             is_anonymous: isTopicAnon
@@ -164,6 +172,8 @@ export async function getTopicDetail(topicId: string) {
                 author_role: isCommentAnon ? 'user' : (commentProfile?.role || 'user'),
                 author_membership_tier: isCommentAnon ? undefined : commentProfile?.membership_tier,
                 author_donor_tier: isCommentAnon ? undefined : commentProfile?.donor_tier,
+                author_avatar_url: isCommentAnon ? undefined : commentProfile?.avatar_url,
+                author_bio: isCommentAnon ? undefined : commentProfile?.bio,
                 created_at: c.created_at,
                 created_by: c.user_id,
                 is_anonymous: isCommentAnon

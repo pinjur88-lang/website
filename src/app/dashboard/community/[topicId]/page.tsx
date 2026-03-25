@@ -180,13 +180,23 @@ export default function TopicPage() {
             {/* Original View (The "Topic") */}
             <div className="bg-white p-8 rounded-xl shadow-sm border border-sky-100">
                 <div className="flex items-center gap-3 mb-6 border-b border-slate-50 pb-4">
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg shadow-sm border ${topic.author_role === 'admin' ? 'bg-amber-100 text-amber-700 border-amber-200' : 'bg-sky-100 text-sky-700 border-sky-200'}`}>
-                        {topic.author_role === 'admin' ? <Shield size={20} /> : String(topic.author_name || '?').charAt(0).toUpperCase()}
-                    </div>
+                    <Link href={topic.is_anonymous ? "#" : `/dashboard/community/user/${topic.created_by}`} className={topic.is_anonymous ? 'cursor-default' : 'cursor-pointer hover:opacity-80 transition-opacity'}>
+                        <div className={`w-10 h-10 rounded-full flex items-center overflow-hidden justify-center font-bold text-lg shadow-sm border ${topic.author_role === 'admin' ? 'bg-amber-100 text-amber-700 border-amber-200' : 'bg-sky-100 text-sky-700 border-sky-200'}`}>
+                            {topic.author_avatar_url ? (
+                                <img src={topic.author_avatar_url} alt={topic.author_name} className="w-full h-full object-cover" />
+                            ) : topic.author_role === 'admin' ? (
+                                <Shield size={20} />
+                            ) : (
+                                String(topic.author_name || '?').charAt(0).toUpperCase()
+                            )}
+                        </div>
+                    </Link>
                     <div>
                         <div className="flex flex-wrap items-center gap-2 mb-1">
                             <h1 className={`text-xl font-bold flex items-center gap-2 ${topic.author_role === 'admin' ? 'text-amber-700' : 'text-slate-900'}`}>
-                                {topic.author_name}
+                                <Link href={topic.is_anonymous ? "#" : `/dashboard/community/user/${topic.created_by}`} className={topic.is_anonymous ? 'cursor-text' : 'hover:text-sky-600 transition-colors'}>
+                                    {topic.author_name}
+                                </Link>
                                 {topic.author_role === 'admin' && (
                                     <span className="text-[10px] bg-amber-500 text-white px-2 py-0.5 rounded uppercase tracking-wide shadow-sm">
                                         Admin
@@ -257,16 +267,26 @@ export default function TopicPage() {
                             </div>
                         )}
 
-                        <div className="flex-shrink-0">
-                            <div className={`w-8 h-8 rounded-full border shadow-sm flex items-center justify-center font-bold text-xs ${comment.author_role === 'admin' ? 'bg-amber-50 text-amber-600 border-amber-200' : 'bg-white text-slate-500 border-slate-200'}`}>
-                                {comment.author_role === 'admin' ? <Shield size={14} /> : String(comment.author_name || '?').charAt(0).toUpperCase()}
-                            </div>
+                        <div className="flex-shrink-0 mt-1 mt-1.5">
+                            <Link href={comment.is_anonymous ? "#" : `/dashboard/community/user/${comment.created_by}`} className={comment.is_anonymous ? 'cursor-default' : 'cursor-pointer hover:opacity-80 transition-opacity'}>
+                                <div className={`w-8 h-8 rounded-full overflow-hidden border shadow-sm flex items-center justify-center font-bold text-xs ${comment.author_role === 'admin' ? 'bg-amber-50 text-amber-600 border-amber-200' : 'bg-white text-slate-500 border-slate-200'}`}>
+                                    {comment.author_avatar_url ? (
+                                        <img src={comment.author_avatar_url} alt={comment.author_name} className="w-full h-full object-cover" />
+                                    ) : comment.author_role === 'admin' ? (
+                                        <Shield size={14} />
+                                    ) : (
+                                        String(comment.author_name || '?').charAt(0).toUpperCase()
+                                    )}
+                                </div>
+                            </Link>
                         </div>
                         <div className="flex-1">
                             <div className="flex justify-between items-baseline mb-2">
                                 <div className="flex flex-wrap items-center gap-2">
                                     <span className={`font-bold text-sm flex items-center gap-1.5 ${comment.author_role === 'admin' ? 'text-amber-700' : 'text-slate-700'}`}>
-                                        {comment.is_anonymous ? (t.anonymous || 'Anonymous') : comment.author_name}
+                                        <Link href={comment.is_anonymous ? "#" : `/dashboard/community/user/${comment.created_by}`} className={comment.is_anonymous ? 'cursor-text' : 'hover:text-sky-600 transition-colors'}>
+                                            {comment.is_anonymous ? (t.anonymous || 'Anonymous') : comment.author_name}
+                                        </Link>
                                         {comment.author_role === 'admin' && <Shield size={12} className="text-amber-500" />}
                                     </span>
                                     {renderMembershipBadge(comment.author_membership_tier)}

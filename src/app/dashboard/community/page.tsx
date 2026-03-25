@@ -246,6 +246,8 @@ export default function CommunityPage() {
                                                 <div className="flex items-center gap-1 bg-slate-50 px-2 py-1 rounded-full border border-slate-100 shadow-sm">
                                                     {topic.author_role === 'admin' ? (
                                                         <Shield size={12} className="text-amber-500" />
+                                                    ) : topic.author_avatar_url ? (
+                                                        <img src={topic.author_avatar_url} alt={topic.author_name} className="w-4 h-4 rounded-full object-cover border border-slate-200" />
                                                     ) : (
                                                         <User size={12} />
                                                     )}
