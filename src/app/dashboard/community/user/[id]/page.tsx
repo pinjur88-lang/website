@@ -1,5 +1,5 @@
 import { getProfile } from '@/actions/profile';
-import { User, Shield, Award, Calendar, ChevronLeft } from 'lucide-react';
+import { User, Shield, Award, ChevronLeft, MessageSquare } from 'lucide-react';
 import Link from 'next/link';
 
 export default async function UserProfilePage({ params }: { params: { id: string } }) {
@@ -58,6 +58,11 @@ export default async function UserProfilePage({ params }: { params: { id: string
                                         Donor: {p.donor_tier}
                                     </span>
                                 )}
+                            </div>
+                            <div className="mt-4 flex justify-center sm:justify-start">
+                                <Link href={`/dashboard/messages/${p.id}`} className="flex items-center gap-2 bg-sky-600 hover:bg-sky-700 text-white px-5 py-2.5 rounded-full text-sm font-bold shadow hover:shadow-md transition">
+                                    <MessageSquare size={18} /> Pošalji Poruku
+                                </Link>
                             </div>
                         </div>
                     </div>
