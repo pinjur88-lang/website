@@ -93,8 +93,8 @@ export default function RegisterPage() {
                     </div>
                     <h1 className="text-3xl font-bold text-zinc-900 mb-2">Uspješna registracija!</h1>
                     <p className="text-zinc-600 mb-8 text-lg">
-                        Vaš račun je kreiran i zahtjev proslijeđen administratorima.
-                        <strong> Sada se možete prijaviti</strong> i pratiti status svog zahtjeva u bilo kojem trenutku.
+                        Vaš račun je kreiran.
+                        <strong> Prijavite se</strong> kako biste pristupili administraciji svog profila i dovršili postavljanje.
                     </p>
                     <Link href="/login" className="inline-flex items-center gap-2 px-8 py-4 bg-zinc-900 text-white hover:bg-zinc-800 transition-all rounded-xl font-bold text-lg shadow-lg hover:shadow-xl active:scale-95">
                         {t.loginSubmit} <ArrowRight size={20} />
@@ -114,7 +114,7 @@ export default function RegisterPage() {
                         <div className="flex items-center gap-3 mb-2">
                             <User className="text-sky-600" size={24} />
                             <h2 className="text-2xl font-bold text-zinc-900">
-                                {t.registerTitle || "Pristupite Zajednici"}
+                                {t.registerTitle || "Registracija"}
                             </h2>
                         </div>
                         <p className="text-zinc-500">{t.fillLegalData}</p>

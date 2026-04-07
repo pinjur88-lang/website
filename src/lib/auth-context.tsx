@@ -84,8 +84,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         };
 
         // 1. Check Initial Session explicitly to avoid hanging loading states
-        supabase.auth.getSession().then(({ data: { session } }) => {
-            handleSession(session);
+        supabase.auth.getSession().then(({ data: { session }, error }) => {
+            if (error) {
+                console.error("Session Error:", error);
+                handleSession(null);
+            } else {
+                handleSession(session);
+            }
+        }).catch((err) => {
+            console.error("Session Promise Error:", err);
+            handleSession(null);
         });
 
         // 2. Listen to subsequent Auth changes
