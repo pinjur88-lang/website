@@ -6,9 +6,11 @@ import { useAuth } from '@/lib/auth-context';
 import { User, Shield, ArrowLeft, Send, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
+import { useLanguage } from '@/lib/language-context';
 
 export default function ChatPage() {
     const { user } = useAuth();
+    const { t } = useLanguage();
     const params = useParams();
     const otherUserId = params?.userId as string;
 
@@ -52,7 +54,7 @@ export default function ChatPage() {
         setSending(true);
         const res = await sendMessage(otherUserId, newMessage);
         if (res.error) {
-            alert('Greška pri slanju: ' + res.error);
+            alert((t.errorPrefix || 'Greška pri slanju: ') + res.error);
         } else if (res.data) {
             setNewMessage('');
             // Optimistically update
@@ -66,17 +68,17 @@ export default function ChatPage() {
     }
 
     if (!partnerProfile) {
-        return <div className="text-center p-8 text-slate-500">Korisnik nije pronađen. (User not found)</div>;
+        return <div className="text-center p-8 text-slate-500">{(t.unknownUser || 'Korisnik nije pronađen.')}</div>;
     }
 
-    const partnerName = partnerProfile.display_name || partnerProfile.full_name || 'Korisnik';
+    const partnerName = partnerProfile.display_name || partnerProfile.full_name || (t.unknownUser || 'Korisnik');
 
     return (
         <div className="max-w-3xl mx-auto h-[80vh] flex flex-col bg-white border border-sky-100 shadow-lg rounded-2xl overflow-hidden">
             
             {/* Chat Header */}
             <div className="flex items-center gap-3 p-4 bg-sky-50 border-b border-sky-100 shrink-0">
-                <Link href="/dashboard/messages" className="text-sky-600 hover:text-sky-800 p-2 rounded-full hover:bg-sky-100 transition">
+                <Link href="/dashboard/messages" className="text-sky-600 hover:text-sky-800 p-2 rounded-full hover:bg-sky-100 transition" title={t.backToMessages || 'Natrag na poruke'}>
                     <ArrowLeft size={20} />
                 </Link>
                 <Link href={`/dashboard/community/user/${partnerProfile.id}`} className="flex items-center gap-3 group">
@@ -101,8 +103,8 @@ export default function ChatPage() {
                 {messages.length === 0 ? (
                     <div className="h-full flex items-center justify-center flex-col text-slate-400 p-4 text-center">
                         <User size={48} className="mb-2 opacity-50" />
-                        <p>Započnite razgovor s članom {partnerName}.</p>
-                        <p className="text-xs mt-1">Sve poruke su privatne.</p>
+                        <p>{(t.startDiscussion || 'Započnite razgovor s članom ')} {partnerName}.</p>
+                        <p className="text-xs mt-1">{(t.disclaimer || 'Sve poruke su privatne.')}</p>
                     </div>
                 ) : (
                     messages.map((msg) => {
@@ -112,9 +114,9 @@ export default function ChatPage() {
                                 <div className={`max-w-[75%] px-4 py-2 rounded-2xl ${isMe ? 'bg-sky-600 text-white rounded-br-none shadow-md' : 'bg-white text-slate-800 border border-slate-200 rounded-bl-none shadow-sm'}`}>
                                     <p className="whitespace-pre-wrap text-[15px] leading-relaxed break-words">{msg.content}</p>
                                     <div className={`text-[10px] mt-1 text-right ${isMe ? 'text-sky-200' : 'text-slate-400'}`}>
-                                        {new Date(msg.created_at).toLocaleTimeString('hr-HR', { hour: '2-digit', minute: '2-digit' })}
-                                        {isMe && msg.read && <span className="ml-1">✓✓</span>}
-                                        {isMe && !msg.read && <span className="ml-1 opacity-70">✓</span>}
+                                        {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                        {isMe && msg.read && <span className="ml-1" title="Pročitano">✓✓</span>}
+                                        {isMe && !msg.read && <span className="ml-1 opacity-70" title="Poslano">✓</span>}
                                     </div>
                                 </div>
                             </div>
@@ -135,7 +137,7 @@ export default function ChatPage() {
                             handleSend(e);
                         }
                     }}
-                    placeholder={`Napiši poruku za ${partnerName}...`}
+                    placeholder={t.messagePlaceholder || "Napišite poruku..."}
                     className="flex-1 resize-none bg-slate-50 border border-slate-200 rounded-2xl p-3 px-4 max-h-32 min-h-[48px] focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent text-sm"
                     rows={1}
                 />
@@ -143,6 +145,7 @@ export default function ChatPage() {
                     type="submit"
                     disabled={sending || !newMessage.trim()}
                     className="p-3 bg-sky-600 text-white rounded-full hover:bg-sky-700 disabled:opacity-50 transition-colors shadow-md flex-shrink-0 mb-0.5"
+                    title={t.send || 'Pošalji'}
                 >
                     {sending ? <Loader2 size={18} className="animate-spin" /> : <Send size={18} className="ml-0.5" />}
                 </button>

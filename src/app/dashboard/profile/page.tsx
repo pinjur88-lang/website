@@ -1,12 +1,22 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useAuth } from '@/lib/auth-context';
 import { getProfile, updateProfile } from '@/actions/profile';
-import { User, Image as ImageIcon, Check, Loader2, Save } from 'lucide-react';
+import { User, Image as ImageIcon, Loader2, Save } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import imageCompression from 'browser-image-compression';
 import { useLanguage } from '@/lib/language-context';
+import Image from 'next/image';
+
+interface ProfileData {
+    display_name?: string;
+    full_name?: string;
+    bio?: string;
+    avatar_url?: string;
+    membership_tier?: string;
+    role?: string;
+}
 
 export default function ProfileSettingsPage() {
     const { user } = useAuth();
@@ -21,21 +31,23 @@ export default function ProfileSettingsPage() {
     const [tier, setTier] = useState('');
     const [role, setRole] = useState('');
 
+    const loadProfile = useCallback(async () => {
+        if (!user?.id) return;
+        const res = await getProfile(user.id);
+        if (res.data) {
+            const data = res.data as ProfileData;
+            setDisplayName(data.display_name || data.full_name || '');
+            setBio(data.bio || '');
+            setAvatarUrl(data.avatar_url || '');
+            setTier(data.membership_tier || 'free');
+            setRole(data.role || 'user');
+        }
+        setLoading(false);
+    }, [user?.id]);
+
     useEffect(() => {
-        const loadProfile = async () => {
-            if (!user?.id) return;
-            const res = await getProfile(user.id);
-            if (res.data) {
-                setDisplayName(res.data.display_name || res.data.full_name || '');
-                setBio(res.data.bio || '');
-                setAvatarUrl(res.data.avatar_url || '');
-                setTier(res.data.membership_tier || 'free');
-                setRole(res.data.role || 'user');
-            }
-            setLoading(false);
-        };
         loadProfile();
-    }, [user]);
+    }, [loadProfile]);
 
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -48,9 +60,9 @@ export default function ProfileSettingsPage() {
         });
 
         if (res.error) {
-            alert('Error updating profile: ' + res.error);
+            alert((t.errorPrefix || 'Error: ') + res.error);
         } else {
-            alert('Profil uspješno ažuriran! (Profile updated successfully!)');
+            alert(t.profileUpdatedSuccess || 'Profile updated successfully!');
         }
         setSaving(false);
     };
@@ -85,8 +97,9 @@ export default function ProfileSettingsPage() {
                 .getPublicUrl(filePath);
 
             setAvatarUrl(publicUrl);
-        } catch (error: any) {
-            alert('Greška pri učitavanju slike (Error uploading): ' + error.message);
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : String(error);
+            alert((t.errorPrefix || 'Error: ') + message);
         } finally {
             setSaving(false);
         }
@@ -100,9 +113,9 @@ export default function ProfileSettingsPage() {
         <div className="max-w-2xl mx-auto space-y-6">
             <div className="border-b border-sky-100 pb-4">
                 <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
-                    <User className="text-sky-600" /> Profil i Postavke (Profile Settings)
+                    <User className="text-sky-600" /> {t.profileSettings || "Profil i Postavke"}
                 </h1>
-                <p className="text-slate-500 text-sm mt-1">Uredite svoj profil, biografiju i profilnu sliku.</p>
+                <p className="text-slate-500 text-sm mt-1">{t.profileSubtitle || "Uredite svoj profil, biografiju i profilnu sliku."}</p>
             </div>
 
             <form onSubmit={handleSave} className="bg-white p-6 rounded-xl shadow-sm border border-sky-100 space-y-6">
@@ -110,16 +123,18 @@ export default function ProfileSettingsPage() {
                 {/* Avatar Section */}
                 <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 pb-6 border-b border-slate-100">
                     <div className="relative group">
-                        <div className="w-24 h-24 rounded-full overflow-hidden bg-slate-100 border-4 border-white shadow-md flex items-center justify-center">
+                        <div className="w-24 h-24 rounded-full overflow-hidden bg-slate-100 border-4 border-white shadow-md flex items-center justify-center relative">
                             {avatarUrl ? (
-                                <img src={avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
+                                <Image src={avatarUrl} alt="Avatar" fill className="object-cover" />
                             ) : (
                                 <User size={40} className="text-slate-300" />
                             )}
                         </div>
-                        <label className="absolute bottom-0 right-0 bg-sky-600 text-white p-2 rounded-full cursor-pointer hover:bg-sky-700 transition shadow-md">
+                        <label htmlFor="avatar-upload-input" className="absolute bottom-0 right-0 bg-sky-600 text-white p-2 rounded-full cursor-pointer hover:bg-sky-700 transition shadow-md z-10">
                             <ImageIcon size={14} />
                             <input 
+                                id="avatar-upload-input"
+                                title="Upload avatar"
                                 type="file" 
                                 accept="image/*" 
                                 className="hidden" 
@@ -129,8 +144,8 @@ export default function ProfileSettingsPage() {
                         </label>
                     </div>
                     <div className="flex-1 text-center sm:text-left">
-                        <h3 className="font-bold text-slate-800 text-lg">Profilna Slika</h3>
-                        <p className="text-xs text-slate-500 mt-1">Kliknite na ikonu kamere za promjenu slike. Maksimalna veličina: 5MB.</p>
+                        <h3 className="font-bold text-slate-800 text-lg">{t.profileAvatarLabel || "Profilna Slika"}</h3>
+                        <p className="text-xs text-slate-500 mt-1">{t.photoUploadTip || "Kliknite na ikonu kamere za promjenu slike."}</p>
                         <div className="mt-3 flex flex-wrap gap-2 justify-center sm:justify-start">
                              <span className="px-2 py-1 bg-slate-100 text-slate-600 rounded text-xs font-bold uppercase tracking-wide">
                                 Role: {role}
@@ -144,24 +159,24 @@ export default function ProfileSettingsPage() {
 
                 <div className="space-y-4">
                     <div>
-                        <label className="block text-sm font-bold text-slate-700 mb-1">Prikazano Ime (Display Name)</label>
+                        <label className="block text-sm font-bold text-slate-700 mb-1">{t.displayNameLabel || "Prikazano Ime"}</label>
                         <input
                             type="text"
                             value={displayName}
                             onChange={(e) => setDisplayName(e.target.value)}
                             className="w-full p-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent outline-none transition"
-                            placeholder="Vaše ime za forum"
+                            placeholder={t.displayNamePlaceholder || "Vaše ime za forum"}
                             required
                         />
                     </div>
 
                     <div>
-                        <label className="block text-sm font-bold text-slate-700 mb-1">Kratka Biografija (Bio) - Opcionalno</label>
+                        <label className="block text-sm font-bold text-slate-700 mb-1">{t.profileBioLabel || "Kratka Biografija"}</label>
                         <textarea
                             value={bio}
                             onChange={(e) => setBio(e.target.value)}
                             className="w-full p-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent outline-none transition min-h-[120px] resize-none"
-                            placeholder="Npr. Ja sam unuk Ivana iz zaseoka..."
+                            placeholder={t.profileBioPlaceholder || "Napišite nešto o sebi..."}
                             maxLength={500}
                         />
                         <p className="text-xs text-slate-400 mt-1 text-right">{bio.length} / 500</p>
@@ -175,7 +190,7 @@ export default function ProfileSettingsPage() {
                         className="flex items-center gap-2 bg-sky-600 text-white px-6 py-2.5 rounded-lg font-bold hover:bg-sky-700 disabled:opacity-50 transition shadow-sm"
                     >
                         {saving ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
-                        Spremi Promjene (Save)
+                        {t.saveChanges || "Spremi Promjene"}
                     </button>
                 </div>
             </form>

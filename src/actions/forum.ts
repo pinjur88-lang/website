@@ -4,6 +4,17 @@ import { supabaseAdmin } from '@/lib/supabase-admin';
 import { revalidatePath } from 'next/cache';
 import { verifyUser } from '@/lib/auth-admin';
 
+interface ForumProfile {
+    id: string;
+    full_name?: string;
+    role?: string;
+    membership_tier?: string;
+    donor_tier?: string;
+    display_name?: string;
+    avatar_url?: string;
+    bio?: string;
+}
+
 export type Topic = {
     id: string;
     title: string;
@@ -53,9 +64,9 @@ export async function getTopics() {
             return { data: [] };
         }
 
-        const userIds = Array.from(new Set(posts.map((p: any) => p.user_id).filter(Boolean)));
+        const userIds = Array.from(new Set(posts.map((p: { user_id: string }) => p.user_id).filter(Boolean)));
 
-        let profileMap = new Map();
+        const profileMap = new Map<string, ForumProfile>();
         if (userIds.length > 0) {
             const { data: profilesData } = await supabaseAdmin
                 .from('profiles')
@@ -63,11 +74,11 @@ export async function getTopics() {
                 .in('id', userIds);
 
             if (profilesData) {
-                profilesData.forEach((p: any) => profileMap.set(p.id, p));
+                profilesData.forEach((p: ForumProfile) => profileMap.set(p.id, p));
             }
         }
 
-        const topics: Topic[] = posts.map((post: any) => {
+        const topics: Topic[] = posts.map((post: { id: string; content: string; created_at: string; user_id: string; is_anonymous?: boolean }) => {
             const isAnon = post.is_anonymous === true;
             const profile = profileMap.get(post.user_id);
             const displayName = isAnon ? 'Anonimni Član' : (profile?.full_name || profile?.display_name || 'Član Udruge');
@@ -90,8 +101,8 @@ export async function getTopics() {
         });
 
         return { data: topics };
-    } catch (error: any) {
-        return { error: error.message };
+    } catch (error: unknown) {
+        return { error: error instanceof Error ? error.message : "Unknown error" };
     }
 }
 
@@ -110,7 +121,7 @@ export async function getTopicDetail(topicId: string) {
             .single();
 
         if (topicError) throw topicError;
-        if (!topic) throw new Error("Topic not found");
+        if (!topic) throw new Error("Tema nije pronađena");
 
         const { data: comments, error: commentsError } = await supabaseAdmin
             .from('community_comments')
@@ -128,10 +139,10 @@ export async function getTopicDetail(topicId: string) {
 
         const userIds = Array.from(new Set([
             topic.user_id,
-            ...(comments || []).map((c: any) => c.user_id)
+            ...(comments || []).map((c: { user_id: string }) => c.user_id)
         ].filter(Boolean)));
 
-        let profileMap = new Map();
+        const profileMap = new Map<string, ForumProfile>();
         if (userIds.length > 0) {
             const { data: profilesData } = await supabaseAdmin
                 .from('profiles')
@@ -139,7 +150,7 @@ export async function getTopicDetail(topicId: string) {
                 .in('id', userIds);
 
             if (profilesData) {
-                profilesData.forEach((p: any) => profileMap.set(p.id, p));
+                profilesData.forEach((p: ForumProfile) => profileMap.set(p.id, p));
             }
         }
 
@@ -162,7 +173,7 @@ export async function getTopicDetail(topicId: string) {
             is_anonymous: isTopicAnon
         };
 
-        const formattedComments: Comment[] = (comments || []).map((c: any) => {
+        const formattedComments: Comment[] = (comments || []).map((c: { id: string; content: string; created_at: string; user_id: string; is_anonymous?: boolean }) => {
             const isCommentAnon = c.is_anonymous === true;
             const commentProfile = profileMap.get(c.user_id);
             return {
@@ -182,8 +193,8 @@ export async function getTopicDetail(topicId: string) {
 
         return { topic: formattedTopic, comments: formattedComments };
 
-    } catch (error: any) {
-        return { error: error.message };
+    } catch (error: unknown) {
+        return { error: error instanceof Error ? error.message : "Unknown error" };
     }
 }
 
@@ -202,7 +213,6 @@ export async function createTopic(content: string, authorId: string, isAnonymous
             .insert([{
                 content,
                 user_id: authorId,
-                author_id: authorId,
                 is_anonymous: isAnonymous
             }])
             .select()
@@ -217,8 +227,8 @@ export async function createTopic(content: string, authorId: string, isAnonymous
 
         revalidatePath('/dashboard/community');
         return { data };
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("Create topic error:", error);
-        return { error: error.message };
+        return { error: error instanceof Error ? error.message : "Unknown error" };
     }
 }
