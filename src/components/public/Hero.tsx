@@ -29,6 +29,16 @@ export default function Hero() {
                     </Link>
                 </div>
             </div>
+            
+            {/* Ivandan Banner */}
+            <div className="w-full bg-amber-50 border-b border-amber-200 py-3 px-6 text-center shadow-sm">
+                <p className="text-sm md:text-base font-serif text-amber-900 font-medium">
+                    ✨ {t.ivandanGreeting}
+                </p>
+                <Link href="/donate" className="text-xs text-amber-700 hover:text-amber-900 underline underline-offset-4 mt-1 inline-block transition-colors font-sans">
+                    {t.ivandanSupport} &rarr;
+                </Link>
+            </div>
 
             {/* Main Content */}
             <div className="flex-1 flex flex-col items-center justify-center p-8 text-center space-y-8">
