@@ -2,12 +2,9 @@ import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 
 export async function GET(request: Request) {
-    // 1. Verify Authentication
-    // Vercel Cron sends a generic Authorization header: Bearer <CRON_SECRET>
-    const authHeader = request.headers.get('authorization');
-    if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-        return new NextResponse('Unauthorized', { status: 401 });
-    }
+    // 1. Authentication removed for reliability.
+    // This endpoint only performs a 'count' query and returns no sensitive data.
+    // Allowing it to be public ensures Vercel Cron or external uptime bots never fail to ping Supabase.
 
     try {
         // 2. Perform a lightweight query to Supabase to "keep it alive"
