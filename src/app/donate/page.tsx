@@ -52,54 +52,6 @@ export default function DonatePage() {
 
         <div className="flex flex-col gap-10">
 
-          {/* Option 1: Credit Card (Small/Small-Medium) */}
-          <div className="relative group w-full">
-            <div className="absolute -inset-0.5 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-3xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
-            <div className="relative bg-white dark:bg-zinc-900/90 backdrop-blur-xl border border-zinc-200 dark:border-zinc-800 rounded-2xl p-8 flex flex-col md:flex-row gap-8 items-start">
-              <div className="flex-1">
-                <div className="inline-flex items-center px-3 py-1 rounded-full bg-indigo-100 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 text-xs font-semibold mb-4 uppercase tracking-wider">
-                  {t.donateOpt1Badge}
-                </div>
-                <div className="flex items-start gap-4 mb-4">
-                  <div className="p-3 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 shrink-0">
-                    <CreditCard className="w-8 h-8" />
-                  </div>
-                  <div>
-                    <h2 className="text-2xl font-bold mb-2 tracking-tight">{t.donateOpt1Title}</h2>
-                    <p className="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed max-w-md">
-                      {t.donateOpt1Desc}
-                    </p>
-                  </div>
-                </div>
-                <div className="space-y-3 mb-6">
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></div>
-                    <span className="font-medium text-zinc-900 dark:text-white text-sm">{t.donateOpt1Speed}</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Check className="w-4 h-4 text-indigo-500" />
-                    <span className="text-sm text-zinc-600 dark:text-zinc-400">{t.donateOpt1Method}</span>
-                  </div>
-                </div>
-              </div>
-              <div className="w-full md:w-auto flex flex-col gap-3 min-w-[200px] justify-center pt-4 md:pt-0">
-                <div className="grid grid-cols-1 gap-3">
-                  {[20, 50, 100].map((amount) => (
-                    <button
-                      key={amount}
-                      className="py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition-all shadow-lg hover:shadow-indigo-500/25 active:scale-95 text-center flex items-center justify-center gap-2"
-                    >
-                      €{amount}
-                    </button>
-                  ))}
-                </div>
-                <p className="text-center text-[10px] text-zinc-400 dark:text-zinc-500 uppercase tracking-widest pt-2">
-                  {t.donateSecure}
-                </p>
-              </div>
-            </div>
-          </div>
-
           {/* Option 2: Bank Transfer (Direct & Traditional) */}
           <div className="relative group w-full">
             <div className="absolute -inset-0.5 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-3xl blur opacity-10 group-hover:opacity-30 transition duration-500"></div>
