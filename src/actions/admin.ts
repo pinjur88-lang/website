@@ -282,18 +282,24 @@ export async function deleteMember(email: string) {
         const user = await getAuthUserByEmail(email);
 
         if (user) {
-            // Delete from Auth (this cascades to profiles if set up, but we'll manually ensure it)
+            // To prevent "Database error deleting user" (foreign key constraints), 
+            // we manually delete the user's related records before deleting the profile/auth user.
+            await supabaseAdmin.from('community_comments').delete().eq('author_id', user.id);
+            await supabaseAdmin.from('community_posts').delete().eq('author_id', user.id);
+            
+            // Delete messages where user is either sender or receiver
+            await supabaseAdmin.from('messages').delete().or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`);
+
+            // 3. Delete from profiles
+            await supabaseAdmin.from('profiles').delete().eq('id', user.id);
+
+            // Delete from Auth
             const { error: authDeleteError } = await supabaseAdmin.auth.admin.deleteUser(user.id);
             if (authDeleteError) throw authDeleteError;
         }
 
-        // 2. Delete from requests (just in case)
+        // 2. Delete from requests (just in case they have multiple request rows)
         await supabaseAdmin.from('requests').delete().eq('email', email);
-
-        // 3. Delete from profiles (fallback if cascade fails)
-        if (user) {
-            await supabaseAdmin.from('profiles').delete().eq('id', user.id);
-        }
 
         revalidatePath('/admin');
         return { success: true };
