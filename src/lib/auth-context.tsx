@@ -54,12 +54,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                         .eq('email', session.user.email!)
                         .maybeSingle();
 
-                    if (reqData && reqData.status !== 'approved' && !isEmailAdmin) {
-                        console.warn('User logged in but not approved. Logging out.');
-                        await supabase.auth.signOut();
-                        setUser(null);
-                        return;
-                    }
+                    // Removed the block that logs out pending users, so they can access the dashboard and see the PendingApproval screen.
 
                     const isProfileAdmin = profileData?.role === 'admin';
                     const finalRole = (isEmailAdmin || isProfileAdmin) ? 'admin' : 'member';
