@@ -174,6 +174,24 @@ export async function updateComment(commentId: string, content: string) {
     }
 }
 // TIER MANAGEMENT
+export async function getMemberTierInfo(email: string) {
+    if (!await verifyAdmin()) return { error: "Unauthorized" };
+    try {
+        const user = await getAuthUserByEmail(email);
+        if (!user) return { hasProfile: false, tier: 'free' };
+
+        const { data: profile } = await supabaseAdmin
+            .from('profiles')
+            .select('membership_tier')
+            .eq('id', user.id)
+            .single();
+
+        return { hasProfile: true, tier: profile?.membership_tier || 'free' };
+    } catch (error: any) {
+        return { error: error.message };
+    }
+}
+
 export async function updateMemberTier(email: string, tier: string) {
     if (!await verifyAdmin()) return { error: "Unauthorized" };
     try {

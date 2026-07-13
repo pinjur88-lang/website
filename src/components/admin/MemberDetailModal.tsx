@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { MembershipRequest, Donation } from '@/lib/db';
 import { X, Save, Plus, Trash2, Calendar, MapPin, Mail, Phone, FileText, Award, ShieldCheck, Star, BadgeCheck } from 'lucide-react';
-import { saveAdminNotes, addAdminDonation, updateMemberTier, deleteMember } from '@/actions/admin';
+import { saveAdminNotes, addAdminDonation, updateMemberTier, deleteMember, getMemberTierInfo } from '@/actions/admin';
 import { supabaseAdmin as supabase } from '@/lib/supabase-admin';
 
 interface MemberDetailModalProps {
@@ -34,19 +34,15 @@ export default function MemberDetailModal({ request, onClose, onUpdate }: Member
 
     useEffect(() => {
         const fetchTier = async () => {
-            const { data: userData } = await supabase.auth.admin.listUsers();
-            const user = userData?.users.find(u => u.email === request.email);
-            if (user) {
-                const { data: profile } = await supabase
-                    .from('profiles')
-                    .select('membership_tier')
-                    .eq('id', user.id)
-                    .single();
-                if (profile?.membership_tier) {
-                    setTier(profile.membership_tier);
-                }
-            } else {
-                setHasProfile(false);
+            const res = await getMemberTierInfo(request.email);
+            if (res.error) {
+                console.error(res.error);
+                return;
+            }
+            
+            setHasProfile(res.hasProfile || false);
+            if (res.hasProfile && res.tier) {
+                setTier(res.tier as 'free' | 'silver' | 'gold');
             }
         };
         fetchTier();
