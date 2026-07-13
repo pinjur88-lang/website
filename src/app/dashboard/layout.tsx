@@ -50,17 +50,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             title: t.navHeritageServices || "Zavičaj & Usluge",
             items: [
                 {
-                    name: t.documents || 'Dokumenti', href: '#', icon: FileText, children: [
-                        { name: t.handbook || 'Priručnik', href: '/dashboard/handbook' },
-                        { name: t.statute || 'Statut', href: '/dashboard/statute' },
-                        { name: t.oib || 'OIB', href: '/dashboard/oib' },
-                    ]
-                },
-                {
-                    name: t.projects || 'Projekti', href: '#', icon: Hammer, children: [
+                    name: t.projects || 'Projekti & Dokumenti', href: '#', icon: Hammer, children: [
                         { name: t.renovation || 'Obnova', href: '/dashboard/renovation' },
                         { name: t.infrastructure || 'Infrastruktura', href: '/dashboard/infrastructure' },
                         { name: t.dumping || 'Otpad', href: '/dashboard/dumping' },
+                        { name: t.handbook || 'Priručnik', href: '/dashboard/handbook' },
+                        { name: t.statute || 'Statut', href: '/dashboard/statute' },
+                        { name: 'Vlasništvo (Papiri)', href: '/dashboard/vlasnistvo' },
+                        { name: t.oib || 'OIB', href: '/dashboard/oib' },
                     ]
                 },
                 { name: t.digitalSpomenar || 'Spomenar', href: '/dashboard/spomenar', icon: BookOpen },

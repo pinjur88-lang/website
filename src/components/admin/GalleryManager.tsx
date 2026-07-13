@@ -98,9 +98,14 @@ export default function GalleryManager() {
 
     return (
         <div className="space-y-6">
-            <div className="flex justify-between items-center">
-                <h2 className="text-xl font-serif text-zinc-800">Photo Gallery</h2>
-                <div className="relative">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div>
+                    <h2 className="text-xl font-serif text-zinc-800">Photo Gallery</h2>
+                    <p className="text-sm text-zinc-500 mt-1">
+                        Upload photos of completed work, projects, or community events here. These photos will appear in the main gallery for all members.
+                    </p>
+                </div>
+                <div className="relative shrink-0">
                     <input
                         type="file"
                         accept="image/*"
@@ -114,7 +119,7 @@ export default function GalleryManager() {
                         className="flex items-center gap-2 px-4 py-2 bg-zinc-900 text-white rounded-sm text-sm hover:bg-zinc-700 transition-colors disabled:opacity-50"
                     >
                         {uploading ? <Loader2 className="animate-spin" size={16} /> : <Upload size={16} />}
-                        {uploading ? 'Uploading...' : 'Upload Images'}
+                        {uploading ? 'Uploading...' : 'Upload Project Photos'}
                     </button>
                 </div>
             </div>

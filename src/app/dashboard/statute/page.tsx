@@ -53,24 +53,24 @@ export default function StatutePage() {
                                 <Scroll className="w-5 h-5" />
                             </div>
                             <div className="space-y-4">
-                                <h2 className="text-xl font-semibold text-slate-800 uppercase tracking-wide">2. NAŠA MISIJA I AKTIVNOSTI</h2>
-                                <p className="text-slate-600 italic">Postojimo kako bismo revitalizirali Baljke kroz specifična područja djelovanja:</p>
+                                <h2 className="text-xl font-semibold text-slate-800 uppercase tracking-wide">2. NAŠA MISIJA I AKTIVNOSTI (Our Mission & Goals)</h2>
+                                <p className="text-slate-600 italic">Postojimo kako bismo revitalizirali Baljke kroz sustavni, dugoročni razvoj usmjeren na sljedeća ključna područja:</p>
                                 <div className="grid md:grid-cols-2 gap-4">
                                     <div className="p-4 bg-slate-50 rounded-lg border border-slate-100">
-                                        <h3 className="font-semibold text-slate-900 mb-1">Razvoj zajednice</h3>
-                                        <p className="text-sm text-slate-600">Suradnja s lokalnim agencijama na poboljšanju infrastrukture i dobrobiti.</p>
+                                        <h3 className="font-semibold text-slate-900 mb-1">Razvoj Infrastrukture i Zajednice</h3>
+                                        <p className="text-sm text-slate-600">Aktivna suradnja s lokalnim institucijama i agencijama na obnovi i izgradnji vitalne infrastrukture: cesta, vodovoda i javnih objekata, s ciljem stvaranja održivih uvjeta za povratak i život u selu.</p>
                                     </div>
                                     <div className="p-4 bg-slate-50 rounded-lg border border-slate-100">
-                                        <h3 className="font-semibold text-slate-900 mb-1">Ekologija</h3>
-                                        <p className="text-sm text-slate-600">Zaštita prirodnih područja, upravljanje otpadom i promicanje obnovljive energije.</p>
+                                        <h3 className="font-semibold text-slate-900 mb-1">Ekološka Održivost</h3>
+                                        <p className="text-sm text-slate-600">Provođenje mjera zaštite prirodnih resursa, sustavno upravljanje okolišem i otpadom te snažno promicanje obnovljivih izvora energije za dugoročnu dobrobit lokalnog ekosustava.</p>
                                     </div>
                                     <div className="p-4 bg-slate-50 rounded-lg border border-slate-100">
-                                        <h3 className="font-semibold text-slate-900 mb-1">Baština</h3>
-                                        <p className="text-sm text-slate-600">Obnova spomenika, starih puteva i očuvanje naše kulturne povijesti.</p>
+                                        <h3 className="font-semibold text-slate-900 mb-1">Očuvanje Kulturne Baštine</h3>
+                                        <p className="text-sm text-slate-600">Restauracija povijesnih spomenika, održavanje starih puteva i organizacija kulturnih događanja kako bismo njegovali i prenosili našu bogatu povijest i tradiciju mlađim generacijama.</p>
                                     </div>
                                     <div className="p-4 bg-slate-50 rounded-lg border border-slate-100">
-                                        <h3 className="font-semibold text-slate-900 mb-1">Podrška</h3>
-                                        <p className="text-sm text-slate-600">Pružanje humanitarne pomoći u krizama i podrška starijima ili nemoćnima.</p>
+                                        <h3 className="font-semibold text-slate-900 mb-1">Socijalna i Humanitarna Podrška</h3>
+                                        <p className="text-sm text-slate-600">Kontinuirano pružanje humanitarne pomoći u kriznim situacijama, s posebnim naglaskom na podršku starijim i nemoćnim mještanima te jačanje socijalne kohezije unutar zajednice.</p>
                                     </div>
                                 </div>
                             </div>

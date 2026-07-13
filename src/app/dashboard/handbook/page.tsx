@@ -154,41 +154,43 @@ export default function HandbookPage() {
                 </div>
             )
         },
-        {
-            id: 'bosnia',
-            icon: MapPin,
-            color: 'text-indigo-700',
-            bg: 'bg-indigo-50',
-            border: 'border-indigo-200',
-            title: t.bosniaTitle,
-            hero: t.bosniaHero,
-            content: (
-                <div className="space-y-4">
-                    <p className="text-xs font-bold uppercase text-slate-400">Traffic Light</p>
-                    <div className="bg-red-100 border border-red-200 p-3 rounded-lg text-red-900 text-sm mb-2">
-                        <span className="font-bold flex items-center gap-2"><AlertTriangle size={14} /> NO:</span> {t.bosniaWarn}
-                    </div>
-                    <div className="bg-green-100 border border-green-200 p-3 rounded-lg text-green-900 text-sm">
-                        <span className="font-bold">YES:</span> {t.bosniaOk}
-                    </div>
-                </div>
-            )
-        },
+
         {
             id: 'harvest',
             icon: ShoppingCart,
             color: 'text-emerald-700',
             bg: 'bg-emerald-50',
             border: 'border-emerald-200',
-            title: t.harvestShortTitle,
-            hero: t.harvestShortHero,
+            title: "Kupuj Domaće",
+            hero: "Podržite naše seljane! Ovdje možete pronaći domaće proizvode izravno od mještana Baljaka.",
             content: (
                 <div className="space-y-4">
-                    <p className="font-serif italic text-lg text-emerald-800">{t.harvestList}</p>
-                    <div className="flex items-center gap-2 text-xs text-slate-500">
-                        <Info size={14} /> {t.harvestWhy}
+                    <div className="bg-white p-3 rounded-lg border border-emerald-100 shadow-sm">
+                        <h4 className="font-bold text-emerald-800 text-sm mb-2 border-b border-emerald-50 pb-2">Domaći Proizvodi</h4>
+                        <ul className="space-y-3">
+                            <li className="flex justify-between items-center text-sm">
+                                <div>
+                                    <p className="font-bold text-slate-700">[Ime Prezime]</p>
+                                    <p className="text-xs text-slate-500">Pršut, Sir, Rakija</p>
+                                </div>
+                                <a href="tel:+" className="bg-emerald-100 text-emerald-700 p-2 rounded-full hover:bg-emerald-200 transition">
+                                    <Phone size={14} />
+                                </a>
+                            </li>
+                            <li className="flex justify-between items-center text-sm">
+                                <div>
+                                    <p className="font-bold text-slate-700">[Ime Prezime]</p>
+                                    <p className="text-xs text-slate-500">Domaća Jaja, Povrće</p>
+                                </div>
+                                <a href="tel:+" className="bg-emerald-100 text-emerald-700 p-2 rounded-full hover:bg-emerald-200 transition">
+                                    <Phone size={14} />
+                                </a>
+                            </li>
+                        </ul>
                     </div>
-                    <p className="text-sm font-bold text-slate-700">{t.harvestEtiquette}</p>
+                    <p className="text-xs text-slate-500 italic flex items-center gap-1">
+                        <Info size={12} /> Trenutno prikupljamo kontakte.
+                    </p>
                 </div>
             )
         }
