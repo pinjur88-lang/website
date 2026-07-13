@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { createAnnouncement, deleteAnnouncement, getAnnouncements, updateAnnouncement } from '@/actions/cms';
-import { Trash2, Plus, MessageSquare, Pencil, Check, X as CloseIcon } from 'lucide-react';
+import { Trash2, Plus, MessageSquare, Pencil, Check, X as CloseIcon, Image as ImageIcon, Loader2 } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
 
 type Announcement = {
     id: string;
@@ -23,7 +24,39 @@ export default function AnnouncementManager({ profileId }: { profileId: string }
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [submitting, setSubmitting] = useState(false);
+    const [uploadingImage, setUploadingImage] = useState(false);
     const [error, setError] = useState('');
+
+    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!e.target.files || e.target.files.length === 0) return;
+        const file = e.target.files[0];
+        setUploadingImage(true);
+        setError('');
+
+        try {
+            const fileExt = file.name.split('.').pop();
+            const fileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
+            const filePath = `announcements/${fileName}`;
+
+            const { error: uploadError } = await supabase.storage
+                .from('gallery')
+                .upload(filePath, file);
+
+            if (uploadError) throw uploadError;
+
+            const { data: { publicUrl } } = supabase.storage
+                .from('gallery')
+                .getPublicUrl(filePath);
+
+            setContent(prev => prev + `\n\n[IMAGE:${publicUrl}]`);
+        } catch (err: any) {
+            console.error('Upload error:', err);
+            setError('Greška pri učitavanju slike: ' + err.message);
+        } finally {
+            setUploadingImage(false);
+            if (e.target) e.target.value = ''; // reset input
+        }
+    };
 
     // Editing state
     const [editingId, setEditingId] = useState<string | null>(null);
@@ -130,7 +163,24 @@ export default function AnnouncementManager({ profileId }: { profileId: string }
                         />
                     </div>
                     {error && <p className="text-red-500 text-xs">{error}</p>}
-                    <div className="flex justify-end">
+                    <div className="flex justify-between items-center mt-2">
+                        <div className="relative">
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleImageUpload}
+                                disabled={uploadingImage}
+                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed"
+                            />
+                            <button
+                                type="button"
+                                disabled={uploadingImage}
+                                className="flex items-center gap-2 px-3 py-1.5 bg-zinc-100 text-zinc-700 rounded-md text-sm font-medium hover:bg-zinc-200 disabled:opacity-50 transition-colors"
+                            >
+                                {uploadingImage ? <Loader2 size={16} className="animate-spin" /> : <ImageIcon size={16} />}
+                                {uploadingImage ? 'Učitavanje...' : 'Dodaj Sliku'}
+                            </button>
+                        </div>
                         <button
                             type="submit"
                             disabled={submitting}

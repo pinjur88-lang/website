@@ -80,7 +80,20 @@ export default function DashboardHome() {
                                             </div>
 
                                             <h3 className="text-xl font-bold text-slate-800">{item.title}</h3>
-                                            <p className="text-slate-600 leading-relaxed whitespace-pre-wrap">{item.content}</p>
+                                            {(() => {
+                                                const imgMatch = item.content.match(/\[IMAGE:(.*?)\]/);
+                                                const textContent = item.content.replace(/\[IMAGE:.*?\]/g, '').trim();
+                                                return (
+                                                    <>
+                                                        {textContent && <p className="text-slate-600 leading-relaxed whitespace-pre-wrap">{textContent}</p>}
+                                                        {imgMatch && (
+                                                            <div className="mt-4 rounded-xl overflow-hidden border border-slate-100 bg-slate-50 flex justify-center">
+                                                                <img src={imgMatch[1]} alt="Slika obavijesti" className="max-w-full max-h-[500px] object-contain rounded-xl" />
+                                                            </div>
+                                                        )}
+                                                    </>
+                                                );
+                                            })()}
 
                                             <div className="flex items-center gap-2 pt-2 text-xs text-slate-400 border-t border-slate-50 mt-2">
                                                 <span>{t.publishedBy || "Objavio"}: {item.author?.display_name || 'Admin'}</span>
