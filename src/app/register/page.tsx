@@ -46,6 +46,7 @@ export default function RegisterPage() {
                 email,
                 password,
                 options: {
+                    emailRedirectTo: `${window.location.origin}/login`,
                     data: {
                         display_name: fullName,
                         full_name: fullName,
@@ -184,17 +185,10 @@ export default function RegisterPage() {
                         {/* SECTION E: CONSENTS */}
                         <div className="space-y-4 pt-6 border-t border-zinc-100">
                             <div className="flex items-start gap-3 p-4 bg-zinc-50 rounded-xl">
-                                <input type="checkbox" required checked={consents.statute} onChange={e => setConsents({ ...consents, statute: e.target.checked })} className="mt-1 w-5 h-5 text-zinc-900 rounded border-zinc-300 focus:ring-zinc-900" />
+                                <input type="checkbox" required checked={consents.statute && consents.data} onChange={e => setConsents({ ...consents, statute: e.target.checked, data: e.target.checked })} className="mt-1 w-5 h-5 text-zinc-900 rounded border-zinc-300 focus:ring-zinc-900" />
                                 <div className="space-y-1">
                                     <p className="text-sm font-bold text-zinc-900">{t.acceptStatute}</p>
-                                    <p className="text-xs text-zinc-500">{t.statuteRequiredByLaw}</p>
-                                </div>
-                            </div>
-                            <div className="flex items-start gap-3 p-4 bg-zinc-50 rounded-xl">
-                                <input type="checkbox" required checked={consents.data} onChange={e => setConsents({ ...consents, data: e.target.checked })} className="mt-1 w-5 h-5 text-zinc-900 rounded border-zinc-300 focus:ring-zinc-900" />
-                                <div className="space-y-1">
-                                    <p className="text-sm font-bold text-zinc-900">{t.consentDataCollection}</p>
-                                    <p className="text-xs text-zinc-500">{t.consentDataCollectionDesc}</p>
+                                    <p className="text-xs text-zinc-500">{t.statuteRequiredByLaw} {t.consentDataCollectionDesc}</p>
                                 </div>
                             </div>
                             <div className="flex items-start gap-3 p-4 bg-white border border-zinc-200 rounded-xl">
