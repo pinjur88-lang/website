@@ -111,6 +111,47 @@ export default function VotingHallPage() {
                 </div>
             )}
 
+            {/* Izvučeni prijedlozi iz kutije - Antigravity */}
+            <div className="mt-8 mb-12">
+                <h2 className="text-center text-[#003366] mb-10 text-2xl font-bold">Glasajte za nove projekte u Baljcima</h2>
+                <div className="flex flex-wrap gap-8 justify-center max-w-5xl mx-auto">
+                    
+                    {/* Kartica 1 */}
+                    <div className="bg-white rounded-xl p-6 w-[300px] text-center transition-transform duration-300 animate-antigravity shadow-[0_5px_15px_rgba(0,0,0,0.1)]" style={{ animationDelay: '0s' }}>
+                        <div className="text-[#003366] text-lg font-bold mb-4 border-b-2 border-slate-100 pb-2">Uređenje sela (Lara Dimitrić)</div>
+                        <div className="text-[15px] leading-relaxed min-h-[100px] text-slate-700">
+                            Noćne lampe, postavljanje velikog stola, sadnja cvijeća i izgradnja parka za djecu.
+                        </div>
+                        <button disabled={!isVotingOrAdmin} onClick={() => alert('Glas zabilježen (lokalno)!')} className="bg-[#003366] hover:bg-[#00509e] disabled:opacity-50 disabled:cursor-not-allowed text-white border-none py-2 px-5 rounded-full text-base cursor-pointer font-bold transition-colors w-full mt-4">
+                            Glasaj
+                        </button>
+                    </div>
+
+                    {/* Kartica 2 */}
+                    <div className="bg-white rounded-xl p-6 w-[300px] text-center transition-transform duration-300 animate-antigravity shadow-[0_5px_15px_rgba(0,0,0,0.1)]" style={{ animationDelay: '1s' }}>
+                        <div className="text-[#003366] text-lg font-bold mb-4 border-b-2 border-slate-100 pb-2">Očuvanje tradicije (Anonimno)</div>
+                        <div className="text-[15px] leading-relaxed min-h-[100px] text-slate-700">
+                            Napraviti spisak svih potomaka Baljčana i izdvojiti one koji su zainteresovani da produže tradiciju Baljaka i Srba u Krajini.
+                        </div>
+                        <button disabled={!isVotingOrAdmin} onClick={() => alert('Glas zabilježen (lokalno)!')} className="bg-[#003366] hover:bg-[#00509e] disabled:opacity-50 disabled:cursor-not-allowed text-white border-none py-2 px-5 rounded-full text-base cursor-pointer font-bold transition-colors w-full mt-4">
+                            Glasaj
+                        </button>
+                    </div>
+
+                    {/* Prazna kartica za buduće prijedloge */}
+                    <div className="bg-white rounded-xl p-6 w-[300px] text-center transition-transform duration-300 animate-antigravity shadow-[0_5px_15px_rgba(0,0,0,0.1)]" style={{ animationDelay: '2s' }}>
+                        <div className="text-[#003366] text-lg font-bold mb-4 border-b-2 border-slate-100 pb-2">Novi Prijedlog?</div>
+                        <div className="text-[15px] leading-relaxed min-h-[100px] text-slate-700">
+                            Imate ideju? Ostavite je u kutiju za prijedloge na sljedećem okupljanju ili nam pošaljite e-mail.
+                        </div>
+                        <button onClick={() => window.location.href='mailto:info@baljci.com'} className="bg-[#6c757d] hover:bg-slate-600 text-white border-none py-2 px-5 rounded-full text-base cursor-pointer font-bold transition-colors w-full mt-4">
+                            Predloži
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
             <div className="grid grid-cols-1 gap-8">
                 {polls.length === 0 ? (
                     <div className="text-center py-20 bg-white rounded-2xl border border-dashed border-slate-200">

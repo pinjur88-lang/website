@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { db, MembershipRequest } from '@/lib/db';
-import { Mail, Phone, MapPin, Calendar, FileText, Check, X, Users, MessageSquare, Image as ImageIcon, Award, Star, ShieldCheck } from 'lucide-react';
+import { Mail, Phone, MapPin, Calendar, FileText, Check, X, Users, MessageSquare, Image as ImageIcon, Award, Star, ShieldCheck, Trash2 } from 'lucide-react';
 import { useAuth } from '@/lib/auth-context';
 import AnnouncementManager from '@/components/admin/AnnouncementManager';
 import { getAdminRequests, approveRequest } from '@/actions/admin';
@@ -10,10 +10,12 @@ import { getAdminRequests, approveRequest } from '@/actions/admin';
 import GalleryManager from '@/components/admin/GalleryManager';
 import MemberDetailModal from '@/components/admin/MemberDetailModal';
 import AdminInboxManager from '@/components/admin/AdminInboxManager';
-import { getAllMembersForRegistry } from '@/actions/admin';
+import { getAllMembersForRegistry, updateMemberTier, deleteMember } from '@/actions/admin';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function AdminMembersPage() {
+    const router = useRouter();
     const [requests, setRequests] = useState<MembershipRequest[]>([]);
     const [loading, setLoading] = useState(true);
     const { user } = useAuth();
@@ -30,7 +32,7 @@ export default function AdminMembersPage() {
     const loadRequests = async () => {
         const { data, error } = await getAdminRequests();
         if (error === "Unauthorized") {
-            window.location.href = '/login';
+            router.push('/login');
             return;
         }
         if (data) setRequests(data);
@@ -56,6 +58,30 @@ export default function AdminMembersPage() {
         };
         init();
     }, []);
+
+    const handleTierChange = async (email: string, newTier: string) => {
+        if (!confirm(`Jeste li sigurni da želite promijeniti tier u ${newTier.toUpperCase()}?`)) return;
+        const res = await updateMemberTier(email, newTier);
+        if (res.error) {
+            alert('Greška: ' + res.error);
+        } else {
+            alert('Status uspješno ažuriran!');
+            loadRegistry();
+        }
+    };
+
+    const handleDeleteMember = async (email: string) => {
+        if (!confirm(`Jeste li sigurni da želite obrisati korisnika ${email}? Ova akcija je nepovratna i briše sve njihove podatke!`)) return;
+
+        const res = await deleteMember(email);
+        if (res?.error) {
+            alert('Greška prilikom brisanja: ' + res.error);
+        } else {
+            alert('Korisnik uspješno obrisan.');
+            loadRegistry();
+            loadRequests();
+        }
+    };
 
     const handleApprove = async (req: MembershipRequest) => {
         if (!confirm(`Odobriti pristup za ${req.name}?`)) return;
@@ -143,20 +169,20 @@ export default function AdminMembersPage() {
                             <table className="w-full text-sm text-left">
                                 <thead className="bg-zinc-50 text-zinc-700 uppercase text-xs font-semibold">
                                     <tr>
-                                        <th className="px-6 py-4">Datum</th>
-                                        <th className="px-6 py-4">Kandidat</th>
-                                        <th className="px-6 py-4">Osobni Podaci</th>
-                                        <th className="px-6 py-4">Kontakt & Metoda</th>
-                                        <th className="px-6 py-4">Status</th>
-                                        <th className="px-6 py-4 text-right">Akcija</th>
+                                        <th className="px-2 py-3 md:px-4 md:py-4">Datum</th>
+                                        <th className="px-2 py-3 md:px-4 md:py-4">Kandidat</th>
+                                        <th className="px-2 py-3 md:px-4 md:py-4">Osobni Podaci</th>
+                                        <th className="px-2 py-3 md:px-4 md:py-4">Kontakt & Metoda</th>
+                                        <th className="px-2 py-3 md:px-4 md:py-4">Status</th>
+                                        <th className="px-2 py-3 md:px-4 md:py-4 text-right">Akcija</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-zinc-100">
                                     {requests.map((req) => (
                                         <tr key={req.id} className="hover:bg-zinc-50 align-top">
-                                            <td className="px-6 py-4 text-zinc-500 whitespace-nowrap">{req.date}</td>
+                                            <td className="px-2 py-3 md:px-4 md:py-4 text-zinc-500 whitespace-nowrap">{req.date}</td>
 
-                                            <td className="px-6 py-4">
+                                            <td className="px-2 py-3 md:px-4 md:py-4">
                                                 <div className="font-medium text-zinc-900">{req.name}</div>
                                                 {req.oib && <div className="text-xs text-zinc-500">OIB: {req.oib}</div>}
                                                 {req.accepted_statute && (
@@ -166,7 +192,7 @@ export default function AdminMembersPage() {
                                                 )}
                                             </td>
 
-                                            <td className="px-6 py-4">
+                                            <td className="px-2 py-3 md:px-4 md:py-4">
                                                 <div className="flex items-center gap-2 text-zinc-600 mb-1">
                                                     <MapPin size={14} className="text-zinc-400" /> {req.address}
                                                 </div>
@@ -175,7 +201,7 @@ export default function AdminMembersPage() {
                                                 </div>
                                             </td>
 
-                                            <td className="px-6 py-4">
+                                            <td className="px-2 py-3 md:px-4 md:py-4">
                                                 <div className="flex items-center gap-2 text-zinc-900 font-medium mb-1">
                                                     <Mail size={14} className="text-zinc-400" /> {req.email}
                                                 </div>
@@ -187,24 +213,33 @@ export default function AdminMembersPage() {
                                                 </div>
                                             </td>
 
-                                            <td className="px-6 py-4">
-                                                <span className={`text-xs px-2 py-1 rounded-full border ${req.status === 'approved' ? 'bg-green-100 text-green-800 border-green-200' : 'bg-yellow-100 text-yellow-800 border-yellow-200'}`}>
-                                                    {req.status.toUpperCase()}
+                                            <td className="px-2 py-3 md:px-4 md:py-4">
+                                                <span className={`text-xs px-2 py-1 rounded-full border ${req.status?.toLowerCase() === 'approved' ? 'bg-green-100 text-green-800 border-green-200' : 'bg-yellow-100 text-yellow-800 border-yellow-200'}`}>
+                                                    {(req.status || 'pending').toUpperCase()}
                                                 </span>
                                             </td>
 
-                                            <td className="px-6 py-4 text-right">
+                                            <td className="px-2 py-3 md:px-4 md:py-4 text-right">
                                                 <div className="flex items-center justify-end gap-2">
-                                                    {req.status === 'pending' && (
-                                                        <button
-                                                            onClick={() => handleApprove(req)}
-                                                            className="md:px-3 px-2 py-1.5 bg-zinc-900 text-white hover:bg-zinc-700 transition-colors rounded-sm text-xs font-bold uppercase tracking-wider flex items-center gap-2"
-                                                            title="Odobri Pristup"
-                                                        >
-                                                            <Check size={14} /> <span className="hidden md:inline">Odobri</span>
-                                                        </button>
+                                                    {req.status?.toLowerCase() !== 'approved' && (
+                                                        <>
+                                                            <button
+                                                                onClick={() => handleApprove(req)}
+                                                                className="md:px-3 px-2 py-1.5 bg-zinc-900 text-white hover:bg-zinc-700 transition-colors rounded-sm text-xs font-bold uppercase tracking-wider flex items-center gap-2"
+                                                                title="Odobri Pristup"
+                                                            >
+                                                                <Check size={14} /> <span className="hidden md:inline">Odobri</span>
+                                                            </button>
+                                                            <button
+                                                                onClick={() => handleDeleteMember(req.email)}
+                                                                className="md:px-3 px-2 py-1.5 bg-red-50 text-red-600 hover:bg-red-100 transition-colors rounded-sm text-xs font-bold uppercase tracking-wider flex items-center gap-2 border border-red-200"
+                                                                title="Odbij i Obriši"
+                                                            >
+                                                                <Trash2 size={14} /> <span className="hidden md:inline">Odbij</span>
+                                                            </button>
+                                                        </>
                                                     )}
-                                                    {req.status === 'approved' && (
+                                                    {req.status?.toLowerCase() === 'approved' && (
                                                         <>
                                                             <button
                                                                 onClick={() => setSelectedRequest(req)}
@@ -284,31 +319,49 @@ export default function AdminMembersPage() {
                             <table className="w-full text-sm text-left">
                                 <thead className="bg-zinc-50 text-zinc-700 uppercase text-xs font-semibold">
                                     <tr>
-                                        <th className="px-6 py-4 w-16 text-center">#</th>
-                                        <th className="px-6 py-4">Ime i Prezime</th>
-                                        <th className="px-6 py-4">E-mail</th>
-                                        <th className="px-6 py-4">Status / Tier</th>
-                                        <th className="px-6 py-4 text-right">Datum Registracije</th>
+                                        <th className="px-2 py-3 md:px-4 md:py-4 w-16 text-center">#</th>
+                                        <th className="px-2 py-3 md:px-4 md:py-4">Ime i Prezime</th>
+                                        <th className="px-2 py-3 md:px-4 md:py-4">E-mail</th>
+                                        <th className="px-2 py-3 md:px-4 md:py-4">Status / Tier</th>
+                                        <th className="px-2 py-3 md:px-4 md:py-4 text-right">Datum Registracije</th>
+                                        <th className="px-2 py-3 md:px-4 md:py-4 text-center">Akcija</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-zinc-100">
                                     {registeredMembers.map((member, index) => (
                                         <tr key={member.id} className="hover:bg-zinc-50 transition-colors">
-                                            <td className="px-6 py-4 text-center font-mono text-zinc-400">{index + 1}</td>
-                                            <td className="px-6 py-4 font-medium text-zinc-900">
+                                            <td className="px-2 py-3 md:px-4 md:py-4 text-center font-mono text-zinc-400">{index + 1}</td>
+                                            <td className="px-2 py-3 md:px-4 md:py-4 font-medium text-zinc-900">
                                                 {member.full_name || member.display_name || 'Korisnik bez imena'}
                                             </td>
-                                            <td className="px-6 py-4 text-zinc-600">{member.email}</td>
-                                            <td className="px-6 py-4">
-                                                <span className={`text-[10px] px-2 py-0.5 rounded-full border font-bold uppercase tracking-wider ${member.membership_tier === 'voting' || member.membership_tier === 'gold' ? 'bg-amber-100 text-amber-800 border-amber-200' :
-                                                    member.membership_tier === 'silver' ? 'bg-sky-100 text-sky-800 border-sky-200' :
+                                            <td className="px-2 py-3 md:px-4 md:py-4 text-zinc-600">{member.email}</td>
+                                            <td className="px-2 py-3 md:px-4 md:py-4">
+                                                <select
+                                                    value={member.membership_tier || 'free'}
+                                                    onChange={(e) => handleTierChange(member.email, e.target.value)}
+                                                    className={`text-xs px-2 py-1 rounded border font-bold uppercase tracking-wider outline-none cursor-pointer ${
+                                                        member.membership_tier === 'voting' || member.membership_tier === 'gold' ? 'bg-amber-100 text-amber-800 border-amber-200' :
+                                                        member.membership_tier === 'silver' ? 'bg-sky-100 text-sky-800 border-sky-200' :
                                                         'bg-zinc-100 text-zinc-800 border-zinc-200'
-                                                    }`}>
-                                                    {member.membership_tier || 'FREE'}
-                                                </span>
+                                                    }`}
+                                                >
+                                                    <option value="free">Free</option>
+                                                    <option value="silver">Silver</option>
+                                                    <option value="gold">Gold</option>
+                                                    <option value="voting">Voting</option>
+                                                </select>
                                             </td>
-                                            <td className="px-6 py-4 text-right text-zinc-500 font-mono">
+                                            <td className="px-2 py-3 md:px-4 md:py-4 text-right text-zinc-500 font-mono whitespace-nowrap">
                                                 {new Date(member.created_at).toLocaleDateString('hr-HR')}
+                                            </td>
+                                            <td className="px-2 py-3 md:px-4 md:py-4 text-center">
+                                                <button
+                                                    onClick={() => handleDeleteMember(member.email)}
+                                                    className="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 p-1.5 rounded-full transition-colors"
+                                                    title="Obriši Korisnika"
+                                                >
+                                                    <Trash2 size={16} />
+                                                </button>
                                             </td>
                                         </tr>
                                     ))}

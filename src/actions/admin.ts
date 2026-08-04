@@ -330,11 +330,12 @@ export async function deleteMember(email: string) {
 export async function getAllMembersForRegistry() {
     if (!await verifyAdmin()) return { error: "Unauthorized" };
     try {
-        const [profilesRes, familyRes, companiesRes, authUsersRes] = await Promise.all([
+        const [profilesRes, familyRes, companiesRes, authUsersRes, requestsRes] = await Promise.all([
             supabaseAdmin.from('profiles').select('*'),
             supabaseAdmin.from('family_members').select('*'),
             supabaseAdmin.from('companies').select('*'),
-            supabaseAdmin.auth.admin.listUsers()
+            supabaseAdmin.auth.admin.listUsers(),
+            supabaseAdmin.from('requests').select('email, status')
         ]);
 
         if (profilesRes.error) throw profilesRes.error;
@@ -368,9 +369,13 @@ export async function getAllMembersForRegistry() {
 
         const uniqueProfiles = Array.from(uniqueProfilesMap.values());
 
+        // Exclude pending/rejected requests from showing in the registry
+        const pendingEmails = new Set(requestsRes.data?.filter(r => r.status === 'pending' || r.status === 'rejected').map(r => r.email) || []);
+        const approvedProfiles = uniqueProfiles.filter(p => !pendingEmails.has(p.email));
+
         return {
             data: {
-                profiles: uniqueProfiles,
+                profiles: approvedProfiles,
                 family: familyRes.data,
                 companies: companiesRes.data
             }

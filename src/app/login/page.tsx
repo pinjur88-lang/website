@@ -21,9 +21,9 @@ function LoginContent() {
     useEffect(() => {
         if (user && !isAuthLoading) {
             if (user.role === 'admin') {
-                window.location.href = '/admin';
+                router.push('/admin');
             } else {
-                window.location.href = '/dashboard';
+                router.push('/dashboard');
             }
         }
     }, [user, isAuthLoading, router]);

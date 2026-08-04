@@ -151,6 +151,33 @@ export default function CommunityPage() {
                 </button>
             </div>
 
+            {/* Announcement: Ivanjdan */}
+            <div className="bg-gradient-to-br from-sky-50 to-white p-6 rounded-2xl shadow-sm border border-sky-100 mb-8">
+                <div className="flex items-center gap-2 mb-4">
+                    <span className="bg-sky-600 text-white text-xs font-bold uppercase tracking-wider px-2 py-1 rounded">Obavijest</span>
+                    <span className="text-slate-400 text-sm">Srpanj 2026</span>
+                </div>
+                <h2 className="text-xl font-bold text-[#003366] mb-4">Ivanjdan</h2>
+                <div className="text-slate-700 text-sm leading-relaxed space-y-4">
+                    <p>
+                        I ove godine u Baljcima je proslavljen Ivanjdan. Brojni Baljčani iz svih delova sveta, ponovo su se okupili 7. jula u svom rodnom selu.
+                        Kao i svake godine u crkvi Svetog Jovana služena je liturgija. Ovaj praznik nije samo dan kada se Baljčani u najvećem broju okupe, već je to period i kada se sete svojih predaka, ali i vreme kada imaju priliku da se sretnu i razgovaraju o nekim lepim i zajedničkim uspomenama.
+                    </p>
+                    <p>
+                        Međutim, za razliku od prethodnih godina Baljčane je ovog puta dočekala i jedna novina za Ivanjdan. Ispod kostola na Brijegu bio je postavljen šator u kom ih je čekalo osveženje. Piće i kolače finansirala je novoosnovana Udruga Baljci. Cilj ovog udruženja, koje je izniklo kao ideja mladih ljudi, jeste da se Baljčani zajedno uključe i razgovaraju o budućim koracima kako bi naše selo postalo bolje i lepše.
+                    </p>
+                    <p>
+                        Ovog Ivanjdana svi su imali priliku da daju svoje predloge, sugestije, mišljenja i ideje šta to treba uraditi kako bi se Baljci unapredili i kako bi se ustanovilo šta je to što nam svima nedostaje da bi nam boravak u selu bio bolji, prijatniji i lakši. Osim pisanja ideja i sugestija, mnogi su svoju podršku za rad Udruge dali i kroz ostavljanje priloga.
+                    </p>
+                    <p>
+                        Imali su Baljčani do sada slične akcije u kojima su bili složni i jednoglasni, ali kroz rad udurženja i samim učestvovanjem svih nas (donacijama, davanjem predloga i sugestija) možemo zajedno da učinimo da naši Baljci budu još bolji i prijatniji. A to je i moto Udruge:
+                    </p>
+                    <blockquote className="border-l-4 border-sky-400 pl-4 italic text-[#003366] font-medium bg-sky-50/50 py-2 pr-2">
+                        “Zajedno gradimo bolju budućnost za naše selo i zajednicu. Pridružite nam se u očuvanju tradicije i unapređenju života u Baljcima.”
+                    </blockquote>
+                </div>
+            </div>
+
             {/* Create Topic Form */}
             {isCreating && (
                 <div className="bg-white p-6 rounded-xl shadow-lg border border-sky-100 animate-in fade-in slide-in-from-top-4">

@@ -144,6 +144,49 @@ export default function DashboardDonatePage() {
                     </div>
                 </div>
             </div>
+
+            {/* ZAHVALE / RECENT DONATIONS */}
+            <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-8 shadow-sm relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-green-500/5 dark:bg-green-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+                
+                <h3 className="text-xl font-bold mb-6 text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
+                    <svg className="w-6 h-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                    </svg>
+                    Zahvaljujemo se na donacijama
+                </h3>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {[
+                        "Slavko Josić – €100",
+                        "Josip (Gadženov) Trzin – $50",
+                        "Milica i Milan Bibić – $100 USD",
+                        "Radojka Avrić (Ceketova) – €50",
+                        "Nikola Šarac – €100",
+                        "Neven Bašić – €50",
+                        "Zorica i Davor Džaleta – €50",
+                        "Boško Trzin – €50",
+                        "Mira i Sandra Trzin (Šiljić) – €50",
+                        "Davorka Bašić (Tadijiće) – €20",
+                        "Nada Josić – €20",
+                        "Nedo Bašić (Blek) – €20",
+                        "Mirko Milanković (Đoko) – €20",
+                        "Dušan Milanković (Duka) – €20",
+                        "Nada Trzin (Katić) – €20",
+                        "Nikola Bešević (Lazin) – €20",
+                        "Rade Gegić – €20",
+                        "Gordana (Goca) Milanković – €20",
+                        "Porodica Jurišin (Bilja i Mile) – €20",
+                        "Anđelka Klisurić – €20"
+                    ].map((donor, index) => (
+                        <div key={index} className="flex items-center gap-2 p-3 bg-zinc-50 dark:bg-zinc-800/50 rounded-lg text-sm border border-zinc-100 dark:border-zinc-800">
+                            <Check className="w-4 h-4 text-green-500 shrink-0" />
+                            <span className="font-medium text-zinc-700 dark:text-zinc-300">{donor}</span>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
         </div>
     );
 }

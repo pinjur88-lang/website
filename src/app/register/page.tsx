@@ -28,6 +28,9 @@ export default function RegisterPage() {
     const [fathersName, setFathersName] = useState('');
     const [nickname, setNickname] = useState('');
 
+    // Honeypot for bots
+    const [honeypot, setHoneypot] = useState('');
+
     // Consents
     const [consents, setConsents] = useState({
         statute: false,
@@ -37,6 +40,14 @@ export default function RegisterPage() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        
+        // Bot detection
+        if (honeypot) {
+            // Fake success for bots
+            setStep('success');
+            return;
+        }
+
         setLoading(true);
         setError('');
 
@@ -122,6 +133,12 @@ export default function RegisterPage() {
                     </div>
 
                     <form onSubmit={handleSubmit} className="space-y-6">
+
+                        {/* HONEYPOT (Hidden from humans) */}
+                        <div className="hidden" aria-hidden="true">
+                            <label htmlFor="website">Website</label>
+                            <input type="text" id="website" name="website" tabIndex={-1} autoComplete="off" value={honeypot} onChange={e => setHoneypot(e.target.value)} />
+                        </div>
 
                         {/* SECTION A: LOGIN INFO */}
                         <div className="space-y-4">

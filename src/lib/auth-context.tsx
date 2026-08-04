@@ -139,7 +139,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             console.error("Logout Error:", err);
         } finally {
             setUser(null);
-            window.location.href = '/login';
+            router.push('/login');
         }
     };
 

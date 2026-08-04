@@ -7,6 +7,9 @@ import Link from 'next/link';
 import { ArrowLeft, Users, Globe, BookOpen, Shield } from 'lucide-react';
 import { getClanById, Clan } from '@/actions/memorial';
 import { useLanguage } from '@/lib/language-context';
+import archiveData from '@/data/baljci_drnis_archive.json';
+
+const removeAccents = (str: string) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
 
 export default function ClanDetailPage() {
     const params = useParams();
@@ -82,6 +85,20 @@ export default function ClanDetailPage() {
         return clan[key] || clan[fallbackKey] || '';
     };
 
+    // Match Archive Records
+    const normalizedClan = removeAccents(clan.surname);
+    const matchingRecords: { name: string, birthYear: string }[] = [];
+    Object.entries(archiveData).forEach(([surname, records]) => {
+        const norm = removeAccents(surname);
+        if (
+            norm === normalizedClan ||
+            (norm.includes(normalizedClan) && normalizedClan.length > 3) ||
+            (normalizedClan.includes(norm) && norm.length > 3)
+        ) {
+            matchingRecords.push(...(records as { name: string, birthYear: string }[]));
+        }
+    });
+
     return (
         <div className="max-w-5xl mx-auto space-y-12 animate-in fade-in duration-500 pb-20">
             {/* Header / Navigation */}
@@ -141,6 +158,34 @@ export default function ClanDetailPage() {
                             <p className="whitespace-pre-wrap leading-loose text-stone-600">
                                 {generalHistory}
                             </p>
+                        </div>
+                    )}
+
+                    {/* 3. Archive Records */}
+                    {matchingRecords.length > 0 && (
+                        <div className="prose prose-stone max-w-none mt-12">
+                            <h3 className="flex items-center gap-3 text-slate-700 font-bold uppercase text-sm tracking-widest mb-6 border-b border-slate-200 pb-2 w-fit">
+                                <BookOpen size={18} />
+                                {language === 'hr' ? 'Arhivski Zapisi (1890-1920)' : 'Archive Records (1890-1920)'}
+                            </h3>
+                            <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+                                <table className="w-full text-sm text-left">
+                                    <thead className="bg-slate-50 text-slate-600 font-semibold uppercase text-xs">
+                                        <tr>
+                                            <th className="px-4 py-3 border-b border-slate-200">Ime / Name</th>
+                                            <th className="px-4 py-3 border-b border-slate-200">Godina Rođenja / Birth Year</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-slate-100">
+                                        {matchingRecords.map((record, idx) => (
+                                            <tr key={idx} className="hover:bg-slate-50">
+                                                <td className="px-4 py-3 font-medium text-slate-900">{record.name}</td>
+                                                <td className="px-4 py-3 text-slate-600">{record.birthYear || 'Nepoznato / Unknown'}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     )}
                 </div>

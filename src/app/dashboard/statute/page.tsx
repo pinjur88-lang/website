@@ -161,6 +161,23 @@ export default function StatutePage() {
                         </div>
                     </section>
 
+                    </section>
+
+                </div>
+            </div>
+
+            <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
+                <div className="p-6 md:p-8 bg-slate-900 text-white border-b border-slate-800 flex justify-between items-center flex-wrap gap-4">
+                    <div>
+                        <h2 className="text-2xl font-bold">Puni Tekst Statuta</h2>
+                        <p className="text-slate-400 mt-1">Službeni ovjereni dokument (PDF)</p>
+                    </div>
+                    <a href="/Statut_Baljci_ovjeren.pdf" target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg font-semibold transition text-sm flex items-center gap-2">
+                        Otvori u novom prozoru
+                    </a>
+                </div>
+                <div className="h-[800px] w-full bg-slate-100">
+                    <iframe src="/Statut_Baljci_ovjeren.pdf" className="w-full h-full border-0" title="Statut Udruge" />
                 </div>
             </div>
         </div>

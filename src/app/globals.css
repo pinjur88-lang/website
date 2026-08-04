@@ -37,3 +37,14 @@ body {
 .custom-marker {
   filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
 }
+
+/* Antigravity CSS Animation */
+@keyframes antigravity {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); box-shadow: 0 15px 25px rgba(0,0,0,0.15); }
+    100% { transform: translateY(0px); }
+}
+
+.animate-antigravity {
+    animation: antigravity 4s ease-in-out infinite;
+}
