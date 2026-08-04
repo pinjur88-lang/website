@@ -2,6 +2,7 @@
 
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import { revalidatePath } from 'next/cache';
+import { sendApprovalEmail } from '@/lib/mail';
 
 import { verifyAdmin } from '@/lib/auth-admin';
 
@@ -104,6 +105,14 @@ export async function approveRequest(requestId: string, email: string, name: str
                 }
             } else {
                 console.error("User not found in Auth Admin for email:", email);
+            }
+        }
+
+        // Send automated approval email
+        if (email) {
+            const emailRes = await sendApprovalEmail(email, name);
+            if (!emailRes?.success) {
+                console.error("Failed to send approval email:", emailRes?.error);
             }
         }
 
