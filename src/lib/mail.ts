@@ -1,6 +1,6 @@
 import nodemailer from 'nodemailer';
 
-const getFromEmail = () => process.env.EMAIL_FROM || 'info@baljci.org';
+const getFromEmail = () => process.env.EMAIL_FROM || 'info@baljci.com';
 const getAdminEmail = () => 'udrugabaljci@gmail.com';
 
 const isResend = process.env.SMTP_HOST === 'smtp.resend.com';
@@ -134,7 +134,7 @@ export async function sendApprovalEmail(toEmail: string, name: string) {
                     <p>You can now log in with your credentials and access all archives, genealogies, and galleries.</p>
                     <p><a href="https://www.baljci.org/login" style="background-color: #000; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Log in here</a></p>
                     <br/>
-                    <p style="color: #888; font-size: 12px;">Udruga Baljci - info@baljci.org</p>
+                    <p style="color: #888; font-size: 12px;">Udruga Baljci - info@baljci.com</p>
                 </div>
             `
         };
