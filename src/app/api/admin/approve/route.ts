@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { verifyAdminToken } from '@/lib/auth-admin';
+import { sendApprovalEmail } from '@/lib/mail';
 
 export async function POST(request: Request) {
     try {
@@ -48,6 +49,12 @@ export async function POST(request: Request) {
             if (updateError) {
                 console.error("Failed to promote user profile:", updateError);
                 // We don't fail the request approval, but we log it.
+            } else {
+                // 6. Send the beautifully formatted HTML email via Resend
+                const emailResult = await sendApprovalEmail(requestData.email, requestData.name || 'Korisnik');
+                if (!emailResult.success) {
+                    console.error("Failed to send approval email via Resend:", emailResult.error);
+                }
             }
         }
 
