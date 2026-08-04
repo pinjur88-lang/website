@@ -21,7 +21,7 @@ export const transporter = nodemailer.createTransport(
 );
 
 // Helper for the sender email
-const getFromEmail = () => process.env.EMAIL_FROM || 'info@baljci.com';
+const getFromEmail = () => process.env.EMAIL_FROM || 'info@baljci.org';
 const getAdminEmail = () => 'udrugabaljci@gmail.com';
 
 export async function sendAdminNotification(data: any) {
