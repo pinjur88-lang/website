@@ -54,6 +54,7 @@ export async function POST(request: Request) {
                 const emailResult = await sendApprovalEmail(requestData.email, requestData.name || 'Korisnik');
                 if (!emailResult.success) {
                     console.error("Failed to send approval email via Resend:", emailResult.error);
+                    return NextResponse.json({ error: 'Failed to send email: ' + emailResult.error }, { status: 500 });
                 }
             }
         }
