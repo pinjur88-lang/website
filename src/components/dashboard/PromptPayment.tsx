@@ -10,7 +10,7 @@ export default function PromptPayment() {
     const { t } = useLanguage();
     const { user, logout } = useAuth();
 
-    const [selectedTier, setSelectedTier] = useState<'voting' | 'supporter'>('voting');
+    const [selectedTier, setSelectedTier] = useState<'voting' | 'supporter'>('supporter');
     const [note, setNote] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [successMessage, setSuccessMessage] = useState('');
@@ -51,59 +51,23 @@ export default function PromptPayment() {
 
                 <div className="p-8 space-y-8">
                     {/* Tier Selection */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {/* Voting Member */}
-                        <div
-                            onClick={() => setSelectedTier('voting')}
-                            className={`cursor-pointer rounded-2xl border-2 p-5 transition-all relative ${selectedTier === 'voting'
-                                ? 'border-indigo-500 bg-indigo-50/50 shadow-md ring-4 ring-indigo-500/10'
-                                : 'border-zinc-200 hover:border-zinc-300 bg-white hover:bg-zinc-50'
-                                }`}
-                        >
-                            {selectedTier === 'voting' && (
-                                <div className="absolute top-4 right-4 text-indigo-500">
-                                    <Check className="w-6 h-6" />
-                                </div>
-                            )}
-                            <h3 className="font-bold text-zinc-900 text-lg mb-1">Punopravni Član</h3>
-                            <p className="text-xs text-zinc-500 font-semibold uppercase tracking-wider mb-4">Voting Member</p>
-                            <div className="text-3xl font-bold text-indigo-600 mb-4">
-                                €200 <span className="text-sm text-zinc-500 font-normal">/ year</span>
-                            </div>
-                            <ul className="space-y-2 text-sm text-zinc-600">
-                                <li className="flex items-start gap-2">
-                                    <div className="mt-0.5 min-w-[16px]"><Check className="w-4 h-4 text-emerald-500" /></div>
-                                    <span>Pravo glasa na sjednicama (18+ god)</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <div className="mt-0.5 min-w-[16px]"><Check className="w-4 h-4 text-emerald-500" /></div>
-                                    <span>Potreban OIB za službeni Registar Udruga</span>
-                                </li>
-                            </ul>
-                        </div>
-
+                    <div className="grid grid-cols-1 gap-4 max-w-sm mx-auto">
                         {/* Supporter */}
                         <div
-                            onClick={() => setSelectedTier('supporter')}
-                            className={`cursor-pointer rounded-2xl border-2 p-5 transition-all relative ${selectedTier === 'supporter'
-                                ? 'border-indigo-500 bg-indigo-50/50 shadow-md ring-4 ring-indigo-500/10'
-                                : 'border-zinc-200 hover:border-zinc-300 bg-white hover:bg-zinc-50'
-                                }`}
+                            className={`rounded-2xl border-2 p-5 transition-all relative border-indigo-500 bg-indigo-50/50 shadow-md ring-4 ring-indigo-500/10`}
                         >
-                            {selectedTier === 'supporter' && (
-                                <div className="absolute top-4 right-4 text-indigo-500">
-                                    <Check className="w-6 h-6" />
-                                </div>
-                            )}
-                            <h3 className="font-bold text-zinc-900 text-lg mb-1">Podupirući Član</h3>
-                            <p className="text-xs text-zinc-500 font-semibold uppercase tracking-wider mb-4">Supporter</p>
+                            <div className="absolute top-4 right-4 text-indigo-500">
+                                <Check className="w-6 h-6" />
+                            </div>
+                            <h3 className="font-bold text-zinc-900 text-lg mb-1">Član / Member</h3>
+                            <p className="text-xs text-zinc-500 font-semibold uppercase tracking-wider mb-4">Annual Membership</p>
                             <div className="text-3xl font-bold text-indigo-600 mb-4">
                                 €100 <span className="text-sm text-zinc-500 font-normal">/ year</span>
                             </div>
                             <ul className="space-y-2 text-sm text-zinc-600">
                                 <li className="flex items-start gap-2">
-                                    <div className="mt-0.5 min-w-[16px]"><Check className="w-4 h-4 text-zinc-400" /></div>
-                                    <span className="text-zinc-500">Nema pravo glasa (No voting rights)</span>
+                                    <div className="mt-0.5 min-w-[16px]"><Check className="w-4 h-4 text-emerald-500" /></div>
+                                    <span>Puni pristup portalu i arhivama (Full access)</span>
                                 </li>
                                 <li className="flex items-start gap-2">
                                     <div className="mt-0.5 min-w-[16px]"><Check className="w-4 h-4 text-emerald-500" /></div>
@@ -116,7 +80,7 @@ export default function PromptPayment() {
                     <div className="bg-amber-50 rounded-2xl p-4 border border-amber-100 flex items-start gap-3">
                         <AlertCircle className="text-amber-500 shrink-0 mt-0.5" size={20} />
                         <div className="text-sm text-amber-800">
-                            <strong>Total: {selectedTier === 'voting' ? '200 EUR' : '100 EUR'}</strong>
+                            <strong>Total: 100 EUR</strong>
                             <p className="mt-1 opacity-80">
                                 Odaberite metodu plaćanja ispod. (Choose your payment method below).
                             </p>
@@ -148,19 +112,19 @@ export default function PromptPayment() {
                                 <div className="text-xs text-zinc-500 mb-2 uppercase flex flex-col gap-1 border-b border-zinc-200 pb-2">
                                     <div className="flex justify-between items-center rounded bg-zinc-100 p-1.5 px-2">
                                         <span>Iznos (Amount) EUR:</span>
-                                        <strong className="text-zinc-900 text-sm">€{selectedTier === 'voting' ? '200.00' : '100.00'}</strong>
+                                        <strong className="text-zinc-900 text-sm">€100.00</strong>
                                     </div>
                                     <div className="flex justify-between items-center px-2">
                                         <span>USD (Approx):</span>
-                                        <strong className="text-zinc-700">${selectedTier === 'voting' ? '210' : '105'}</strong>
+                                        <strong className="text-zinc-700">$105</strong>
                                     </div>
                                     <div className="flex justify-between items-center px-2">
                                         <span>CAD (Approx):</span>
-                                        <strong className="text-zinc-700">${selectedTier === 'voting' ? '300' : '150'}</strong>
+                                        <strong className="text-zinc-700">$150</strong>
                                     </div>
                                     <div className="flex justify-between items-center px-2">
                                         <span>AUD (Approx):</span>
-                                        <strong className="text-zinc-700">${selectedTier === 'voting' ? '330' : '165'}</strong>
+                                        <strong className="text-zinc-700">$165</strong>
                                     </div>
                                 </div>
                                 <p>{t.donateBeneficiary || 'UDRUGA GRAĐANA BALJCI'}</p>
