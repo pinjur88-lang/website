@@ -26,39 +26,46 @@ export async function GET(request: Request) {
         const deletedEmails: string[] = [];
         let errorCount = 0;
 
+        // Fetch all auth users ONCE to prevent Vercel timeouts (O(N) instead of O(N^2))
+        const authUserMap = new Map<string, string>();
+        let page = 1;
+        let hasMore = true;
+        while (hasMore) {
+            const { data: userData } = await supabaseAdmin.auth.admin.listUsers({ page, perPage: 1000 });
+            if (!userData || !userData.users) break;
+            
+            userData.users.forEach(u => {
+                if (u.email) authUserMap.set(u.email.toLowerCase(), u.id);
+            });
+            
+            if (userData.users.length < 1000) hasMore = false;
+            else page++;
+        }
+
+        // Delete all pending bots
         for (const req of pendingRequests) {
             const email = req.email;
             if (!email) continue;
+            
+            try {
+                const lowerEmail = email.toLowerCase();
+                const authUserId = authUserMap.get(lowerEmail);
 
-            // Delete from Auth if exists
-            let page = 1;
-            let hasMore = true;
-            let authUserId = null;
-
-            while (hasMore) {
-                const { data: userData } = await supabaseAdmin.auth.admin.listUsers({ page, perPage: 1000 });
-                if (!userData || !userData.users) break;
-
-                const user = userData.users.find(u => u.email?.toLowerCase() === email.toLowerCase());
-                if (user) {
-                    authUserId = user.id;
-                    break;
+                if (authUserId) {
+                    await supabaseAdmin.auth.admin.deleteUser(authUserId);
                 }
-                if (userData.users.length < 1000) hasMore = false;
-                else page++;
+
+                // Delete from profiles
+                await supabaseAdmin.from('profiles').delete().eq('email', email);
+
+                // Delete from requests
+                await supabaseAdmin.from('requests').delete().eq('email', email);
+
+                deletedEmails.push(email);
+            } catch (err) {
+                errorCount++;
+                console.error(`Failed to delete ${email}:`, err);
             }
-
-            if (authUserId) {
-                await supabaseAdmin.auth.admin.deleteUser(authUserId);
-            }
-
-            // Delete from profiles
-            await supabaseAdmin.from('profiles').delete().eq('email', email);
-
-            // Delete from requests
-            await supabaseAdmin.from('requests').delete().eq('email', email);
-
-            deletedEmails.push(email);
         }
 
         return NextResponse.json({ 
