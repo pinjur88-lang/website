@@ -161,8 +161,6 @@ export default function StatutePage() {
                         </div>
                     </section>
 
-                    </section>
-
                 </div>
             </div>
 
