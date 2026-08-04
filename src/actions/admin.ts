@@ -109,15 +109,17 @@ export async function approveRequest(requestId: string, email: string, name: str
         }
 
         // Send automated approval email
+        let emailError = null;
         if (email) {
             const emailRes = await sendApprovalEmail(email, name);
             if (!emailRes?.success) {
                 console.error("Failed to send approval email:", emailRes?.error);
+                emailError = emailRes?.error;
             }
         }
 
         revalidatePath('/admin');
-        return { success: true };
+        return { success: true, emailError };
     } catch (error: any) {
         return { error: error.message };
     }

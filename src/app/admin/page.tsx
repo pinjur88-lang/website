@@ -95,6 +95,8 @@ export default function AdminMembersPage() {
             alert('Greška: ' + res.error);
             // Revert optimistic update
             setRequests(prev => prev.map(r => r.id === req.id ? { ...r, status: 'pending' } : r));
+        } else if (res.emailError) {
+            alert('Korisnik uspješno odobren u bazi, ALI slanje emaila nije uspjelo! Greška od Resend-a: ' + res.emailError);
         } else {
             alert('Korisnik odobren i predivan email je uspješno poslan!');
         }
