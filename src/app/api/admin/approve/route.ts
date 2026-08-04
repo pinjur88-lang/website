@@ -35,7 +35,7 @@ export async function POST(request: Request) {
         // Fetch the request details to get the email
         const { data: requestData, error: fetchError } = await supabaseAdmin
             .from('requests')
-            .select('email')
+            .select('email, name')
             .eq('id', requestId)
             .single();
 
