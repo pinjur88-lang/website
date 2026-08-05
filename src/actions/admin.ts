@@ -261,6 +261,7 @@ export async function saveAdminNotes(requestId: string, notes: string) {
             .update({ admin_notes: notes })
             .eq('id', requestId);
         if (error) throw error;
+        revalidatePath('/admin');
         return { success: true };
     } catch (error: any) {
         return { error: error.message };

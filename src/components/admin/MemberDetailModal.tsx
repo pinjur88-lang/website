@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { MembershipRequest, Donation } from '@/lib/db';
-import { X, Save, Plus, Trash2, Calendar, MapPin, Mail, Phone, FileText, Award, ShieldCheck, Star, BadgeCheck } from 'lucide-react';
+import { X, Save, Plus, Trash2, Calendar, MapPin, Mail, Phone, FileText, Award, ShieldCheck, Star, BadgeCheck, Clock, CheckCircle2 } from 'lucide-react';
 import { saveAdminNotes, addAdminDonation, updateMemberTier, deleteMember, getMemberTierInfo } from '@/actions/admin';
 import { supabaseAdmin as supabase } from '@/lib/supabase-admin';
 
@@ -15,6 +15,7 @@ interface MemberDetailModalProps {
 export default function MemberDetailModal({ request, onClose, onUpdate }: MemberDetailModalProps) {
     const [notes, setNotes] = useState(request.admin_notes || '');
     const [savingNotes, setSavingNotes] = useState(false);
+    const [notesSavedMsg, setNotesSavedMsg] = useState('');
 
     // Donation form state
     const [amount, setAmount] = useState('');
@@ -48,13 +49,42 @@ export default function MemberDetailModal({ request, onClose, onUpdate }: Member
         fetchTier();
     }, [request.email]);
 
+    const insertTimestamp = () => {
+        const now = new Date();
+        const dateStr = now.toLocaleDateString('hr-HR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        const timeStr = now.toLocaleTimeString('hr-HR', { hour: '2-digit', minute: '2-digit' });
+        const stamp = `[${dateStr} ${timeStr}] `;
+
+        if (!notes.trim()) {
+            setNotes(stamp);
+        } else {
+            setNotes(prev => prev + (prev.endsWith('\n') ? '' : '\n') + stamp);
+        }
+    };
+
     const handleSaveNotes = async () => {
         setSavingNotes(true);
-        const res = await saveAdminNotes(request.id, notes);
+        setNotesSavedMsg('');
+
+        let finalNotes = notes.trim();
+
+        // If user typed a note without a timestamp bracket, auto-stamp the entry
+        if (finalNotes && !finalNotes.startsWith('[')) {
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('hr-HR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            const timeStr = now.toLocaleTimeString('hr-HR', { hour: '2-digit', minute: '2-digit' });
+            const stamp = `[${dateStr} ${timeStr}] `;
+            finalNotes = stamp + finalNotes;
+            setNotes(finalNotes);
+        }
+
+        const res = await saveAdminNotes(request.id, finalNotes);
         if (res.success) {
-            onUpdate({ ...request, admin_notes: notes });
+            onUpdate({ ...request, admin_notes: finalNotes });
+            setNotesSavedMsg('Bilješka uspješno spremljena sa zabilježenim datumom!');
+            setTimeout(() => setNotesSavedMsg(''), 4000);
         } else {
-            alert(res.error);
+            alert('Greška pri spremanju bilješki: ' + (res.error || 'Nepoznata greška'));
         }
         setSavingNotes(false);
     };
@@ -234,22 +264,45 @@ export default function MemberDetailModal({ request, onClose, onUpdate }: Member
                         <div className="space-y-6">
                             {/* Admin Notes */}
                             <div className="bg-amber-50/50 p-5 rounded-xl border border-amber-100 space-y-4">
-                                <h3 className="font-bold text-zinc-900 flex items-center gap-2 text-sm uppercase tracking-wider">
-                                    <FileText size={18} className="text-amber-600" /> Interne Bilješke
-                                </h3>
+                                <div className="flex justify-between items-center">
+                                    <h3 className="font-bold text-zinc-900 flex items-center gap-2 text-sm uppercase tracking-wider">
+                                        <FileText size={18} className="text-amber-600" /> Interne Bilješke
+                                    </h3>
+                                    <button
+                                        type="button"
+                                        onClick={insertTimestamp}
+                                        className="text-[11px] bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold px-2.5 py-1 rounded-md transition-colors flex items-center gap-1 border border-amber-300 shadow-sm"
+                                        title="Dodaj vremensku oznaku (Timestamp)"
+                                    >
+                                        <Clock size={12} /> + Pečat s datumom
+                                    </button>
+                                </div>
                                 <textarea
                                     value={notes}
                                     onChange={(e) => setNotes(e.target.value)}
-                                    className="w-full text-sm p-3 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none min-h-[100px] bg-white"
+                                    className="w-full text-sm p-3 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none min-h-[120px] bg-white font-sans leading-relaxed"
                                     placeholder="Upiši interne napomene o članu..."
                                 />
+
+                                {notesSavedMsg && (
+                                    <div className="p-2.5 bg-emerald-50 border border-emerald-200 rounded-lg flex items-center gap-2 text-emerald-800 text-xs font-bold animate-in fade-in">
+                                        <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
+                                        <span>{notesSavedMsg}</span>
+                                    </div>
+                                )}
+
                                 <div className="flex justify-end">
                                     <button
                                         onClick={handleSaveNotes}
                                         disabled={savingNotes}
-                                        className="text-xs bg-amber-600 text-white px-4 py-2 rounded-lg hover:bg-amber-700 transition-colors flex items-center gap-2 shadow-sm font-bold uppercase tracking-wider"
+                                        className={`text-xs px-4 py-2 rounded-lg transition-all flex items-center gap-2 shadow-sm font-bold uppercase tracking-wider ${
+                                            notesSavedMsg 
+                                                ? 'bg-emerald-600 text-white' 
+                                                : 'bg-amber-600 hover:bg-amber-700 text-white'
+                                        }`}
                                     >
-                                        <Save size={14} /> {savingNotes ? 'Spremanje...' : 'Spremi Bilješke'}
+                                        {notesSavedMsg ? <CheckCircle2 size={14} /> : <Save size={14} />} 
+                                        {savingNotes ? 'Spremanje...' : notesSavedMsg ? 'Spremljeno!' : 'Spremi Bilješke'}
                                     </button>
                                 </div>
                             </div>
