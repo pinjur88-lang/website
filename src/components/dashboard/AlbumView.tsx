@@ -6,6 +6,7 @@ import { supabase } from '@/lib/supabase';
 import { ArrowLeft, Upload, Loader2, Trash2, Image as ImageIcon } from 'lucide-react';
 import Image from 'next/image';
 import { useAuth } from '@/lib/auth-context';
+import { useLanguage } from '@/lib/language-context';
 
 type Album = {
     id: string;
@@ -28,6 +29,7 @@ interface AlbumViewProps {
 
 export default function AlbumView({ album, onBack }: AlbumViewProps) {
     const { user } = useAuth();
+    const { t } = useLanguage();
     const [images, setImages] = useState<GalleryImage[]>([]);
     const [loading, setLoading] = useState(true);
     const [uploading, setUploading] = useState(false);
@@ -90,7 +92,7 @@ export default function AlbumView({ album, onBack }: AlbumViewProps) {
                         .from('gallery')
                         .getPublicUrl(filePath);
 
-                    const { error: dbError } = await saveAlbumImageRef(publicUrl, album.id, file.name);
+                    const { error: dbError } = await saveAlbumImageRef(publicUrl, album.id, '');
                     if (dbError) throw dbError;
 
                     completed++;
@@ -148,10 +150,10 @@ export default function AlbumView({ album, onBack }: AlbumViewProps) {
                         />
                         <button
                             disabled={uploading}
-                            className="flex items-center gap-2 px-4 py-2 bg-stone-900 text-white rounded-md text-sm hover:bg-stone-800 transition-colors disabled:opacity-70"
+                            className="flex items-center gap-2 px-6 py-3 bg-sky-600 text-white font-bold rounded-lg hover:bg-sky-700 transition-colors shadow-sm disabled:opacity-70"
                         >
-                            {uploading ? <Loader2 className="animate-spin" size={16} /> : <Upload size={16} />}
-                            {uploading ? 'Uploading...' : 'Upload Photo'}
+                            {uploading ? <Loader2 className="animate-spin" size={20} /> : <Upload size={20} />}
+                            {uploading ? '...' : (t.uploadPhotos || 'Upload Photos')}
                         </button>
                     </div>
                 </div>
@@ -174,7 +176,7 @@ export default function AlbumView({ album, onBack }: AlbumViewProps) {
                         >
                             <Image
                                 src={img.url}
-                                alt={img.caption || 'Image'}
+                                alt=""
                                 fill
                                 className="object-cover transition-transform group-hover:scale-105"
                             />
@@ -210,7 +212,7 @@ export default function AlbumView({ album, onBack }: AlbumViewProps) {
                     <div className="relative w-full h-full flex items-center justify-center p-4">
                         <img
                             src={images[selectedIndex].url}
-                            alt={images[selectedIndex].caption}
+                            alt=""
                             className="max-h-full max-w-full object-contain rounded-sm shadow-2xl"
                             onClick={(e) => e.stopPropagation()} // Prevent closing when clicking image
                         />
@@ -279,19 +281,7 @@ export default function AlbumView({ album, onBack }: AlbumViewProps) {
                                     </div>
                                 ) : (
                                     <div className="flex flex-col gap-1">
-                                        <p className="text-white/90 text-sm font-medium">{images[selectedIndex].caption || `Image ${selectedIndex + 1} of ${images.length}`}</p>
-
-                                        {(user?.role === 'admin' || user?.email === 'udrugabaljci@gmail.com' || user?.id === images[selectedIndex].uploaded_by) && (
-                                            <button
-                                                className="text-xs text-white/50 hover:text-white uppercase font-bold tracking-wider"
-                                                title="Edit caption"
-                                                onClick={() => {
-                                                    setImages(prev => prev.map(img => img.id === images[selectedIndex].id ? { ...img, isEditing: true } : img));
-                                                }}
-                                            >
-                                                Edit Caption
-                                            </button>
-                                        )}
+                                        <p className="text-white/90 text-sm font-medium">{`Image ${selectedIndex + 1} of ${images.length}`}</p>
                                     </div>
                                 )}
                             </div>

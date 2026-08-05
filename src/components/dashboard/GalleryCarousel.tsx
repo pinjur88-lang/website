@@ -55,29 +55,26 @@ export default function GalleryCarousel({ images }: GalleryCarouselProps) {
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
-            {/* Main Image */}
-            <div className="relative w-full h-full">
-                <Image
-                    src={images[currentIndex].url}
-                    alt={images[currentIndex].caption || 'Gallery Image'}
-                    fill
-                    priority
-                    className="object-cover transition-all duration-700"
-                />
+        {/* Main Image */}
+        <div className="relative w-full h-full">
+            <Image
+                src={images[currentIndex].url}
+                alt=""
+                fill
+                priority
+                className="object-cover transition-all duration-700"
+            />
 
-                {/* Gradient Overlay for Text */}
-                <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/80 to-transparent" />
+            {/* Gradient Overlay for Text */}
+            <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/60 to-transparent" />
 
-                {/* Caption */}
-                <div className="absolute bottom-4 left-6 right-6 text-white">
-                    <p className="font-medium text-lg drop-shadow-md truncate">
-                        {images[currentIndex].caption || 'Untitled Photo'}
-                    </p>
-                    <p className="text-xs text-white/70">
-                        {currentIndex + 1} / {images.length}
-                    </p>
-                </div>
+            {/* Counter */}
+            <div className="absolute bottom-4 right-6 text-white">
+                <p className="text-xs font-bold bg-black/40 px-2 py-1 rounded-md backdrop-blur-sm">
+                    {currentIndex + 1} / {images.length}
+                </p>
             </div>
+        </div>
 
             {/* Controls - Show on Hover for User but always on Mobile potentially */}
             {images.length > 1 && (
