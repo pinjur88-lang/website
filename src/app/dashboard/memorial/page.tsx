@@ -83,16 +83,6 @@ export default function MemorialPage() {
                     </p>
                 </div>
 
-                <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 flex flex-col md:flex-row items-center gap-4 w-full md:w-auto shadow-sm">
-                    <div className="flex-1">
-                        <h3 className="font-bold text-amber-900 font-serif">Nova Otkrića: 14.500+ Matica</h3>
-                        <p className="text-sm text-amber-800/80 leading-snug">Naša umjetna inteligencija upravo je prevela i digitalizirala više od 14.500 drevnih crkvenih zapisa. Preuzmite cijelu bazu.</p>
-                    </div>
-                    <a href="/master_registry.xlsx" download className="whitespace-nowrap px-4 py-2 bg-amber-700 hover:bg-amber-800 text-white font-bold rounded shadow transition-colors text-sm">
-                        Preuzmi Excel Registar
-                    </a>
-                </div>
-
                 <div className="relative w-full md:w-64">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" size={16} />
                     <input
